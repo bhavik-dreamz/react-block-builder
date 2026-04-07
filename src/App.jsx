@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+// -d added the format library for text formatting options (bold, italic, etc.)
 import {
   BlockEditorProvider,
   BlockList,
@@ -21,13 +22,17 @@ const DEFAULT_PAGE_ID = 'home';
 // -d adding the styles
 import '@wordpress/block-editor/build-style/style.css';
 import '@wordpress/components/build-style/style.css';
+import '@wordpress/block-library/build-style/style.css';
+import '@wordpress/block-library/build-style/theme.css';
+import '@wordpress/block-library/build-module';
 
 // Database functions are now in src/data/api.js — swap the bodies there
 // to point at any real backend (Express, WordPress REST API, Supabase, etc.)
 
 const EDITOR_SETTINGS = {
-  hasFixedToolbar: true,
-  hasInlineToolbar: false,
+  // -d changed the fixed toolbar to false(now true for wordpress like tools) and inline toolbar to true provide  us the aligment feature
+  hasFixedToolbar: false,
+  hasInlineToolbar: true,
   // -d added block mover as true 
   hasBlockMover: true,
   focusMode: false,
@@ -36,6 +41,11 @@ const EDITOR_SETTINGS = {
   bodyPlaceholder: 'Click + to add your first block...',
   supportsLayout: true,
   __experimentalFeatures: {
+    // -d added layout support with content and wide widths
+    layout: {
+      contentSize: '800px',
+      wideSize: '1200px',
+    },
     color: {
       text: true,
       background: true,
@@ -64,8 +74,6 @@ const EDITOR_SETTINGS = {
   ],
 };
 
-
-
 function App({ onViewSite }) {
   const [blocks, setBlocks] = useState([]);
   const [output, setOutput] = useState(null);
@@ -93,10 +101,6 @@ function App({ onViewSite }) {
   useEffect(() => {
     loadBlocks();
   }, []);
-
-  useEffect(() => {
-  registerCoreBlocks();
-}, []);
 
   async function loadBlocks() {
     try {
@@ -411,7 +415,7 @@ function App({ onViewSite }) {
                         ))}
                       </div>
                     </div>
-                  )}                 
+                  )}
 
                 </div>
 
