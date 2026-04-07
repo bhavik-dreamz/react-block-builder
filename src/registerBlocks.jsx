@@ -136,5 +136,5 @@ export function initBlocks() {
   registerCoreBlocks();
 
   // Import formats AFTER core blocks are registered to avoid store conflicts
-  import('@wordpress/format-library').catch(err => console.error('Failed to load format-library:', err));
+  // import('@wordpress/format-library').catch(err => console.error('Failed to load format-library:', err));
 }
