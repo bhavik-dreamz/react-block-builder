@@ -135,6 +135,6 @@ export function initBlocks() {
   // Core Gutenberg blocks + hand-crafted blocks (imported at the top)
   registerCoreBlocks();
 
-  // Import formats AFTER core blocks are registered to avoid store conflicts
-  import('@wordpress/format-library').catch(err => console.error('Failed to load format-library:', err));
+  // Formatting extensions from @wordpress/format-library are disabled here because
+  // the package currently pulls unresolved transitive deps in this Vite setup.
 }
