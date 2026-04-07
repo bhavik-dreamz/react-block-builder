@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+// -d added the format library for text formatting options (bold, italic, etc.)
 import {
   BlockEditorProvider,
   BlockList,
@@ -15,20 +16,15 @@ import { ShortcutProvider } from '@wordpress/keyboard-shortcuts';
 
 import { blockTemplates } from './data/blockTemplates';
 import { savePage, loadPage, listPages } from './data/api';
-import  logoimage from './images/editor-icon.png';
-import { 
-  FaColumns, FaEye, FaEdit, FaTrash, FaSave, FaGlobe,FaPlus,FaRegSquare
-} from "react-icons/fa";
-
-import { LuUndo,LuRedo } from "react-icons/lu";
-
-//import { __experimentalGetBlockPatterns } from '@wordpress/blocks';
+import { __experimentalListView as ListView } from '@wordpress/block-editor';
+const DEFAULT_PAGE_ID = 'home';
 
 // -d adding the styles
 import '@wordpress/block-editor/build-style/style.css';
 import '@wordpress/components/build-style/style.css';
 import '@wordpress/block-library/build-style/style.css';
 import '@wordpress/block-library/build-style/theme.css';
+import '@wordpress/rich-text';
 // import '@wordpress/block-library/build-module';
 // import '@wordpress/format-library';
 
@@ -36,14 +32,23 @@ import '@wordpress/block-library/build-style/theme.css';
 // to point at any real backend (Express, WordPress REST API, Supabase, etc.)
 
 const EDITOR_SETTINGS = {
-  hasFixedToolbar: true,
-  hasInlineToolbar: false,
+  // -d changed the fixed toolbar to false(now true for wordpress like tools) and inline toolbar to true provide  us the aligment feature
+  hasFixedToolbar: false,
+  hasInlineToolbar: true,
+  // -d added block mover as true 
+  hasBlockMover: true,
   focusMode: false,
   isRTL: false,
   keepCaretInsideBlock: false,
-  // bodyPlaceholder: 'Click + to add your first block...',
+  bodyPlaceholder: 'Click + to add your first block...',
   supportsLayout: true,
+  richEditingEnabled: true,
   __experimentalFeatures: {
+    // -d added layout support with content and wide widths
+    layout: {
+      contentSize: '800px',
+      wideSize: '1200px',
+    },
     color: {
       text: true,
       background: true,
@@ -65,7 +70,7 @@ const EDITOR_SETTINGS = {
     {
       css: `
         .wp-block { max-width: 100%; }
-        body { font-family: "Montserrat", sans-serif; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
       `,
       isGlobalStyles: true,
     }
@@ -73,22 +78,24 @@ const EDITOR_SETTINGS = {
 };
 
 function App({ onViewSite }) {
-  const [blocks, setBlocks]       = useState([]);
-  const [output, setOutput]       = useState(null);
-  const [preview, setPreview]     = useState(false);
-  const [saved, setSaved]         = useState(false);
+  const [blocks, setBlocks] = useState([]);
+  const [output, setOutput] = useState(null);
+  const [preview, setPreview] = useState(false);
+  const [saved, setSaved] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [pageTitle, setPageTitle] = useState('Home');
-  const [pageId]                  = useState(DEFAULT_PAGE_ID);
+  const [pageId] = useState(DEFAULT_PAGE_ID);
 
   // Step 20 — Undo / Redo
   const [canUndo, setCanUndo] = useState(false);
   const [canRedo, setCanRedo] = useState(false);
   const historyRef = useRef({ past: [], future: [] });
-  const blocksRef  = useRef([]);
+  const blocksRef = useRef([]);
+  // -d adding list view 
+  const [listViewOpen, setListViewOpen] = useState(false);
 
   // Step 19 — Template picker
-  const [templatePickerOpen,  setTemplatePickerOpen]  = useState(false);
+  const [templatePickerOpen, setTemplatePickerOpen] = useState(false);
   const [templateReplaceMode, setTemplateReplaceMode] = useState(false);
 
   // Keep blocksRef in sync so history closures always snapshot the latest state
@@ -174,7 +181,7 @@ function App({ onViewSite }) {
 
   function applyTemplate(tpl) {
     const newBlocks = tpl.blocks.map(makeBlock);
-    const result    = templateReplaceMode ? newBlocks : [...blocksRef.current, ...newBlocks];
+    const result = templateReplaceMode ? newBlocks : [...blocksRef.current, ...newBlocks];
     pushHistory(blocksRef.current);
     setBlocks(result);
     setTemplatePickerOpen(false);
@@ -186,48 +193,35 @@ function App({ onViewSite }) {
       {/* ---- HEADER ---- */}
       <div className="editor-header">
         <div className="fp-editor-title-row">
-          <a href="/">
-            <div className="logo-image">
-              <img src={logoimage} alt="Logo" />
-            </div>
-          </a>
-        </div>
-        <div className="header-center">
+          <h1>Block Editor</h1>
           <input
-              className="page-title-input"
-              value={pageTitle}
-              onChange={e => setPageTitle(e.target.value)}
-              placeholder="Page title…"
-            />
+            className="page-title-input"
+            value={pageTitle}
+            onChange={e => setPageTitle(e.target.value)}
+            placeholder="Page title…"
+          />
         </div>
         <div className="header-actions">
-          <button className="sidebar-toggle-btn header-btn-wrap" onClick={()=> setSidebarOpen(!sidebarOpen)}
-            >
-            <FaColumns />
-            {sidebarOpen ? '' : ''}
+          <button
+            className="sidebar-toggle-btn"
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+          >
+            {sidebarOpen ? '⬛ Hide Panel' : '⬜ Show Panel'}
           </button>
-
-          <button className="preview-btn header-btn-wrap" onClick={()=> setPreview(!preview)}
-            >
-            {preview ?
-            <FaEdit /> :
-            <FaEye />}
-            {preview ? '' : ''}
+          <button
+            className="preview-btn"
+            onClick={() => setPreview(!preview)}
+          >
+            {preview ? '✏️ Edit' : '👁️ Preview'}
           </button>
-
-          <button className="clear-btn header-btn-wrap" onClick={handleClear}>
-            <FaTrash />
-            
+          <button className="clear-btn" onClick={handleClear}>
+            Clear
           </button>
-
-          <button className="save-btn header-btn-wrap" onClick={handleSave}>
-            <FaSave />
-            {saved ? '' : ''}
+          <button className="save-btn" onClick={handleSave}>
+            {saved ? 'Saved ✓' : 'Save'}
           </button>
-
           <button className="view-site-btn" onClick={onViewSite} title="View the saved page as a visitor would see it">
-            <FaGlobe />
-            View Site
+            🌐 View Site
           </button>
         </div>
       </div>
@@ -273,7 +267,7 @@ function App({ onViewSite }) {
                           onClick={onToggle}
                           title="Add block"
                         >
-                        <FaPlus />
+                          + Add Block
                         </button>
                       )}
                     />
@@ -286,16 +280,7 @@ function App({ onViewSite }) {
                       onClick={() => setTemplatePickerOpen(o => !o)}
                       title="Insert a pre-built block template"
                     >
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                          <rect x="3" y="3" width="18" height="18" rx="2" stroke="#0F172A" strokeWidth="2"/>
-                          
-                          {/* Top full width */}
-                          <rect x="6" y="6" width="12" height="3" stroke="#0F172A" strokeWidth="2"/>
-                          
-                          {/* Bottom split */}
-                          <rect x="6" y="11" width="5" height="7" stroke="#0F172A" strokeWidth="2"/>
-                          <rect x="13" y="11" width="5" height="7" stroke="#0F172A" strokeWidth="2"/>
-                        </svg>
+                      📋 Templates
                     </button>
 
                     <div className="toolbar-divider" />
@@ -305,9 +290,9 @@ function App({ onViewSite }) {
                       className="toolbar-btn"
                       onClick={handleUndo}
                       disabled={!canUndo}
-                      title=""
+                      title="Undo (Ctrl+Z)"
                     >
-                     <LuUndo />
+                      ↩ Undo
                     </button>
                     <button
                       className="toolbar-btn"
@@ -315,8 +300,84 @@ function App({ onViewSite }) {
                       disabled={!canRedo}
                       title="Redo (Ctrl+Y)"
                     >
-                     <LuRedo />
+                      Redo ↪
                     </button>
+                    {/* -d list view */}
+                    <button
+                      className={`toolbar-btn ${listViewOpen ? 'active' : ''}`}
+                      onClick={() => setListViewOpen(prev => !prev)}
+                      title="List View"
+                    >
+                      ☰
+                    </button>
+
+                    <span className="toolbar-hint">Drag to reorder • Click + to insert</span>
+                  </div>
+                  {/* -d addrd editor-layout and list view */}
+                  <div className="editor-split-layout">
+
+                    {/* LEFT: List View */}
+                    {listViewOpen && (
+                      <div className="editor-list-view">
+                        <ListView />
+                      </div>
+                    )}
+
+                    {/* RIGHT: ACTUAL EDITOR */}
+                    <div className="editor-content">
+
+                      <BlockTools>
+                        <div className="editor-canvas-wrapper">
+                          <WritingFlow>
+                            <ObserveTyping>
+                              <div className="editor-canvas">
+
+                                {blocks.length === 0 && (
+                                  <div className="empty-editor-hint">
+                                    <Inserter
+                                      rootClientId={undefined}
+                                      clientId={undefined}
+                                      isAppender
+                                      renderToggle={({ onToggle }) => (
+                                        <button
+                                          className="empty-inserter-btn"
+                                          onClick={onToggle}
+                                        >
+                                          <span className="plus-icon">+</span>
+                                          <span>Click to add your first block</span>
+                                        </button>
+                                      )}
+                                    />
+                                  </div>
+                                )}
+
+                                <BlockList />
+
+                                {blocks.length > 0 && (
+                                  <div className="bottom-inserter">
+                                    <Inserter
+                                      rootClientId={undefined}
+                                      clientId={undefined}
+                                      isAppender
+                                      renderToggle={({ onToggle }) => (
+                                        <button
+                                          className="inline-inserter-btn"
+                                          onClick={onToggle}
+                                        >
+                                          +
+                                        </button>
+                                      )}
+                                    />
+                                  </div>
+                                )}
+
+                              </div>
+                            </ObserveTyping>
+                          </WritingFlow>
+                        </div>
+                      </BlockTools>
+
+                    </div>
 
                   </div>
 
@@ -357,62 +418,6 @@ function App({ onViewSite }) {
                       </div>
                     </div>
                   )}
-
-                  {/* ✅ BlockTools wraps everything for drag and toolbar */}
-                  <BlockTools>
-                    <div className="editor-canvas-wrapper">
-                      <WritingFlow>
-                        <ObserveTyping>
-                          <div className="editor-canvas">
-
-                            {/* ✅ Empty state */}
-                            {blocks.length === 0 && (
-                              <div className="empty-editor-hint">
-                                <Inserter
-                                  rootClientId={undefined}
-                                  clientId={undefined}
-                                  isAppender
-                                  renderToggle={({ onToggle }) => (
-                                    <button
-                                      className="empty-inserter-btn"
-                                      onClick={onToggle}
-                                    >
-                                      <FaPlus />
-                                      <span>Click to add your first block</span>
-                                    </button>
-                                  )}
-                                />
-                              </div>
-                            )}
-
-                            {/* ✅ Main block list — drag and drop built in */}
-                            <BlockList />
-
-                            {/* ✅ Bottom inline + inserter */}
-                            {blocks.length > 0 && (
-                              <div className="bottom-inserter">
-                                <Inserter
-                                  rootClientId={undefined}
-                                  clientId={undefined}
-                                  isAppender
-                                  renderToggle={({ onToggle }) => (
-                                    <button
-                                      className="inline-inserter-btn"
-                                      onClick={onToggle}
-                                      title="Add block below"
-                                    >
-                                      +
-                                    </button>
-                                  )}
-                                />
-                              </div>
-                            )}
-
-                          </div>
-                        </ObserveTyping>
-                      </WritingFlow>
-                    </div>
-                  </BlockTools>
 
                 </div>
 

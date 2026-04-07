@@ -135,6 +135,4 @@ export function initBlocks() {
   // Core Gutenberg blocks + hand-crafted blocks (imported at the top)
   registerCoreBlocks();
 
-  // Import formats AFTER core blocks are registered to avoid store conflicts
-  import('@wordpress/format-library').catch(err => console.error('Failed to load format-library:', err));
 }
