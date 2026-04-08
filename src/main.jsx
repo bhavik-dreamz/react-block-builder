@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import FrontendPage from './FrontendPage';
+
 import { initBlocks } from './registerBlocks.jsx';
 import './index.css';
 
