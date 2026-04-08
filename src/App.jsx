@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useSelect, useDispatch } from "@wordpress/data";
 import { select, subscribe } from "@wordpress/data";
 // -d added the format library for text formatting options (bold, italic, etc.)
 import {
@@ -32,55 +33,218 @@ import '@wordpress/block-editor/build-style/style.css';
 import '@wordpress/components/build-style/style.css';
 import '@wordpress/block-library/build-style/style.css';
 import '@wordpress/block-library/build-style/theme.css';
-import '@wordpress/block-library/build-module';
+import {
+  InspectorControls,
+} from "@wordpress/block-editor";
+
+import {
+  PanelBody,
+  RangeControl,
+  SelectControl,
+  ToggleControl,
+} from "@wordpress/components";
 // import '@wordpress/format-library';
 
 // Database functions are now in src/data/api.js — swap the bodies there
 // to point at any real backend (Express, WordPress REST API, Supabase, etc.)
 
+
 const EDITOR_SETTINGS = {
-  // -d changed the fixed toolbar to false(now true for wordpress like tools) and inline toolbar to true provide  us the aligment feature
   hasFixedToolbar: false,
   hasInlineToolbar: true,
-  // -d added block mover as true 
   hasBlockMover: true,
-  focusMode: false,
-  isRTL: false,
-  keepCaretInsideBlock: false,
- // bodyPlaceholder: 'Click + to add your first block...',
-  supportsLayout: true,
+
   __experimentalFeatures: {
-    // -d added layout support with content and wide widths
-    layout: {
-      contentSize: '800px',
-      wideSize: '1200px',
+    typography: {
+      customFontSize: true,
+      lineHeight: true,
+      fontStyle: true,
+      fontWeight: true,
+      letterSpacing: true,
+      textAlign: true,
+
     },
+      
+     dimensions: {
+      aspectRatio: true, 
+      minHeight: true
+    },
+    
     color: {
       text: true,
       background: true,
       customColor: true,
+      gradients: true,
+      defaultGradients: true,
+      defaultPalette: true,
     },
-    typography: {
-      fontSize: true,
-      lineHeight: true,
+
+    spacing: {
+      padding: true,
+      margin: true,
+      blockGap: true,
+      units: ['px', 'em', 'rem', '%', 'vh', 'vw'],
+    },
+
+    shadow: {
+      presets: true,
+      defaultPresets: true,
+    },
+    border: {
+      color: true,
+      radius: true,
+      style: true,
+      width: true,
+    },
+
+    layout: {
+      contentSize: '800px',
+      wideSize: '1200px',
     },
   },
-  __experimentalBlockPatterns: [],
-  __experimentalBlockPatternCategories: [],
-  imageEditing: false,
-  mediaUpload: null,
-  allowedBlockTypes: true,
-  // ✅ enables drag and drop
-  __experimentalDragAndDrop: true,
-  styles: [
-    {
-      css: `
-        .wp-block { max-width: 100%; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
-      `,
-      isGlobalStyles: true,
+  appearanceTools: true,
+};
+
+
+const FullInspector = () => {
+  const selected = useSelect(
+    (select) => select("core/block-editor").getSelectedBlock()
+  ); // ❌ REMOVE [] dependency
+
+  const { updateBlockAttributes } = useDispatch("core/block-editor");
+
+  if (!selected) return <div style={{ padding: 12 }}>No block selected</div>;
+
+  const style = selected.attributes.style || {};
+
+  // ✅ SAFE FONT SIZE VALUE
+  const fontSize = parseInt(style?.typography?.fontSize) || 50;
+
+  const updateStyle = (path, value) => {
+    const newStyle = JSON.parse(JSON.stringify(style || {}));
+
+    const keys = path.split(".");
+    let obj = newStyle;
+
+    while (keys.length > 1) {
+      const key = keys.shift();
+      obj[key] = obj[key] || {};
+      obj = obj[key];
     }
-  ],
+
+    obj[keys[0]] = value;
+
+    updateBlockAttributes(selected.clientId, {
+      style: newStyle,
+    });
+  };
+
+  return (
+    <div style={{ padding: "12px" }}>
+
+      {/* Typography */}
+      <div className="panel">
+        <h4>Typography</h4>
+
+        <RangeControl
+          label="Font Size"
+          min={10}
+          max={100}
+          value={fontSize}
+          onChange={(val) =>
+            updateStyle("typography.fontSize", `${val}px`)
+          }
+        />
+      </div>
+
+      {/* Dimensions */}
+      <div className="panel">
+        <h4>Dimensions</h4>
+
+        <label>Margin</label>
+        <input
+          type="range"
+          min="0"
+          max="100"
+          value={parseInt(style?.spacing?.margin) || 0}
+          onChange={(e) =>
+            updateStyle("spacing.margin", `${e.target.value}px`)
+          }
+        />
+
+        <label>Padding</label>
+        <input
+          type="range"
+          min="0"
+          max="100"
+          value={parseInt(style?.spacing?.padding) || 0}
+          onChange={(e) =>
+            updateStyle("spacing.padding", `${e.target.value}px`)
+          }
+        />
+      </div>
+
+      {/* Border */}
+      <div className="panel">
+        <h4>Border</h4>
+
+        <label>Width</label>
+        <input
+          type="range"
+          min="0"
+          max="20"
+          value={parseInt(style?.border?.width) || 0}
+          onChange={(e) =>
+            updateStyle("border.width", `${e.target.value}px`)
+          }
+        />
+
+        <label>Radius</label>
+        <input
+          type="range"
+          min="0"
+          max="50"
+          value={parseInt(style?.border?.radius) || 0}
+          onChange={(e) =>
+            updateStyle("border.radius", `${e.target.value}px`)
+          }
+        />
+      </div>
+
+      {/* Height */}
+      <div className="panel">
+        <h4>Height</h4>
+        <select
+          value={style?.dimensions?.height || "auto"}
+          onChange={(e) =>
+            updateStyle("dimensions.height", e.target.value)
+          }
+        >
+          <option value="auto">Fit</option>
+          <option value="100%">Grow</option>
+          <option value="300px">Fixed</option>
+        </select>
+      </div>
+
+      {/* Shadow */}
+      <div className="panel">
+        <h4>Shadow</h4>
+        <input
+          type="checkbox"
+          checked={!!style?.shadow}
+          onChange={(e) =>
+            updateStyle(
+              "shadow",
+              e.target.checked
+                ? "0px 4px 10px rgba(0,0,0,0.2)"
+                : undefined
+            )
+          }
+        />
+      </div>
+
+    </div>
+  );
 };
 
 function App({ onViewSite }) {
@@ -305,6 +469,7 @@ function App({ onViewSite }) {
                 setBlocks(newBlocks);
               }}
               settings={EDITOR_SETTINGS}
+              useSubRegistry={false} 
             >
               <BlockEditorKeyboardShortcuts.Register />
 
@@ -487,6 +652,8 @@ function App({ onViewSite }) {
                     </div>
                     <div className="sidebar-body">
                       <BlockInspector />
+                      <FullInspector />
+
                     </div>
                   </div>
                 )}
