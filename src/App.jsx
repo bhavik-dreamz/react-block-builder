@@ -89,6 +89,7 @@ const EDITOR_SETTINGS = {
   enableCustomLineHeight: true,
   enableCustomSpacingSize: true,
 
+  
   enableCustomUnits: ['px', 'em', 'rem', '%', 'vw', 'vh'],
   fontSizes: [
     { name: 'Small', slug: 'small', size: '12px' },
