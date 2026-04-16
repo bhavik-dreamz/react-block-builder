@@ -25,5 +25,12 @@ export default defineConfig({
       'react-dom': 'react-dom',
       'path': 'path-browserify',
     }
-  }
+  },
+  server: {
+    watch: {
+      usePolling: true,
+      interval: 1000,
+    },
+  },
 });
+

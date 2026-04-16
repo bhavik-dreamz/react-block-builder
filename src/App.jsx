@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useSelect, useDispatch } from "@wordpress/data";
-import { select, subscribe } from "@wordpress/data";
+import { select, dispatch } from '@wordpress/data';
 
 // -d added the format library for text formatting options (bold, italic, etc.)
-import {BlockEditorProvider,BlockList,BlockTools,WritingFlow,ObserveTyping,Inserter,BlockEditorKeyboardShortcuts,BlockInspector,} from '@wordpress/block-editor';
+import {BlockEditorProvider,BlockList,BlockTools,WritingFlow,ObserveTyping,Inserter,BlockEditorKeyboardShortcuts,BlockInspector} from '@wordpress/block-editor';
 import { __experimentalListView as ListView } from '@wordpress/block-editor';
 import { serialize, parse, createBlock } from '@wordpress/blocks';
 import { SlotFillProvider, Popover } from '@wordpress/components';
 import { ShortcutProvider } from '@wordpress/keyboard-shortcuts';
-
+import { BlockSelectionClearer } from '@wordpress/block-editor';
 import { blockTemplates } from './data/blockTemplates';
 import { savePage, loadPage, listPages } from './data/api';
 import logoimage from './images/editor-icon.png';
@@ -48,40 +47,14 @@ const enableBorderForAllBlocks = () => {
 setTimeout(enableBorderForAllBlocks, 100);
 
 
-const enableHeadingTypography = () => {
-  const { select, dispatch } = wp.data;
-
-  const blocks = select('core/blocks').getBlockTypes();
-
-  blocks.forEach((block) => {
-    if (block.name === 'core/heading') {
-      dispatch('core/blocks').updateBlockType(block.name, {
-        supports: {
-          ...block.supports,
-          typography: {
-            fontSize: true,
-            lineHeight: true,
-            fontWeight: true,
-            letterSpacing: true,
-            textTransform: true,
-            textDecoration: true,
-          },
-        },
-      });
-    }
-  });
-};
 
 const enhanceHeadingBlock = () => {
-  const { select, dispatch } = wp.data;
-
   const heading = select('core/blocks').getBlockType('core/heading');
   if (!heading) return;
 
   dispatch('core/blocks').updateBlockType('core/heading', {
     supports: {
       ...heading.supports,
-
       typography: {
         fontSize: true,
         lineHeight: true,
@@ -91,7 +64,6 @@ const enhanceHeadingBlock = () => {
         __experimentalTextTransform: true,
         __experimentalTextDecoration: true,
       },
-
       spacing: {
         margin: true,
         padding: true,
@@ -104,7 +76,7 @@ setTimeout(enhanceHeadingBlock, 200);
 
 
 const EDITOR_SETTINGS = {
-  hasFixedToolbar: true,
+  hasFixedToolbar: false,
   hasInlineToolbar: true,
   focusMode: false,
   isRTL: false,
@@ -116,6 +88,8 @@ const EDITOR_SETTINGS = {
   disableCustomGradients: false,
   enableCustomLineHeight: true,
   enableCustomSpacingSize: true,
+
+  
   enableCustomUnits: ['px', 'em', 'rem', '%', 'vw', 'vh'],
   fontSizes: [
     { name: 'Small', slug: 'small', size: '12px' },
@@ -371,6 +345,8 @@ function App({ onViewSite }) {
   }
 
   return (
+    <>
+
     <div className="editor-wrapper">
 
       {/* ---- HEADER ---- */}
@@ -445,9 +421,11 @@ function App({ onViewSite }) {
                 setBlocks(newBlocks);
               }}
               settings={EDITOR_SETTINGS}
-              useSubRegistry={false} 
+              useSubRegistry={true} 
             >
+            <BlockEditorKeyboardShortcuts>
               <BlockEditorKeyboardShortcuts.Register />
+            </BlockEditorKeyboardShortcuts>
 
               <div className={`editor-layout ${sidebarOpen ? 'sidebar-open' : ''}`}>
 
@@ -580,6 +558,8 @@ function App({ onViewSite }) {
                     <div className="editor-content">
 
                     <BlockTools>
+                    <BlockSelectionClearer>
+
                     <div className="editor-canvas-wrapper">
                       <WritingFlow>
                         <ObserveTyping>
@@ -615,6 +595,8 @@ function App({ onViewSite }) {
                         </ObserveTyping>
                       </WritingFlow>
                     </div>
+                    </BlockSelectionClearer>
+
                   </BlockTools>
 
                     </div>
@@ -633,7 +615,6 @@ function App({ onViewSite }) {
                   </div>
                 )}
               </div>
-              <Popover.Slot />
 
             </BlockEditorProvider>
           </ShortcutProvider>
@@ -672,6 +653,10 @@ function App({ onViewSite }) {
       )}
 
     </div>
+
+<Popover.Slot />
+</>
+
   );
 }
 
