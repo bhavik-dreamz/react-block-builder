@@ -1,4 +1,6 @@
 import React from 'react';
+if (!window.React) window.React = React; // safety net
+
 import { registerBlockType, getCategories, setCategories } from '@wordpress/blocks';
 import { useBlockProps, RichText } from '@wordpress/block-editor';
 //import './blocks/extendBlocks';

@@ -20,6 +20,7 @@ export default defineConfig({
     ]
   },
   resolve: {
+    dedupe: ['react', 'react-dom', '@wordpress/element'],
     alias: {
       'react': 'react',
       'react-dom': 'react-dom',

@@ -18,10 +18,7 @@ import {
 import { LuUndo,LuRedo } from "react-icons/lu";
 const DEFAULT_PAGE_ID = 'home';
 // -d adding the styles
-import '@wordpress/block-editor/build-style/style.css';
-import '@wordpress/components/build-style/style.css';
-import '@wordpress/block-library/build-style/style.css';
-import '@wordpress/block-library/build-style/theme.css';
+
 
 
 // to point at any real backend (Express, WordPress REST API, Supabase, etc.)
