@@ -1,25 +1,29 @@
-import React from 'react';
-import { BlockEditorProvider, BlockList, BlockTools, WritingFlow, ObserveTyping, Inserter, BlockEditorKeyboardShortcuts, BlockInspector } from '@wordpress/block-editor';
-import { __experimentalListView as ListView } from '@wordpress/block-editor';
-import { serialize } from '@wordpress/blocks';
-import { SlotFillProvider, Popover } from '@wordpress/components';
-import { ShortcutProvider } from '@wordpress/keyboard-shortcuts';
-import { BlockSelectionClearer } from '@wordpress/block-editor';
-import { EDITOR_SETTINGS } from './config/editorSettings';
-import { EditorProvider, useEditor } from './context/EditorContext';
-import LeftToolbarButtonSet from './components/LeftToolbarButtonSet';
-import Header from './components/Header';
-import TemplatePicker from './components/TemplatePicker';
-
-
-
-
-
-
+import React from "react";
+import {
+  BlockEditorProvider,
+  BlockList,
+  BlockTools,
+  WritingFlow,
+  ObserveTyping,
+  Inserter,
+  BlockEditorKeyboardShortcuts,
+  BlockInspector,
+} from "@wordpress/block-editor";
+import { __experimentalListView as ListView } from "@wordpress/block-editor";
+import { serialize } from "@wordpress/blocks";
+import { SlotFillProvider, Popover } from "@wordpress/components";
+import { ShortcutProvider } from "@wordpress/keyboard-shortcuts";
+import { BlockSelectionClearer } from "@wordpress/block-editor";
+import { EDITOR_SETTINGS } from "./config/editorSettings";
+import { EditorProvider, useEditor } from "./context/EditorContext";
+import LeftToolbarButtonSet from "./components/LeftToolbarButtonSet";
+import Header from "./components/Header";
+import TemplatePicker from "./components/TemplatePicker";
 
 function EditorApp() {
   const {
-    blocks, setBlocks,
+    blocks,
+    setBlocks,
     output,
     preview,
     sidebarOpen,
@@ -30,167 +34,153 @@ function EditorApp() {
 
   return (
     <>
+      <div className='builder-wrapper editor-wrapper'>
+        {/* ---- HEADER ---- */}
+        <Header />
 
-    <div className="builder-wrapper editor-wrapper">
+        {preview ? (
+          /* ---- PREVIEW MODE ---- */
+          <div className='preview-container'>
+            <div className='preview-label'>Frontend Preview</div>
+            <div
+              className='preview-content'
+              dangerouslySetInnerHTML={{ __html: serialize(blocks) }}
+            />
+          </div>
+        ) : (
+          /* ---- EDITOR MODE ---- */
+          <SlotFillProvider>
+            <ShortcutProvider>
+              <BlockEditorProvider
+                value={blocks}
+                onInput={setBlocks}
+                onChange={(newBlocks) => {
+                  if (newBlocks !== blocksRef.current) {
+                    pushHistory(blocksRef.current);
+                  }
+                  setBlocks(newBlocks);
+                }}
+                settings={EDITOR_SETTINGS}
+                useSubRegistry={true}
+              >
+                <BlockEditorKeyboardShortcuts>
+                  <BlockEditorKeyboardShortcuts.Register />
+                </BlockEditorKeyboardShortcuts>
 
-      {/* ---- HEADER ---- */}
-      <Header />
+                <div
+                  className={`editor-layout ${sidebarOpen ? "sidebar-open" : ""}`}
+                >
+                  {/* ---- MAIN EDITOR ---- */}
+                  <div className='editor-main'>
+                    {/* ✅ Fixed top toolbar with + inserter, Templates, Undo/Redo */}
+                    <LeftToolbarButtonSet />
 
-      {preview ? (
-        /* ---- PREVIEW MODE ---- */
-        <div className="preview-container">
-          <div className="preview-label">Frontend Preview</div>
-          <div
-            className="preview-content"
-            dangerouslySetInnerHTML={{ __html: serialize(blocks) }}
-          />
-        </div>
-      ) : (
-        /* ---- EDITOR MODE ---- */
-        <SlotFillProvider>
-          <ShortcutProvider>
-            <BlockEditorProvider
-              value={blocks}
-              onInput={setBlocks}
-              onChange={(newBlocks) => {
-                if (newBlocks !== blocksRef.current) {
-                  pushHistory(blocksRef.current);
-                }
-                setBlocks(newBlocks);
-              }}
-              settings={EDITOR_SETTINGS}
-              useSubRegistry={true} 
-            >
-            <BlockEditorKeyboardShortcuts>
-              <BlockEditorKeyboardShortcuts.Register />
-            </BlockEditorKeyboardShortcuts>
+                    {/* ── Template Picker Panel ── */}
+                    <TemplatePicker />
 
-              <div className={`editor-layout ${sidebarOpen ? 'sidebar-open' : ''}`}>
+                    {/* ✅ BlockTools wraps everything for drag and toolbar */}
+                    {/* -d addrd editor-layout and list view */}
+                    <div className='editor-split-layout'>
+                      {/* LEFT: List View */}
+                      {listViewOpen && (
+                        <div className='editor-list-view'>
+                          List view
+                          <ListView />
+                        </div>
+                      )}
 
-                {/* ---- MAIN EDITOR ---- */}
-                <div className="editor-main">
+                      {/* RIGHT: Editor */}
+                      <div className='editor-content'>
+                        <BlockTools>
+                          <BlockSelectionClearer>
+                            <div className='editor-canvas-wrapper'>
+                              <WritingFlow>
+                                <ObserveTyping>
+                                  <div className='editor-canvas'>
+                                    {/* ✅ Empty state */}
 
-                  {/* ✅ Fixed top toolbar with + inserter, Templates, Undo/Redo */}
-                  <LeftToolbarButtonSet />
-            
-                  {/* ── Template Picker Panel ── */}
-                  <TemplatePicker />
+                                    {/* ✅ Main block list — drag and drop built in */}
+                                    <BlockList />
 
-                  {/* ✅ BlockTools wraps everything for drag and toolbar */}
-                        {/* -d addrd editor-layout and list view */}
-                  <div className="editor-split-layout">
-
-                    {/* LEFT: List View */}
-                    {listViewOpen && (
-                      <div className="editor-list-view">
-                      List view
-                        <ListView />
+                                    {/* ✅ Bottom inline + inserter */}
+                                    {blocks.length > 0 && (
+                                      <div className='bottom-inserter'>
+                                        <Inserter
+                                          rootClientId={undefined}
+                                          clientId={undefined}
+                                          isAppender
+                                          renderToggle={({ onToggle }) => (
+                                            <button
+                                              className='inline-inserter-btn'
+                                              onClick={onToggle}
+                                              title='Add block below'
+                                            >
+                                              +
+                                            </button>
+                                          )}
+                                        />
+                                      </div>
+                                    )}
+                                  </div>
+                                </ObserveTyping>
+                              </WritingFlow>
+                            </div>
+                          </BlockSelectionClearer>
+                        </BlockTools>
                       </div>
-                    )}
-
-                    {/* RIGHT: Editor */}
-                    <div className="editor-content">
-
-                    <BlockTools>
-                    <BlockSelectionClearer>
-
-                    <div className="editor-canvas-wrapper">
-                      <WritingFlow>
-                        <ObserveTyping>
-                          <div className="editor-canvas">
-
-                            {/* ✅ Empty state */}
-                     
-
-                            {/* ✅ Main block list — drag and drop built in */}
-                            <BlockList />
-
-                            {/* ✅ Bottom inline + inserter */}
-                            {blocks.length > 0 && (
-                              <div className="bottom-inserter">
-                                <Inserter
-                                  rootClientId={undefined}
-                                  clientId={undefined}
-                                  isAppender
-                                  renderToggle={({ onToggle }) => (
-                                    <button
-                                      className="inline-inserter-btn"
-                                      onClick={onToggle}
-                                      title="Add block below"
-                                    >
-                                      +
-                                    </button>
-                                  )}
-                                />
-                              </div>
-                            )}
-
-                          </div>
-                        </ObserveTyping>
-                      </WritingFlow>
-                    </div>
-                    </BlockSelectionClearer>
-
-                  </BlockTools>
-
                     </div>
                   </div>
+                  {/* ---- SIDEBAR ---- */}
+                  {sidebarOpen && (
+                    <div className='editor-sidebar'>
+                      <div className='sidebar-header'>
+                        <span>Block Settings</span>
+                      </div>
+                      <div className='sidebar-body'>
+                        <BlockInspector />
+                      </div>
+                    </div>
+                  )}
                 </div>
-                {/* ---- SIDEBAR ---- */}
-                {sidebarOpen && (
-                  <div className="editor-sidebar">
-                    <div className="sidebar-header">
-                      <span>Block Settings</span>
-                    </div>
-                    <div className="sidebar-body">
-                      <BlockInspector />
+              </BlockEditorProvider>
+            </ShortcutProvider>
+          </SlotFillProvider>
+        )}
 
-                    </div>
-                  </div>
-                )}
+        {/* ---- OUTPUT PANEL ---- */}
+        {output && !preview && (
+          <div className='output-panel'>
+            <div className='output-section'>
+              <div className='output-header'>
+                <span>HTML Output</span>
+                <button
+                  className='copy-btn'
+                  onClick={() => navigator.clipboard.writeText(output.html)}
+                >
+                  Copy
+                </button>
               </div>
-
-            </BlockEditorProvider>
-          </ShortcutProvider>
-        </SlotFillProvider>
-      )}
-
-      {/* ---- OUTPUT PANEL ---- */}
-      {output && !preview && (
-        <div className="output-panel">
-          <div className="output-section">
-            <div className="output-header">
-              <span>HTML Output</span>
-              <button
-                className="copy-btn"
-                onClick={() => navigator.clipboard.writeText(output.html)}
-              >
-                Copy
-              </button>
+              <pre className='output-code'>{output.html}</pre>
             </div>
-            <pre className="output-code">{output.html}</pre>
-          </div>
 
-          <div className="output-section">
-            <div className="output-header">
-              <span>JSON Output</span>
-              <button
-                className="copy-btn"
-                onClick={() => navigator.clipboard.writeText(output.json)}
-              >
-                Copy
-              </button>
+            <div className='output-section'>
+              <div className='output-header'>
+                <span>JSON Output</span>
+                <button
+                  className='copy-btn'
+                  onClick={() => navigator.clipboard.writeText(output.json)}
+                >
+                  Copy
+                </button>
+              </div>
+              <pre className='output-code'>{output.json}</pre>
             </div>
-            <pre className="output-code">{output.json}</pre>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
-    </div>
-
-<Popover.Slot />
-</>
-
+      <Popover.Slot />
+    </>
   );
 }
 
