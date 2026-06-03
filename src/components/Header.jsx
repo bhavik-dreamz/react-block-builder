@@ -3,6 +3,7 @@ import { useEditor } from '../context/EditorContext';
 import logoimage from '../images/editor-icon.png';
 import { FaColumns, FaEye, FaEdit, FaTrash, FaSave, FaGlobe } from 'react-icons/fa';
 import OptionsMenu from './OptionsMenu';
+import LeftToolbarButtonSet from './LeftToolbarButtonSet';
 
 export default function Header() {
   const {
@@ -24,6 +25,7 @@ export default function Header() {
             </div>
           </a>
         </div>
+        <LeftToolbarButtonSet />
         <div className="header-center">
           <input
             className="page-title-input"

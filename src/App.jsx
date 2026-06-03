@@ -97,7 +97,7 @@ function EditorApp() {
                   {/* ---- MAIN EDITOR ---- */}
                   <div className='editor-main'>
                     {/* ✅ Fixed top toolbar with + inserter, Templates, Undo/Redo */}
-                    <LeftToolbarButtonSet />
+                    
 
                     {/* ── Template Picker Panel ── */}
                     <TemplatePicker />
