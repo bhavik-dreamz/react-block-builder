@@ -3,6 +3,7 @@ import React from "react";
 import { LuUndo, LuRedo } from "react-icons/lu";
 import { FaPlus } from "react-icons/fa";
 import { useEditor } from "../context/EditorContext";
+import { TemplateIcon, DocumentOverviewIcon } from "./Icons";
 
 export default function LeftToolbarButtonSet() {
   const {
@@ -36,29 +37,20 @@ export default function LeftToolbarButtonSet() {
         }}
       />
 
-      <div className='toolbar-divider' />
-
       {/* Templates button */}
       <button
-        className={`toolbar-btn${templatePickerOpen ? " active" : ""}`}
+        className={`toolbar-btn template-btn${templatePickerOpen ? " active" : ""}`}
         onClick={() => setTemplatePickerOpen((o) => !o)}
         title='Insert a pre-built block template'
       >
-        <svg width='24' height='24' viewBox='0 0 24 24' fill='none'>
-          <rect x='3' y='3' width='18' height='18' rx='2' stroke='#0F172A' strokeWidth='2' />
-          <rect x='6' y='6' width='12' height='3' stroke='#0F172A' strokeWidth='2' />
-          <rect x='6' y='11' width='5' height='7' stroke='#0F172A' strokeWidth='2' />
-          <rect x='13' y='11' width='5' height='7' stroke='#0F172A' strokeWidth='2' />
-        </svg>
+        <TemplateIcon />
       </button>
-
-      <div className='toolbar-divider' />
 
       {/* Undo / Redo */}
-      <button className='toolbar-btn' onClick={handleUndo} disabled={!canUndo} title='Undo (Ctrl+Z)'>
+      <button className='toolbar-btn handledo-btn' onClick={handleUndo} disabled={!canUndo} title='Undo (Ctrl+Z)'>
         <LuUndo />
       </button>
-      <button className='toolbar-btn' onClick={handleRedo} disabled={!canRedo} title='Redo (Ctrl+Y)'>
+      <button className='toolbar-btn handledo-btn' onClick={handleRedo} disabled={!canRedo} title='Redo (Ctrl+Y)'>
         <LuRedo />
       </button>
 
@@ -68,7 +60,7 @@ export default function LeftToolbarButtonSet() {
         onClick={() => setListViewOpen((prev) => !prev)}
         title='List View'
       >
-        ☰
+        <DocumentOverviewIcon />
       </button>
     </div>
   );
