@@ -14,3 +14,9 @@ export const DocumentOverviewIcon = (props) => (
         <path d="M3 6h11v1.5H3V6Zm3.5 5.5h11V13h-11v-1.5ZM21 17H10v1.5h11V17Z"></path>
     </svg>
 );
+
+export const OptionsIcon =(props) => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false" {...props}>
+        <path d="M13 19h-2v-2h2v2zm0-6h-2v-2h2v2zm0-6h-2V5h2v2z"></path>
+    </svg>
+);
