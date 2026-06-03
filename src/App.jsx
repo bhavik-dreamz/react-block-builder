@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { select, dispatch } from '@wordpress/data';
+import { select } from '@wordpress/data';
 
 // -d added the format library for text formatting options (bold, italic, etc.)
 import {BlockEditorProvider,BlockList,BlockTools,WritingFlow,ObserveTyping,Inserter,BlockEditorKeyboardShortcuts,BlockInspector} from '@wordpress/block-editor';
@@ -22,54 +22,8 @@ const DEFAULT_PAGE_ID = 'home';
 
 
 // to point at any real backend (Express, WordPress REST API, Supabase, etc.)
-const enableBorderForAllBlocks = () => {
-  const blocks = select('core/blocks').getBlockTypes();
-
-  blocks.forEach((block) => {
-    dispatch('core/blocks').updateBlockType(block.name, {
-      supports: {
-        ...block.supports,
-        border: {
-          color: true,
-          radius: true,
-          width: true,
-          style: true,
-        },
-      },
-    });
-  });
-};
-
-// Run once after load
-setTimeout(enableBorderForAllBlocks, 100);
 
 
-
-const enhanceHeadingBlock = () => {
-  const heading = select('core/blocks').getBlockType('core/heading');
-  if (!heading) return;
-
-  dispatch('core/blocks').updateBlockType('core/heading', {
-    supports: {
-      ...heading.supports,
-      typography: {
-        fontSize: true,
-        lineHeight: true,
-        __experimentalFontStyle: true,
-        __experimentalFontWeight: true,
-        __experimentalLetterSpacing: true,
-        __experimentalTextTransform: true,
-        __experimentalTextDecoration: true,
-      },
-      spacing: {
-        margin: true,
-        padding: true,
-      },
-    }
-  });
-};
-
-setTimeout(enhanceHeadingBlock, 200);
 
 
 const EDITOR_SETTINGS = {
@@ -344,7 +298,7 @@ function App({ onViewSite }) {
   return (
     <>
 
-    <div className="editor-wrapper">
+    <div className="builder-wrapper editor-wrapper">
 
       {/* ---- HEADER ---- */}
       <div className="editor-header">
