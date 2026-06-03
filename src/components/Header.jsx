@@ -27,7 +27,6 @@ export default function Header() {
         {/* ✅ Fixed top toolbar with + inserter, Templates, Undo/Redo */}
         <LeftToolbarButtonSet />
       </div>
-      <LeftToolbarButtonSet />
       <div className="header-center">
         <input
           className="page-title-input"
