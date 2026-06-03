@@ -100,6 +100,7 @@ function registerJSONBlock(blockDef) {
   }
 
   registerBlockType(blockDef.name, {
+    apiVersion: 3,
     title:       blockDef.title,
     description: blockDef.description,
     category:    blockDef.category,

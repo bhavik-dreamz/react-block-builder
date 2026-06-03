@@ -18,6 +18,7 @@ import {
 } from '@wordpress/components';
 
 registerBlockType('myapp/hero-banner', {
+  apiVersion: 3,
   title: 'Hero Banner',
   description: 'Full width hero section with background, title and subtitle',
   category: 'myapp-blocks',

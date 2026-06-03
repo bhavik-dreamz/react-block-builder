@@ -15,6 +15,7 @@ import {
 } from '@wordpress/components';
 
 registerBlockType('myapp/cta-block', {
+  apiVersion: 3,
   title: 'Call to Action',
   description: 'A customizable call to action block',
   category: 'text',

@@ -21,6 +21,7 @@ const defaultCard = () => ({
 });
 
 registerBlockType('myapp/card-grid', {
+  apiVersion: 3,
   title: 'Card Grid',
   description: 'Repeatable cards with icon, title and description',
   category: 'myapp-blocks',

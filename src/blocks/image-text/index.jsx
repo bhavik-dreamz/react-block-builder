@@ -16,6 +16,7 @@ import {
 } from '@wordpress/components';
 
 registerBlockType('myapp/image-text', {
+  apiVersion: 3,
   title: 'Image + Text',
   description: 'Side by side image and text layout',
   category: 'myapp-blocks',
