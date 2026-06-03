@@ -2,6 +2,7 @@ import React from 'react';
 import { useEditor } from '../context/EditorContext';
 import logoimage from '../images/editor-icon.png';
 import { FaColumns, FaEye, FaEdit, FaTrash, FaSave, FaGlobe } from 'react-icons/fa';
+import OptionsMenu from './OptionsMenu';
 
 export default function Header() {
   const {
@@ -53,6 +54,8 @@ export default function Header() {
             <FaGlobe />
             View Site
           </button>
+
+          <OptionsMenu />
         </div>
       </div>
   );

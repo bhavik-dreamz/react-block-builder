@@ -897,6 +897,10 @@ h1{
 .builder-wrapper .myapp-color-row input[type='color'] { width: 36px; height: 24px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; padding: 1px; }
 .builder-wrapper .myapp-color-swatch { width: 18px; height: 18px; border-radius: 4px; border: 1px solid rgba(0,0,0,0.12); flex-shrink: 0; }
 
+/* ── Paragraph custom inline formats ────────────────────────────────────────── */
+mark.myapp-highlight { background: #fff176; color: inherit; padding: 0 2px; border-radius: 2px; }
+code.myapp-inline-code { background: #f1f1f1; color: #c7254e; font-family: 'Courier New', monospace; font-size: 0.9em; padding: 1px 5px; border-radius: 3px; border: 1px solid #e1e1e1; }
+span.myapp-underline { text-decoration: underline; }
 /* ---------------------------------------------------------------------------
    FrontendPage viewer + Editor "View Site" additions
    --------------------------------------------------------------------------- */
@@ -1700,4 +1704,163 @@ ul.block-editor-block-list__block .block-editor-rich-text__editable{
 
 .components-button.block-editor-block-types-list__item {
   height: auto;
+}
+
+/* ── Options Menu ───────────────────────────────── */
+.options-menu-wrap {
+  position: relative;
+}
+
+.options-menu-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 4px;
+  color: #1e1e1e;
+}
+.options-menu-btn:hover {
+  background: #f0f0f0;
+}
+
+.options-menu-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 9999;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  min-width: 280px;
+  padding: 6px 0;
+}
+
+.options-menu-section-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #757575;
+  letter-spacing: 0.08em;
+  padding: 8px 16px 4px;
+  text-transform: uppercase;
+}
+
+.options-menu-divider {
+  border-top: 1px solid #e0e0e0;
+  margin: 4px 0;
+}
+
+.options-menu-item {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  align-items: start;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  text-align: left;
+  gap: 0 8px;
+  color: #1e1e1e;
+}
+.options-menu-item:hover {
+  background: #f0f0f0;
+}
+.options-menu-item span:first-of-type {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.options-menu-desc {
+  grid-column: 2;
+  font-size: 11px;
+  color: #757575;
+  margin-top: 1px;
+  display: block;
+}
+.options-menu-check {
+  color: #1e1e1e;
+  margin-top: 3px;
+  font-size: 12px;
+}
+
+/* ── Code Editor Mode ───────────────────────────── */
+.code-editor-mode {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 0;
+}
+.code-editor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  border-bottom: 1px solid #ddd;
+  font-size: 13px;
+  font-weight: 500;
+  color: #1e1e1e;
+  background: #f9f9f9;
+}
+.code-editor-exit-btn {
+  font-size: 13px;
+  font-weight: 500;
+  color: #007cba;
+  background: none;
+  border: 1px solid #007cba;
+  border-radius: 4px;
+  padding: 4px 12px;
+  cursor: pointer;
+}
+.code-editor-exit-btn:hover {
+  background: #e5f4fb;
+}
+.code-editor-textarea {
+  flex: 1;
+  width: 100%;
+  min-height: 500px;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  padding: 16px;
+  border: none;
+  outline: none;
+  resize: vertical;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  box-sizing: border-box;
+}
+
+/* ── Fullscreen mode ────────────────────────────── */
+.is-fullscreen {
+  position: fixed !important;
+  inset: 0;
+  z-index: 9998;
+  overflow: auto;
+}
+
+/* ── Spotlight mode ─────────────────────────────── */
+.is-spotlight .wp-block:not(.is-selected):not(.has-child-selected) {
+  opacity: 0.4;
+  transition: opacity 0.2s;
+}
+
+/* ── Distraction-free ───────────────────────────── */
+.is-distraction-free .editor-header,
+.is-distraction-free .editor-sidebar,
+.is-distraction-free .editor-list-view,
+.is-distraction-free .left-toolbar-buttonset {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.is-distraction-free:hover .editor-header,
+.is-distraction-free:hover .editor-sidebar,
+.is-distraction-free:hover .left-toolbar-buttonset {
+  opacity: 1;
+  pointer-events: auto;
 }

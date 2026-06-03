@@ -29,6 +29,14 @@ function Root() {
   return <App onViewSite={() => setView('site')} />;
 }
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <Root />
-);
+function renderApp() {
+  const rootEl = document.getElementById('root');
+  if (!rootEl) return;
+  ReactDOM.createRoot(rootEl).render(<Root />);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', renderApp);
+} else {
+  renderApp();
+}

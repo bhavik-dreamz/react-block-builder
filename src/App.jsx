@@ -10,7 +10,7 @@ import {
   BlockInspector,
 } from "@wordpress/block-editor";
 import { __experimentalListView as ListView } from "@wordpress/block-editor";
-import { serialize } from "@wordpress/blocks";
+import { serialize, parse } from "@wordpress/blocks";
 import { SlotFillProvider, Popover } from "@wordpress/components";
 import { ShortcutProvider } from "@wordpress/keyboard-shortcuts";
 import { BlockSelectionClearer } from "@wordpress/block-editor";
@@ -30,11 +30,15 @@ function EditorApp() {
     listViewOpen,
     blocksRef,
     pushHistory,
+    editorMode, setEditorMode,
+    fullscreen,
+    spotlightMode,
+    distractionFree,
   } = useEditor();
 
   return (
     <>
-      <div className='builder-wrapper editor-wrapper'>
+      <div className={`builder-wrapper editor-wrapper${fullscreen ? ' is-fullscreen' : ''}${spotlightMode ? ' is-spotlight' : ''}${distractionFree ? ' is-distraction-free' : ''}`}>
         {/* ---- HEADER ---- */}
         <Header />
 
@@ -45,6 +49,26 @@ function EditorApp() {
             <div
               className='preview-content'
               dangerouslySetInnerHTML={{ __html: serialize(blocks) }}
+            />
+          </div>
+        ) : editorMode === 'code' ? (
+          /* ---- CODE EDITOR MODE ---- */
+          <div className='code-editor-mode'>
+            <div className='code-editor-header'>
+              <span>Editing code</span>
+              <button className='code-editor-exit-btn' onClick={() => setEditorMode('visual')}>
+                Exit code editor
+              </button>
+            </div>
+            <textarea
+              className='code-editor-textarea'
+              value={serialize(blocks)}
+              onChange={(e) => {
+                try {
+                  setBlocks(parse(e.target.value));
+                } catch (_) {}
+              }}
+              spellCheck={false}
             />
           </div>
         ) : (
@@ -84,7 +108,7 @@ function EditorApp() {
                       {/* LEFT: List View */}
                       {listViewOpen && (
                         <div className='editor-list-view'>
-                          List view
+                          
                           <ListView />
                         </div>
                       )}

@@ -4,6 +4,7 @@ if (!window.React) window.React = React; // safety net
 import { registerBlockType, getCategories, setCategories } from '@wordpress/blocks';
 import { useBlockProps, RichText } from '@wordpress/block-editor';
 //import './blocks/extendBlocks';
+import './blocks/paragraphFormats.jsx';
 import { registerCoreBlocks } from '@wordpress/block-library';
 
 // Hand-crafted blocks
