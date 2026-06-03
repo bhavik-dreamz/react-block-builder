@@ -16,7 +16,7 @@ import { ShortcutProvider } from "@wordpress/keyboard-shortcuts";
 import { BlockSelectionClearer } from "@wordpress/block-editor";
 import { EDITOR_SETTINGS } from "./config/editorSettings";
 import { EditorProvider, useEditor } from "./context/EditorContext";
-// import LeftToolbarButtonSet from "./components/LeftToolbarButtonSet";
+import LeftToolbarButtonSet from "./components/LeftToolbarButtonSet";
 import Header from "./components/Header";
 import TemplatePicker from "./components/TemplatePicker";
 
@@ -91,13 +91,13 @@ function EditorApp() {
                   <BlockEditorKeyboardShortcuts.Register />
                 </BlockEditorKeyboardShortcuts>
 
-                <div className={`editor-layout ${sidebarOpen ? 'sidebar-open' : ''}`}>
-
+                <div
+                  className={`editor-layout ${sidebarOpen ? "sidebar-open" : ""}`}
+                >
                   {/* ---- MAIN EDITOR ---- */}
-                  <div className="editor-main">
-
+                  <div className='editor-main'>
                     {/* ✅ Fixed top toolbar with + inserter, Templates, Undo/Redo */}
-                    {/* <LeftToolbarButtonSet /> */}
+
 
                     {/* ── Template Picker Panel ── */}
                     <TemplatePicker />

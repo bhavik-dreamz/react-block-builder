@@ -24,7 +24,6 @@ export default function Header() {
             <img src={logoimage} alt="Logo" />
           </div>
         </a>
-        {/* ✅ Fixed top toolbar with + inserter, Templates, Undo/Redo */}
         <LeftToolbarButtonSet />
       </div>
       <div className="header-center">
