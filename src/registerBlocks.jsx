@@ -4,6 +4,7 @@ if (!window.React) window.React = React; // safety net
 import { registerBlockType, getCategories, setCategories } from '@wordpress/blocks';
 import { useBlockProps, RichText } from '@wordpress/block-editor';
 //import './blocks/extendBlocks';
+import './blocks/paragraphFormats.jsx';
 import { registerCoreBlocks } from '@wordpress/block-library';
 
 // Hand-crafted blocks
@@ -23,7 +24,7 @@ function registerJSONBlock(blockDef) {
   const slug = blockDef.name.replace('myapp/', '');
 
   // Separate text attrs from color attrs so we can render them differently
-  const textKeys  = Object.keys(blockDef.attributes).filter(
+  const textKeys = Object.keys(blockDef.attributes).filter(
     k => blockDef.attributes[k].type === 'string' && !k.toLowerCase().includes('color'),
   );
   const colorKeys = Object.keys(blockDef.attributes).filter(k =>
@@ -100,12 +101,13 @@ function registerJSONBlock(blockDef) {
   }
 
   registerBlockType(blockDef.name, {
-    title:       blockDef.title,
+    apiVersion: 3,
+    title: blockDef.title,
     description: blockDef.description,
-    category:    blockDef.category,
-    icon:        blockDef.icon,
-    keywords:    blockDef.keywords || [],
-    attributes:  blockDef.attributes,
+    category: blockDef.category,
+    icon: blockDef.icon,
+    keywords: blockDef.keywords || [],
+    attributes: blockDef.attributes,
     edit: Edit,
     save: Save,
   });
@@ -121,11 +123,11 @@ export function initBlocks() {
   // Step 18 — Custom category with SVG icon shown in the + inserter
   setCategories([
     {
-      slug:  'myapp-blocks',
+      slug: 'myapp-blocks',
       title: 'My Custom Blocks',
       icon: () => (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/>
+          <path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z" />
         </svg>
       ),
     },

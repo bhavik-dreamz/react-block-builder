@@ -20,6 +20,12 @@ export function EditorProvider({ children, onViewSite }) {
   const [templatePickerOpen, setTemplatePickerOpen] = useState(false);
   const [templateReplaceMode, setTemplateReplaceMode] = useState(false);
   const [listViewOpen, setListViewOpen] = useState(false);
+  // Options menu state
+  const [editorMode, setEditorMode] = useState('visual'); // 'visual' | 'code'
+  const [fullscreen, setFullscreen] = useState(false);
+  const [spotlightMode, setSpotlightMode] = useState(false);
+  const [distractionFree, setDistractionFree] = useState(false);
+  const [topToolbar, setTopToolbar] = useState(false);
 
   const historyRef = useRef({ past: [], future: [] });
   const blocksRef = useRef([]);
@@ -135,6 +141,12 @@ export function EditorProvider({ children, onViewSite }) {
     templatePickerOpen, setTemplatePickerOpen,
     templateReplaceMode, setTemplateReplaceMode,
     listViewOpen, setListViewOpen,
+    // options menu
+    editorMode, setEditorMode,
+    fullscreen, setFullscreen,
+    spotlightMode, setSpotlightMode,
+    distractionFree, setDistractionFree,
+    topToolbar, setTopToolbar,
     historyRef, blocksRef,
     blockTemplates,
     // actions

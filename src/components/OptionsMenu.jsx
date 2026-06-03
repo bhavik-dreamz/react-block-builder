@@ -106,8 +106,8 @@ export default function OptionsMenu() {
                         className="options-menu-item"
                         onClick={() => { setEditorMode('visual'); setOpen(false); }}
                     >
-                        {editorMode === 'visual' && <FaCheck className="options-menu-check" />}
                         <span>Visual editor</span>
+                        {editorMode === 'visual' && <FaCheck className="options-menu-check" />}
                     </button>
 
                     <button
