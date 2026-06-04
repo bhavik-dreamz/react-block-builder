@@ -168,6 +168,7 @@ function EditorApp() {
                 </div>
               </BlockEditorProvider>
             </ShortcutProvider>
+            <Popover.Slot />
           </SlotFillProvider>
         )}
 
@@ -203,7 +204,6 @@ function EditorApp() {
         )}
       </div>
 
-      <Popover.Slot />
     </>
   );
 }
