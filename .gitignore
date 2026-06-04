@@ -27,3 +27,4 @@ Thumbs.db
 # Optional local caches
 *.tsbuildinfo
 .eslintcache
+.vercel
