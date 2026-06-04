@@ -18,6 +18,8 @@
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
+import { supabase } from "../lib/supabaseClient";
+
 const LS_KEY = 'rbb_pages'; // localStorage namespace
 
 // ── helpers ──────────────────────────────────────────────────────────────────
@@ -72,6 +74,46 @@ function writeAll(data) {
 export async function savePage(id, title, html, json) {
   const all = readAll();
   const page = { id, title, html, json, updatedAt: new Date().toISOString() };
+  //id uuid primary key default gen_random_uuid(),
+  //title text not null,
+  //content text,
+  //created_at timestamptz default now()
+  // remove space and make slug;
+  const slug = title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+
+  //before save if exsign in supabase then update else insert new record
+   // check if record with slug exists
+   const { data: existing, error: fetchError } = await supabase
+      .from('posts')
+      .select('*')
+      .eq('slug', slug)
+      .single();
+
+    if (fetchError && fetchError.code !== 'PGRST116') {
+      console.error('Error fetching existing post:', fetchError);
+      throw new Error('Failed to check existing post');
+    }
+
+    if (existing) {
+      // update existing record
+      const { data, error } = await supabase
+        .from('posts')
+        .update({ title, content: html, json, updated_at: new Date().toISOString() })
+        .eq('slug', slug)
+        .select();
+
+      console.log('Supabase update result:', { data, error });
+    } else {
+      // insert new record  
+
+   const { data, error } = await supabase
+      .from('posts')
+      .insert([{ title, slug, content: html  , json ,created_at: new Date().toISOString(),updated_at: new Date().toISOString() }])
+      .select()   //
+
+      console.log('Supabase insert result:', { data, error });
+    }
+
   all[id] = page;
   writeAll(all);
   return page;
