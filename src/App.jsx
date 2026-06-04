@@ -208,9 +208,25 @@ function EditorApp() {
   );
 }
 
-function App({ onViewSite }) {
+function App({
+  onViewSite,
+  onSave,
+  onLoad,
+  onClear,
+  initialContent,
+  initialTitle,
+  initialPageId,
+}) {
   return (
-    <EditorProvider onViewSite={onViewSite}>
+    <EditorProvider
+      onViewSite={onViewSite}
+      onSave={onSave}
+      onLoad={onLoad}
+      onClear={onClear}
+      initialContent={initialContent}
+      initialTitle={initialTitle}
+      initialPageId={initialPageId}
+    >
       <EditorApp />
     </EditorProvider>
   );

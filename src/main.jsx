@@ -17,6 +17,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import FrontendPage from './FrontendPage';
 import { initBlocks } from './registerBlocks.jsx';
+import { savePage, loadPage } from './data/api';
 
 initBlocks();
 
@@ -26,7 +27,13 @@ function Root() {
   if (view === 'site') {
     return <FrontendPage onBackToEditor={() => setView('editor')} />;
   }
-  return <App onViewSite={() => setView('site')} />;
+  return (
+    <App
+      onViewSite={() => setView('site')}
+      onSave={({ id, title, html, json }) => savePage(id, title, html, json)}
+      onLoad={(id) => loadPage(id)}
+    />
+  );
 }
 
 function renderApp() {

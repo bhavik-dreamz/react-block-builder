@@ -1,20 +1,28 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { serialize, parse, createBlock } from '@wordpress/blocks';
-import { savePage, loadPage } from '../data/api';
 import { blockTemplates } from '../data/blockTemplates';
 
 const EditorContext = createContext(null);
 
 const DEFAULT_PAGE_ID = 'home';
 
-export function EditorProvider({ children, onViewSite }) {
+export function EditorProvider({
+  children,
+  onViewSite,
+  onSave,
+  onLoad,
+  onClear,
+  initialContent,
+  initialTitle = 'Home',
+  initialPageId = DEFAULT_PAGE_ID,
+}) {
   const [blocks, setBlocks] = useState([]);
   const [output, setOutput] = useState(null);
   const [preview, setPreview] = useState(false);
   const [saved, setSaved] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [pageTitle, setPageTitle] = useState('Home');
-  const [pageId] = useState(DEFAULT_PAGE_ID);
+  const [pageTitle, setPageTitle] = useState(initialTitle);
+  const [pageId] = useState(initialPageId);
   const [canUndo, setCanUndo] = useState(false);
   const [canRedo, setCanRedo] = useState(false);
   const [templatePickerOpen, setTemplatePickerOpen] = useState(false);
@@ -56,12 +64,28 @@ export function EditorProvider({ children, onViewSite }) {
 
   async function loadBlocks() {
     try {
-      const page = await loadPage(pageId);
-      if (page?.json) {
-        setBlocks(JSON.parse(page.json));
-        if (page.title) setPageTitle(page.title);
-      } else if (page?.html) {
-        setBlocks(parse(page.html));
+      if (initialContent) {
+        if (typeof initialContent === 'string') {
+          try {
+            setBlocks(JSON.parse(initialContent));
+          } catch {
+            setBlocks(parse(initialContent));
+          }
+        } else if (Array.isArray(initialContent)) {
+          setBlocks(initialContent);
+        }
+        return;
+      }
+      if (onLoad) {
+        const page = await onLoad(pageId);
+        if (page?.json) {
+          setBlocks(typeof page.json === 'string' ? JSON.parse(page.json) : page.json);
+          if (page.title) setPageTitle(page.title);
+        } else if (page?.html) {
+          setBlocks(parse(page.html));
+        } else if (Array.isArray(page)) {
+          setBlocks(page);
+        }
       }
     } catch (e) {
       console.error('Failed to load blocks:', e);
@@ -72,7 +96,9 @@ export function EditorProvider({ children, onViewSite }) {
     try {
       const html = serialize(blocks);
       const json = JSON.stringify(blocks, null, 2);
-      await savePage(pageId, pageTitle, html, json);
+      if (onSave) {
+        await onSave({ id: pageId, title: pageTitle, html, json });
+      }
       setOutput({ html, json });
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
@@ -85,7 +111,11 @@ export function EditorProvider({ children, onViewSite }) {
     try {
       setBlocks([]);
       setOutput(null);
-      await savePage(pageId, pageTitle, '', '[]');
+      if (onClear) {
+        await onClear(pageId);
+      } else if (onSave) {
+        await onSave({ id: pageId, title: pageTitle, html: '', json: '[]' });
+      }
     } catch (e) {
       console.error('Failed to clear blocks:', e);
     }
