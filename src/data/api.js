@@ -1,170 +1,129 @@
 /**
- * api.js — Swappable data layer for the block editor.
+ * src/data/api.js — Frontend data layer.
  *
- * HOW TO USE:
- *   - Right now it uses localStorage so the app works with zero backend.
- *   - When you have a real API, replace the bodies of the three functions below.
- *   - The rest of the app never changes — only this file.
+ * All Supabase logic lives in /api/* serverless functions.
+ * This file only calls those routes with fetch().
  *
- * ─────────────────────────────────────────────────────────────────────────────
- * STORAGE KEY FORMAT (localStorage / JSON field in DB):
- *   {
- *     id:        string   — page slug e.g. "home", "about"
- *     title:     string   — page title shown on the frontend
- *     html:      string   — serialized Gutenberg block HTML  ← rendered on frontend
- *     json:      string   — raw blocks JSON                  ← re-parsed in editor
- *     updatedAt: string   — ISO date string
- *   }
- * ─────────────────────────────────────────────────────────────────────────────
+ * Swap guide:
+ *   - Local dev with Vercel routes: use `vercel dev` instead of `vite dev`
+ *   - Deployed:  calls go to  https://your-app.vercel.app/api/posts[/slug]
+ *
+ * Shape returned by every function:
+ *   { id, title, html, json, updatedAt }
  */
 
-import { supabase } from "../lib/supabaseClient";
-
-const LS_KEY = 'rbb_pages'; // localStorage namespace
+const LS_KEY = 'rbb_pages'; // localStorage fallback namespace
 
 export function generatePageId() {
   return `page-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
 }
 
-// ── helpers ──────────────────────────────────────────────────────────────────
+// ── localStorage fallback helpers ────────────────────────────────────────────
 
-function readAll() {
-  try {
-    return JSON.parse(localStorage.getItem(LS_KEY) || '{}');
-  } catch {
-    return {};
-  }
+function lsReadAll() {
+  try { return JSON.parse(localStorage.getItem(LS_KEY) || '{}'); }
+  catch { return {}; }
 }
 
-function writeAll(data) {
+function lsWriteAll(data) {
   localStorage.setItem(LS_KEY, JSON.stringify(data));
 }
 
+// ── Detect whether API routes are reachable ───────────────────────────────────
+// In plain `vite dev` (no vercel dev) /api/* returns 404, so we fall back to
+// localStorage automatically.
+
+let _useApi = null; // null = not yet tested
+
+async function apiAvailable() {
+  if (_useApi !== null) return _useApi;
+  try {
+    const r = await fetch('/api/posts', { method: 'GET' });
+    _useApi = r.ok || r.status !== 404;
+  } catch {
+    _useApi = false;
+  }
+  return _useApi;
+}
+
 // ═════════════════════════════════════════════════════════════════════════════
-//  PUBLIC API — replace these three functions with real fetch() calls
+//  PUBLIC API
 // ═════════════════════════════════════════════════════════════════════════════
 
 /**
- * Save a page to the store.
- * @param {string} id    - page slug / unique identifier
- * @param {string} title - human-readable page title
- * @param {string} html  - serialize(blocks) output
- * @param {string} json  - JSON.stringify(blocks) output
- * @returns {Promise<{id, title, html, json, updatedAt}>}
- *
- * ── Real backend swap ──────────────────────────────────────────────────────
- * export async function savePage(id, title, html, json) {
- *   const res = await fetch(`/api/pages/${id}`, {
- *     method: 'PUT',
- *     headers: { 'Content-Type': 'application/json' },
- *     body: JSON.stringify({ title, html, json }),
- *   });
- *   return res.json();
- * }
- *
- * ── WordPress REST API swap ────────────────────────────────────────────────
- * export async function savePage(id, title, html, json) {
- *   const res = await fetch(`/wp-json/wp/v2/pages/${id}`, {
- *     method: 'POST',
- *     headers: {
- *       'Content-Type': 'application/json',
- *       'X-WP-Nonce': window.wpApiSettings.nonce,
- *     },
- *     body: JSON.stringify({ title, content: html }),
- *   });
- *   return res.json();
- * }
+ * Save (create or update) a page.
  */
 export async function savePage(id, title, html, json) {
-  const all = readAll();
-  const page = { id, title, html, json, updatedAt: new Date().toISOString() };
-  //id uuid primary key default gen_random_uuid(),
-  //title text not null,
-  //content text,
-  //created_at timestamptz default now()
-  // remove space and make slug;
-  const slug = title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+  const updatedAt = new Date().toISOString();
 
-  //before save if exsign in supabase then update else insert new record
-   // check if record with slug exists
-   const { data: existing, error: fetchError } = await supabase
-      .from('posts')
-      .select('*')
-      .eq('slug', slug)
-      .single();
-
-    if (fetchError && fetchError.code !== 'PGRST116') {
-      console.error('Error fetching existing post:', fetchError);
-      throw new Error('Failed to check existing post');
+  if (await apiAvailable()) {
+    const res = await fetch('/api/posts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, title, html, json }),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error ?? `Save failed (${res.status})`);
     }
+    const saved = await res.json();
+    // Mirror to localStorage so offline reads still work
+    const all = lsReadAll();
+    all[id] = saved;
+    lsWriteAll(all);
+    return saved;
+  }
 
-    if (existing) {
-      // update existing record
-      const { data, error } = await supabase
-        .from('posts')
-        .update({ title, content: html, json, updated_at: new Date().toISOString() })
-        .eq('slug', slug)
-        .select();
-
-      console.log('Supabase update result:', { data, error });
-    } else {
-      // insert new record  
-
-   const { data, error } = await supabase
-      .from('posts')
-      .insert([{ title, slug, content: html  , json ,created_at: new Date().toISOString(),updated_at: new Date().toISOString() }])
-      .select()   //
-
-      console.log('Supabase insert result:', { data, error });
-    }
-
+  // ── localStorage fallback ────────────────────────────────────────────────
+  const page = { id, title, html, json, updatedAt };
+  const all = lsReadAll();
   all[id] = page;
-  writeAll(all);
+  lsWriteAll(all);
   return page;
 }
 
 /**
- * Load a single page by id.
- * Returns null if not found.
- *
- * ── Real backend swap ──────────────────────────────────────────────────────
- * export async function loadPage(id) {
- *   const res = await fetch(`/api/pages/${id}`);
- *   if (!res.ok) return null;
- *   return res.json();
- * }
+ * Load a single page by id (slug). Returns null if not found.
  */
 export async function loadPage(id) {
-  const all = readAll();
+  if (await apiAvailable()) {
+    const res = await fetch(`/api/posts/${encodeURIComponent(id)}`);
+    if (res.status === 404) return null;
+    if (!res.ok) throw new Error(`Load failed (${res.status})`);
+    return res.json();
+  }
+
+  const all = lsReadAll();
   return all[id] ?? null;
 }
 
 /**
- * List all saved pages (for the "Open page" picker).
- *
- * ── Real backend swap ──────────────────────────────────────────────────────
- * export async function listPages() {
- *   const res = await fetch('/api/pages');
- *   return res.json(); // expects array
- * }
+ * List all saved pages, newest first.
  */
 export async function listPages() {
-  const all = readAll();
+  if (await apiAvailable()) {
+    const res = await fetch('/api/posts');
+    if (!res.ok) throw new Error(`List failed (${res.status})`);
+    return res.json();
+  }
+
+  const all = lsReadAll();
   return Object.values(all).sort(
     (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt),
   );
 }
 
 /**
- * Delete a page by id.
- *
- * ── Real backend swap ──────────────────────────────────────────────────────
- * export async function deletePage(id) {
- *   await fetch(`/api/pages/${id}`, { method: 'DELETE' });
- * }
+ * Delete a page by id (slug).
  */
 export async function deletePage(id) {
-  const all = readAll();
+  if (await apiAvailable()) {
+    const res = await fetch(`/api/posts/${encodeURIComponent(id)}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error(`Delete failed (${res.status})`);
+  }
+
+  const all = lsReadAll();
   delete all[id];
-  writeAll(all);
+  lsWriteAll(all);
 }
+
