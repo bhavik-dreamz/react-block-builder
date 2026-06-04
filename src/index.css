@@ -794,7 +794,7 @@ h1 {
 }
 
 .builder-wrapper .toolbar-btn.active svg,
-.builder-wrapper .toolbar-btn:hover:not(.template-btn,.handledo-btn) svg {
+.builder-wrapper .toolbar-btn:hover:not(.template-btn, .handledo-btn) svg {
   fill: #fff;
 }
 
@@ -1705,6 +1705,12 @@ span.myapp-underline {
   width: 18px;
 }
 
+.components-popover__fallback-container .components-button.block-editor-block-types-list__item:not(:disabled):hover .dashicons {
+  background-image: url(/src/images/block-hover.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
 .builder-wrapper .block-editor-block-icon .dashicons {
   height: 15px;
   width: 15px;
@@ -2029,10 +2035,9 @@ ul.block-editor-block-list__block .block-editor-rich-text__editable {
   margin: 4px 0;
 }
 
-.options-menu-item { 
+.options-menu-item {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
   width: 100%;
   background: none;
   border: none;
@@ -2043,15 +2048,27 @@ ul.block-editor-block-list__block .block-editor-rich-text__editable {
   color: #1e1e1e;
 }
 
+.components-menu-item-item {
+  align-items: center;
+  display: inline-flex;
+  margin-right: auto;
+  min-width: 160px;
+  white-space: nowrap;
+}
+
 .options-menu-item:hover {
   background: #f0f0f0;
 }
 
-.options-menu-item span:first-of-type {
+.components-menu-item-info-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.options-menu-item .components-menu-item-info-wrapper span:first-of-type {
   font-size: 13px;
   font-weight: 500;
   line-height: 1.4;
-  display: block;
 }
 
 .options-menu-desc {
@@ -2067,6 +2084,11 @@ ul.block-editor-block-list__block .block-editor-rich-text__editable {
   color: #1e1e1e;
   margin-top: 3px;
   font-size: 12px;
+  display: inline-block;
+  vertical-align: top;
+  flex: 0 0 auto;
+  margin-left: 24px;
+  margin-right: -2px;
 }
 
 /* ── Code Editor Mode ───────────────────────────── */

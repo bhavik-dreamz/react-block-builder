@@ -65,36 +65,52 @@ export default function OptionsMenu() {
                         className="options-menu-item"
                         onClick={() => { toggle(setTopToolbar, topToolbar); }}
                     >
+                        <span className="components-menu-item-item">
+                            <div className='components-menu-item-info-wrapper'>
+                                <span>Top toolbar</span>
+                                <span className="options-menu-desc">Access all block and document tools in a single place</span>
+                            </div>
+                        </span>
                         {topToolbar && <FaCheck className="options-menu-check" />}
-                        <span>Top toolbar</span>
-                        <span className="options-menu-desc">Access all block and document tools in a single place</span>
                     </button>
 
                     <button
                         className="options-menu-item"
                         onClick={() => { toggle(setDistractionFree, distractionFree); }}
                     >
+                        <span className="components-menu-item-item">
+                            <div className='components-menu-item-info-wrapper'>
+                                <span>Distraction free</span>
+                                <span className="options-menu-desc">Write with calmness</span>
+                            </div>
+                        </span>
                         {distractionFree && <FaCheck className="options-menu-check" />}
-                        <span>Distraction free</span>
-                        <span className="options-menu-desc">Write with calmness</span>
                     </button>
 
                     <button
                         className="options-menu-item"
                         onClick={() => { toggle(setSpotlightMode, spotlightMode); }}
                     >
+                        <span className="components-menu-item-item">
+                            <div className='components-menu-item-info-wrapper'>
+                                <span>Spotlight mode</span>
+                                <span className="options-menu-desc">Focus on one block at a time</span>
+                            </div>
+                        </span>
                         {spotlightMode && <FaCheck className="options-menu-check" />}
-                        <span>Spotlight mode</span>
-                        <span className="options-menu-desc">Focus on one block at a time</span>
                     </button>
 
                     <button
                         className="options-menu-item"
                         onClick={() => { toggle(setFullscreen, fullscreen); setOpen(false); }}
                     >
+                        <span className="components-menu-item-item">
+                            <div className='components-menu-item-info-wrapper'>
+                                <span>Fullscreen mode</span>
+                                <span className="options-menu-desc">Show and hide the admin interface</span>
+                            </div>
+                        </span>
                         {fullscreen && <FaCheck className="options-menu-check" />}
-                        <span>Fullscreen mode</span>
-                        <span className="options-menu-desc">Show and hide the admin interface</span>
                     </button>
 
                     <div className="options-menu-divider" />
@@ -106,7 +122,11 @@ export default function OptionsMenu() {
                         className="options-menu-item"
                         onClick={() => { setEditorMode('visual'); setOpen(false); }}
                     >
-                        <span>Visual editor</span>
+                        <span className="components-menu-item-item">
+                            <div className='components-menu-item-info-wrapper'>
+                                <span>Visual editor</span>
+                            </div>
+                        </span>
                         {editorMode === 'visual' && <FaCheck className="options-menu-check" />}
                     </button>
 
@@ -114,8 +134,12 @@ export default function OptionsMenu() {
                         className="options-menu-item"
                         onClick={() => { setEditorMode('code'); setOpen(false); }}
                     >
+                        <span className="components-menu-item-item">
+                            <div className='components-menu-item-info-wrapper'>
+                                <span>Code editor</span>
+                            </div>
+                        </span>
                         {editorMode === 'code' && <FaCheck className="options-menu-check" />}
-                        <span>Code editor</span>
                     </button>
 
                     <div className="options-menu-divider" />
@@ -127,7 +151,9 @@ export default function OptionsMenu() {
                         className="options-menu-item"
                         onClick={handleCopyAllBlocks}
                     >
-                        <span>Copy all blocks</span>
+                        <span className="components-menu-item-item">
+                            <span>Copy all blocks</span>
+                        </span>
                     </button>
                 </div>
             )}
