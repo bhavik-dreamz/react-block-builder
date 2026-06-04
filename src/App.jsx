@@ -16,6 +16,7 @@ import { ShortcutProvider } from "@wordpress/keyboard-shortcuts";
 import { BlockSelectionClearer } from "@wordpress/block-editor";
 import { EDITOR_SETTINGS } from "./config/editorSettings";
 import { EditorProvider, useEditor } from "./context/EditorContext";
+import { initBlocks } from "./registerBlocks";
 import LeftToolbarButtonSet from "./components/LeftToolbarButtonSet";
 import Header from "./components/Header";
 import TemplatePicker from "./components/TemplatePicker";
@@ -216,7 +217,11 @@ function App({
   initialContent,
   initialTitle,
   initialPageId,
+  blockRegistry = [],
 }) {
+  // Register dynamic blocks
+  initBlocks(blockRegistry);
+
   return (
     <EditorProvider
       onViewSite={onViewSite}

@@ -115,30 +115,46 @@ function registerJSONBlock(blockDef) {
 
 // ── Init ───────────────────────────────────────────────────────────────────────
 let registered = false;
+const registeredExternalBlocks = new Set();
 
-export function initBlocks() {
-  if (registered) return;
-  registered = true;
+export function initBlocks(externalBlocks = []) {
+  if (!registered) {
+    registered = true;
 
-  // Step 18 — Custom category with SVG icon shown in the + inserter
-  setCategories([
-    {
-      slug: 'myapp-blocks',
-      title: 'My Custom Blocks',
-      icon: () => (
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z" />
-        </svg>
-      ),
-    },
-    ...getCategories(),
-  ]);
+    // Step 18 — Custom category with SVG icon shown in the + inserter
+    setCategories([
+      {
+        slug: 'myapp-blocks',
+        title: 'My Custom Blocks',
+        icon: () => (
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z" />
+          </svg>
+        ),
+      },
+      ...getCategories(),
+    ]);
 
-  // Step 20 — Loop over JSON config and register each block (simulates DB import)
-  customBlocksConfig.forEach(registerJSONBlock);
+    // Step 20 — Loop over JSON config and register each block (simulates DB import)
+    customBlocksConfig.forEach(registerJSONBlock);
 
-  // Core Gutenberg blocks + hand-crafted blocks (imported at the top)
-  registerCoreBlocks();
+    // Core Gutenberg blocks + hand-crafted blocks (imported at the top)
+    registerCoreBlocks();
+  }
+
+  // Register dynamically injected external block definitions
+  if (Array.isArray(externalBlocks)) {
+    externalBlocks.forEach(blockDef => {
+      if (blockDef && blockDef.name && !registeredExternalBlocks.has(blockDef.name)) {
+        try {
+          registerJSONBlock(blockDef);
+          registeredExternalBlocks.add(blockDef.name);
+        } catch (err) {
+          console.error(`Failed to register dynamic block: ${blockDef.name}`, err);
+        }
+      }
+    });
+  }
 
   // Import formats AFTER core blocks are registered to avoid store conflicts
   // import('@wordpress/format-library').catch(err => console.error('Failed to load format-library:', err));
