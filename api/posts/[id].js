@@ -63,17 +63,33 @@ export default async function handler(req, res) {
 
   // ── DELETE /api/posts/:id ────────────────────────────────────────────────
   if (req.method === 'DELETE') {
-    const { error } = await supabase
+    // First confirm the row exists
+    const { data: existing } = await supabase
+      .from('posts')
+      .select('id, slug')
+      .eq('slug', slug)
+      .single();
+
+    console.log('DELETE attempt — slug:', slug, '| found row:', existing);
+
+    const { data: deleted, error } = await supabase
       .from('posts')
       .delete()
-      .eq('slug', slug);
+      .eq('slug', slug)
+      .select('slug');
+
+    console.log('DELETE result — deleted rows:', deleted, '| error:', error);
 
     if (error) {
       console.error('Delete error:', error);
       return res.status(500).json({ error: error.message });
     }
 
-    return res.status(200).json({ ok: true });
+    if (!deleted || deleted.length === 0) {
+      return res.status(404).json({ error: `No row found with slug="${slug}". Check RLS or column value.` });
+    }
+
+    return res.status(200).json({ ok: true, deleted });
   }
 
   return res.status(405).json({ error: 'Method not allowed' });
