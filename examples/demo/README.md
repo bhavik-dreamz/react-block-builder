@@ -2,6 +2,12 @@
 
 Playground app — **not** published to npm.
 
+See **[docs/FULL_GUIDE.md](../../docs/FULL_GUIDE.md)** for:
+
+- Local dev (`pnpm run dev`)
+- Vercel deployment
+- How this demo differs from the npm package
+
 ```bash
 # From repo root
 pnpm install
@@ -10,4 +16,4 @@ pnpm run dev
 
 Uses `BlockEditor` from the package with local `api.js` (`onSave` / `onLoad`).
 
-Optional Supabase: set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in `.env` at the repo root.
+Optional Supabase: copy `../../.env.example` to repo root as `.env`.

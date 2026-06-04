@@ -98,7 +98,8 @@
     "test:exports": "pnpm run build:lib && node examples/smoke-exports.mjs",
     "test:ssr": "pnpm run build:lib && node examples/smoke-ssr.mjs && node examples/smoke-renderer-ssr.mjs",
     "test:bundle": "pnpm run build:lib && node examples/verify-renderer-bundle.mjs",
-    "test:boundary": "pnpm run build:lib && node examples/verify-package-boundary.mjs"
+    "test:boundary": "pnpm run build:lib && node examples/verify-package-boundary.mjs",
+    "prepublishOnly": "pnpm run test:exports && pnpm run test:bundle && pnpm run test:boundary"
   },
   "engines": {
     "node": ">=22.0.0"

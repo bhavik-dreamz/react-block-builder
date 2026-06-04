@@ -4,6 +4,9 @@ Gutenberg-powered **block editor** and **SSR-safe renderer** for React. Use in *
 
 **[Live demo](https://react-block-builder.vercel.app/)** · Demo source: [`examples/demo/`](examples/demo/)
 
+> **Full documentation** (npm publish, Vercel deploy, Next.js/Remix/Vite, AI agent rules):  
+> **[docs/FULL_GUIDE.md](docs/FULL_GUIDE.md)** · Quick reference for Cursor/agents: **[AGENTS.md](AGENTS.md)**
+
 ---
 
 ## Install
