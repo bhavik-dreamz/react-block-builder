@@ -1,28 +1,18 @@
 /**
- * FrontendPage.jsx
- *
- * Simulates the PUBLIC-FACING website page.
- * It fetches saved block HTML from the store and renders it with innerHTML —
- * exactly the same way any CMS frontend (WordPress, Next.js, etc.) would.
- *
- * No React, no Gutenberg, no editor libraries needed at render time.
- * Just HTML + the block stylesheet.
+ * Demo public site viewer — not part of the published package.
  */
 import React, { useState, useEffect } from 'react';
-import { listPages, loadPage, deletePage } from './data/api';
+import { BlockRenderer } from 'react-block-builder/renderer';
+import { listPages, loadPage, deletePage } from './api.js';
 
-// ── Block stylesheet (same one WordPress outputs on the frontend) ──────────
-// If you have a real WP site, this becomes wp_enqueue_style('wp-block-library')
-// or the equivalent Next.js import.
 import '@wordpress/block-library/build-style/style.css';
 
 export default function FrontendPage({ onBackToEditor }) {
-  const [pages, setPages]         = useState([]);
+  const [pages, setPages] = useState([]);
   const [activePage, setActivePage] = useState(null);
-  const [loading, setLoading]     = useState(true);
-  const [error, setError]         = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // ── Load page list on mount ───────────────────────────────────────────────
   useEffect(() => {
     fetchPages();
   }, []);
@@ -33,11 +23,10 @@ export default function FrontendPage({ onBackToEditor }) {
     try {
       const list = await listPages();
       setPages(list);
-      // Auto-open the most recently saved page
       if (list.length > 0) {
         setActivePage(list[0]);
       }
-    } catch (e) {
+    } catch {
       setError('Failed to load pages.');
     } finally {
       setLoading(false);
@@ -49,7 +38,7 @@ export default function FrontendPage({ onBackToEditor }) {
     try {
       const page = await loadPage(id);
       setActivePage(page);
-    } catch (e) {
+    } catch {
       setError('Failed to load page.');
     } finally {
       setLoading(false);
@@ -59,14 +48,12 @@ export default function FrontendPage({ onBackToEditor }) {
   async function handleDelete(id) {
     if (!window.confirm('Delete this page?')) return;
     await deletePage(id);
-    setPages(prev => prev.filter(p => p.id !== id));
+    setPages((prev) => prev.filter((p) => p.id !== id));
     if (activePage?.id === id) setActivePage(null);
   }
 
   return (
     <div className="fp-shell">
-
-      {/* ── Top bar ── */}
       <div className="fp-topbar">
         <div className="fp-topbar-left">
           <span className="fp-site-name">🌐 My Site</span>
@@ -89,23 +76,22 @@ export default function FrontendPage({ onBackToEditor }) {
       </div>
 
       <div className="fp-body">
-
-        {/* ── Sidebar — page list ── */}
         <aside className="fp-sidebar">
           <div className="fp-sidebar-title">Pages</div>
 
           {loading && <div className="fp-sidebar-loading">Loading…</div>}
-          {error   && <div className="fp-sidebar-error">{error}</div>}
+          {error && <div className="fp-sidebar-error">{error}</div>}
 
           {pages.length === 0 && !loading && (
             <div className="fp-sidebar-empty">
-              No saved pages yet.<br />
+              No saved pages yet.
+              <br />
               Go back to the editor and hit Save.
             </div>
           )}
 
           <ul className="fp-page-list">
-            {pages.map(p => (
+            {pages.map((p) => (
               <li
                 key={p.id}
                 className={`fp-page-item${activePage?.id === p.id ? ' active' : ''}`}
@@ -131,7 +117,6 @@ export default function FrontendPage({ onBackToEditor }) {
           </ul>
         </aside>
 
-        {/* ── Main area — rendered block HTML ── */}
         <main className="fp-main">
           {!activePage && !loading && (
             <div className="fp-empty-state">
@@ -146,28 +131,15 @@ export default function FrontendPage({ onBackToEditor }) {
 
           {activePage && (
             <>
-              {/* Page header — simulates a real site's <h1> title */}
               <header className="fp-page-header">
                 <h1 className="fp-page-title">{activePage.title}</h1>
               </header>
 
-              {/*
-               * THE CRITICAL PART:
-               * dangerouslySetInnerHTML renders the serialized Gutenberg block HTML.
-               * On a real backend (WordPress / Next.js / Express):
-               *   - WordPress: the_content() calls apply_filters('the_content', $html)
-               *   - Next.js:   fetch the HTML string from your API, render with dangerouslySetInnerHTML
-               *   - Static:    write the HTML string straight into an .html file
-               *
-               * The class names like .wp-block-paragraph, .wp-block-heading etc.
-               * are styled by the @wordpress/block-library stylesheet imported above.
-               */}
-              <div
+              <BlockRenderer
+                html={activePage.html}
                 className="fp-page-content entry-content"
-                dangerouslySetInnerHTML={{ __html: activePage.html }}
               />
 
-              {/* Debug panel (collapsible) */}
               <details className="fp-debug">
                 <summary>🔍 Raw data (for debugging)</summary>
                 <div className="fp-debug-body">

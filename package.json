@@ -1,8 +1,12 @@
 {
   "name": "react-block-builder",
   "version": "1.0.0",
-  "description": "A standalone Gutenberg-powered block editor built with React and Vite. Compose pages visually, save to localStorage (or any REST API), and preview the rendered frontend output.",
-  "private": true,
+  "description": "Gutenberg block editor and SSR-safe renderer for React — use in Next.js, Remix, or Vite with onSave/onLoad hooks.",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bhavik-dreamz/react-block-builder.git"
+  },
   "keywords": [
     "gutenberg",
     "block-editor",
@@ -17,8 +21,39 @@
     "url": "https://github.com/bhavik-dreamz"
   },
   "license": "MIT",
+  "main": "./dist/editor.cjs",
+  "module": "./dist/editor.mjs",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/editor.mjs",
+      "require": "./dist/editor.cjs"
+    },
+    "./editor": {
+      "import": "./dist/editor.mjs",
+      "require": "./dist/editor.cjs"
+    },
+    "./renderer": {
+      "import": "./dist/renderer.mjs",
+      "require": "./dist/renderer.cjs"
+    },
+    "./bootstrap": {
+      "import": "./dist/bootstrap.mjs",
+      "require": "./dist/bootstrap.cjs"
+    },
+    "./styles": "./dist/styles.css",
+    "./styles.css": "./dist/styles.css",
+    "./package.json": "./package.json"
+  },
+  "sideEffects": [
+    "*.css",
+    "./dist/styles.css",
+    "./dist/bootstrap.mjs",
+    "./dist/bootstrap.cjs"
+  ],
   "dependencies": {
-    "@supabase/supabase-js": "^2.107.0",
     "@wordpress/block-editor": "^15.17.0",
     "@wordpress/block-library": "^9.44.0",
     "@wordpress/blocks": "^15.17.0",
@@ -35,18 +70,35 @@
     "parsel-js": "^1.2.2",
     "path-browserify": "^1.0.1",
     "postcss-prefix-selector": "^2.1.1",
-    "react": "^19.2.5",
-    "react-dom": "^19.2.5",
     "react-icons": "^5.6.0"
   },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react-dom": {
+      "optional": false
+    }
+  },
   "devDependencies": {
+    "@supabase/supabase-js": "^2.107.0",
     "@vitejs/plugin-react": "^6.0.1",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
     "vite": "^8.0.8"
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "build": "vite build --config vite.lib.config.js",
+    "build:lib": "vite build --config vite.lib.config.js && node scripts/build-styles.mjs",
+    "build:demo": "pnpm run build:lib && vite build",
+    "preview": "vite preview",
+    "preview:demo": "vite preview --outDir dist-demo",
+    "test:exports": "pnpm run build:lib && node examples/smoke-exports.mjs",
+    "test:ssr": "pnpm run build:lib && node examples/smoke-ssr.mjs && node examples/smoke-renderer-ssr.mjs",
+    "test:bundle": "pnpm run build:lib && node examples/verify-renderer-bundle.mjs",
+    "test:boundary": "pnpm run build:lib && node examples/verify-package-boundary.mjs"
   },
   "engines": {
     "node": ">=22.0.0"

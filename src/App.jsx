@@ -218,9 +218,9 @@ function App({
   initialTitle,
   initialPageId,
   blockRegistry = [],
+  customBlocksConfig = [],
 }) {
-  // Register dynamic blocks
-  initBlocks(blockRegistry);
+  initBlocks(blockRegistry, { customBlocksConfig });
 
   return (
     <EditorProvider

@@ -1,0 +1,9 @@
+/**
+ * Demo-only Supabase client (optional). Not shipped with react-block-builder.
+ */
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+export const supabase = createClient(supabaseUrl, supabaseKey);

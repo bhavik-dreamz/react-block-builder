@@ -1,2 +1,10 @@
 import React from 'react';
-window.React = React;
+
+/** Assign React to window for Gutenberg (no-op in Node/SSR). */
+export function ensureReactOnWindow() {
+  if (typeof window !== 'undefined') {
+    window.React = React;
+  }
+}
+
+ensureReactOnWindow();

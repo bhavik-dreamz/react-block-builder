@@ -1,5 +1,8 @@
 import React from 'react';
-if (!window.React) window.React = React; // safety net
+
+if (typeof window !== 'undefined' && !window.React) {
+  window.React = React;
+}
 
 import { registerBlockType, getCategories, setCategories } from '@wordpress/blocks';
 import { useBlockProps, RichText } from '@wordpress/block-editor';
@@ -117,7 +120,16 @@ function registerJSONBlock(blockDef) {
 let registered = false;
 const registeredExternalBlocks = new Set();
 
-export function initBlocks(externalBlocks = []) {
+/**
+ * Register core + bundled blocks once, then merge consumer block definitions.
+ * @param {object[]} externalBlocks - JSON block defs (same shape as customBlocksConfig.json)
+ * @param {{ customBlocksConfig?: object[] }} [options] - Extra JSON blocks from the host app
+ */
+export function initBlocks(externalBlocks = [], options = {}) {
+  const consumerJsonBlocks = Array.isArray(options.customBlocksConfig)
+    ? options.customBlocksConfig
+    : [];
+
   if (!registered) {
     registered = true;
 
@@ -135,8 +147,8 @@ export function initBlocks(externalBlocks = []) {
       ...getCategories(),
     ]);
 
-    // Step 20 — Loop over JSON config and register each block (simulates DB import)
-    customBlocksConfig.forEach(registerJSONBlock);
+    // Bundled JSON blocks + host-provided JSON blocks (simulates DB import)
+    [...customBlocksConfig, ...consumerJsonBlocks].forEach(registerJSONBlock);
 
     // Core Gutenberg blocks + hand-crafted blocks (imported at the top)
     registerCoreBlocks();
