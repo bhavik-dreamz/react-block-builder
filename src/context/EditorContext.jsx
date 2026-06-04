@@ -7,14 +7,14 @@ const EditorContext = createContext(null);
 
 const DEFAULT_PAGE_ID = 'home';
 
-export function EditorProvider({ children, onViewSite }) {
+export function EditorProvider({ children, pageId: initialPageId = DEFAULT_PAGE_ID, initialTitle = 'Home', onNavigate, onViewSite }) {
   const [blocks, setBlocks] = useState([]);
   const [output, setOutput] = useState(null);
   const [preview, setPreview] = useState(false);
   const [saved, setSaved] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [pageTitle, setPageTitle] = useState('Home');
-  const [pageId] = useState(DEFAULT_PAGE_ID);
+  const [pageTitle, setPageTitle] = useState(initialTitle);
+  const [pageId] = useState(initialPageId);
   const [canUndo, setCanUndo] = useState(false);
   const [canRedo, setCanRedo] = useState(false);
   const [templatePickerOpen, setTemplatePickerOpen] = useState(false);
@@ -151,6 +151,7 @@ export function EditorProvider({ children, onViewSite }) {
     blockTemplates,
     // actions
     onViewSite,
+    onNavigate,
     handleSave,
     handleClear,
     handleUndo,

@@ -22,6 +22,10 @@ import { supabase } from "../lib/supabaseClient";
 
 const LS_KEY = 'rbb_pages'; // localStorage namespace
 
+export function generatePageId() {
+  return `page-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+}
+
 // ── helpers ──────────────────────────────────────────────────────────────────
 
 function readAll() {

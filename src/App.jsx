@@ -208,9 +208,9 @@ function EditorApp() {
   );
 }
 
-function App({ onViewSite }) {
+function App({ pageId, initialTitle, onNavigate, onViewSite }) {
   return (
-    <EditorProvider onViewSite={onViewSite}>
+    <EditorProvider pageId={pageId} initialTitle={initialTitle} onNavigate={onNavigate} onViewSite={onViewSite}>
       <EditorApp />
     </EditorProvider>
   );

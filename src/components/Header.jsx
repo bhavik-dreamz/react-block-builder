@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEditor } from '../context/EditorContext';
 import logoimage from '../images/editor-icon.png';
-import { FaColumns, FaEye, FaEdit, FaTrash, FaSave, FaGlobe } from 'react-icons/fa';
+import { FaColumns, FaEye, FaEdit, FaTrash, FaSave, FaGlobe, FaArrowLeft } from 'react-icons/fa';
 import OptionsMenu from './OptionsMenu';
 import LeftToolbarButtonSet from './LeftToolbarButtonSet';
 
@@ -11,19 +11,40 @@ export default function Header() {
     saved,
     sidebarOpen, setSidebarOpen,
     pageTitle, setPageTitle,
+    pageId,
     handleSave,
     handleClear,
     onViewSite,
+    onNavigate,
   } = useEditor();
+
+  function handleViewSite() {
+    if (onNavigate) {
+      onNavigate('viewer', { pageId });
+    } else if (onViewSite) {
+      onViewSite();
+    }
+  }
+
+  function handleBackToPages() {
+    if (onNavigate) onNavigate('list');
+  }
 
   return (
     <div className="editor-header">
       <div className="fp-editor-title-row">
-        <a href="/">
-          <div className="logo-image">
-            <img src={logoimage} alt="Logo" />
-          </div>
-        </a>
+        {onNavigate ? (
+          <button className="header-back-btn" onClick={handleBackToPages} title="Back to Pages">
+            <FaArrowLeft />
+            <span>Pages</span>
+          </button>
+        ) : (
+          <a href="/">
+            <div className="logo-image">
+              <img src={logoimage} alt="Logo" />
+            </div>
+          </a>
+        )}
         <LeftToolbarButtonSet />
       </div>
       <div className="header-center">
@@ -52,9 +73,9 @@ export default function Header() {
           {saved ? '' : ''}
         </button>
 
-        <button className="view-site-btn" onClick={onViewSite} title="View the saved page as a visitor would see it">
+        <button className="view-site-btn" onClick={handleViewSite} title="View the saved page as a visitor would see it">
           <FaGlobe />
-          View Site
+          View Page
         </button>
 
         <OptionsMenu />
