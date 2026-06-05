@@ -21,6 +21,7 @@
   --border: #e0e0e0;
   --transition: all 300ms ease-in-out;
   --font-primary: "Montserrat", sans-serif;
+  --wp--custom--gap--baseline: 15px;
 }
 
 :root :where(.editor-layout) {
@@ -2205,6 +2206,7 @@ ul.block-editor-block-list__block .block-editor-rich-text__editable {
   max-width: var(--wp--style--global--content-size) !important;
   margin-left: auto !important;
   margin-right: auto !important;
+  width: 100%;
 }
 
 .builder-wrapper .block-editor-block-list__layout.is-content-justification-left .block-list-appender.wp-block {
@@ -2229,7 +2231,7 @@ ul.block-editor-block-list__block .block-editor-rich-text__editable {
   color: var(--wp-admin-theme-color);
 }
 
-.wp-block-group.is-layout-flex.block-editor-block-list__block>.block-list-appender:only-child {
+.builder-wrapper .block-editor-block-list__layout.is-layout-flex {
   gap: var(--wp--style--block-gap);
 }
 
@@ -2262,6 +2264,11 @@ ul.block-editor-block-list__block .block-editor-rich-text__editable {
   margin-right: auto !important;
 }
 
+.builder-wrapper .block-editor-block-list__layout>* {
+  margin-block-start: calc(2 * var(--wp--custom--gap--baseline));
+  margin-block-end: 0;
+}
+
 :where(.builder-wrapper) .is-layout-grid {
   display: grid;
   gap: calc(2 * var(--wp--custom--gap--baseline));
@@ -2271,19 +2278,60 @@ ul.block-editor-block-list__block .block-editor-rich-text__editable {
   width: 100%;
 }
 
-:where(.builder-wrapper) .is-layout-grid.wp-block-group-is-layout-grid {
-  grid-template-columns: repeat(auto-fill, minmax(min(12rem, 100%), 1fr));
-  container-type: inline-size;
-}
-
-:where(.builder-wrapper) .is-layout-grid.wp-container-core-group-is-layout-0 {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-/* 
-:where(.builder-wrapper) .is-layout-grid.wp-container-core-group-is-layout-0 {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-:where(.builder-wrapper) .is-layout-grid.wp-container-core-group-is-layout-0 {
+:where(.builder-wrapper) .is-layout-grid.wp-container-core-group-is-layout-4 {
   grid-template-columns: repeat(4, minmax(0, 1fr));
-} */
+}
+
+/*-============== Fonts Styles ============*/
+
+:where(.editor-canvas) .has-small-font-size {
+  font-size: var(--wp--preset--font-size--small) !important;
+}
+
+:where(.editor-canvas) .has-medium-font-size {
+  font-size: var(--wp--preset--font-size--medium) !important;
+}
+
+:where(.editor-canvas) .has-large-font-size {
+  font-size: var(--wp--preset--font-size--large) !important;
+}
+
+:where(.editor-canvas) .has-x-large-font-size {
+  font-size: var(--wp--preset--font-size--x-large) !important;
+}
+
+:where(.editor-canvas) .has-normal-font-size {
+  font-size: var(--wp--preset--font-size--normal) !important;
+}
+
+:where(.editor-canvas) .has-level-1-font-size {
+  font-size: var(--wp--preset--font-size--level-1) !important;
+}
+
+:where(.editor-canvas) .has-level-2-font-size {
+  font-size: var(--wp--preset--font-size--level-2) !important;
+}
+
+:where(.editor-canvas) .has-level-3-font-size {
+  font-size: var(--wp--preset--font-size--level-3) !important;
+}
+
+:where(.editor-canvas) .has-level-4-font-size {
+  font-size: var(--wp--preset--font-size--level-4) !important;
+}
+
+:where(.editor-canvas) .has-level-5-font-size {
+  font-size: var(--wp--preset--font-size--level-5) !important;
+}
+
+:where(.editor-canvas) .has-level-6-font-size {
+  font-size: var(--wp--preset--font-size--level-6) !important;
+}
+
+:where(.editor-canvas) .has-body-font-font-family {
+  font-family: var(--wp--preset--font-family--body-font) !important;
+}
+
+:where(.editor-canvas) .has-heading-font-font-family {
+  font-family: var(--wp--preset--font-family--heading-font) !important;
+}
