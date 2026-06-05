@@ -24,7 +24,8 @@
   "main": "./dist/editor.cjs",
   "module": "./dist/editor.mjs",
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "exports": {
     ".": {
