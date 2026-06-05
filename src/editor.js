@@ -17,3 +17,9 @@ export { default } from './App.jsx';
 
 export { initBlocks } from './registerBlocks.jsx';
 export { EditorProvider, useEditor } from './context/EditorContext.jsx';
+export { EDITOR_SETTINGS, mergeEditorSettings } from './config/editorSettings.js';
+export {
+  createMediaUploadHandler,
+  applyMediaToSettings,
+  normalizeMediaItem,
+} from './media/index.js';

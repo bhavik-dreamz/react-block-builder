@@ -1,3 +1,4 @@
+/** Default Gutenberg editor settings for BlockEditorProvider */
 export const EDITOR_SETTINGS = {
   hasFixedToolbar: false,
   hasInlineToolbar: true,
@@ -116,3 +117,41 @@ export const EDITOR_SETTINGS = {
     },
   ],
 };
+
+/**
+ * Deep-merge host overrides into default editor settings.
+ * Arrays (colors, fontSizes, gradients, styles) are replaced when provided, not merged item-by-item.
+ */
+export function mergeEditorSettings(defaults, overrides) {
+  if (!overrides) return defaults;
+
+  return {
+    ...defaults,
+    ...overrides,
+    border: { ...defaults.border, ...(overrides.border || {}) },
+    __experimentalFeatures: {
+      ...defaults.__experimentalFeatures,
+      ...(overrides.__experimentalFeatures || {}),
+      color: {
+        ...defaults.__experimentalFeatures?.color,
+        ...(overrides.__experimentalFeatures?.color || {}),
+      },
+      typography: {
+        ...defaults.__experimentalFeatures?.typography,
+        ...(overrides.__experimentalFeatures?.typography || {}),
+      },
+      spacing: {
+        ...defaults.__experimentalFeatures?.spacing,
+        ...(overrides.__experimentalFeatures?.spacing || {}),
+      },
+      border: {
+        ...defaults.__experimentalFeatures?.border,
+        ...(overrides.__experimentalFeatures?.border || {}),
+      },
+      layout: {
+        ...defaults.__experimentalFeatures?.layout,
+        ...(overrides.__experimentalFeatures?.layout || {}),
+      },
+    },
+  };
+}

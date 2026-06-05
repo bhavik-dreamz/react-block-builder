@@ -280,7 +280,68 @@ export default function Editor() {
 | `initialPageId` | Slug/id (default `"home"`) |
 | `blockRegistry` | Array of JSON block definitions |
 | `customBlocksConfig` | Extra JSON blocks merged at first `initBlocks` |
+| `editorSettings` | Partial override of Gutenberg `BlockEditorProvider` settings (merged with defaults) |
 | `onViewSite` | Optional callback (demo uses for preview route) |
+
+### Custom media library (images)
+
+Frontend-only apps pass **`media`** callbacks — the editor shows a **Media Library** popup (grid + pagination + upload). Your backend handles storage.
+
+```jsx
+<BlockEditor
+  media={{
+    perPage: 20,
+    listImages: async ({ page, perPage, search }) => {
+      const res = await fetch(
+        `/api/media?page=${page}&perPage=${perPage}&q=${encodeURIComponent(search)}`,
+      );
+      return res.json();
+      // { items: [{ id, url, alt?, title?, mimeType? }], total, page, perPage, totalPages }
+    },
+    uploadImage: async (file) => {
+      const body = new FormData();
+      body.append('file', file);
+      const res = await fetch('/api/media/upload', { method: 'POST', body });
+      return res.json(); // { id, url, alt?, title?, mimeType? }
+    },
+  }}
+  onSave={onSave}
+  onLoad={onLoad}
+/>
+```
+
+- **`listImages`** — required for the library button; powers search + pagination.
+- **`uploadImage`** — optional; enables Upload in the modal and drag-and-drop file upload in blocks.
+- Without `media`, image blocks fall back to **URL-only** (link) input.
+
+See `examples/demo/mediaHandlers.js` for a localStorage demo.
+
+### Override editor settings
+
+```jsx
+import 'react-block-builder/styles';
+import {
+  BlockEditor,
+  EDITOR_SETTINGS,
+  mergeEditorSettings,
+} from 'react-block-builder/editor';
+
+const mySettings = mergeEditorSettings(EDITOR_SETTINGS, {
+  bodyPlaceholder: 'Start writing…',
+  hasFixedToolbar: true,
+  colors: [{ name: 'Brand', slug: 'brand', color: '#3858e9' }],
+  allowedBlockTypes: ['core/paragraph', 'core/heading', 'core/image'],
+});
+
+<BlockEditor editorSettings={mySettings} onSave={onSave} onLoad={onLoad} />
+
+// Or inline partial override:
+<BlockEditor
+  editorSettings={{ bodyPlaceholder: 'Add content…', imageEditing: true }}
+  onSave={onSave}
+  onLoad={onLoad}
+/>
+```
 
 ---
 

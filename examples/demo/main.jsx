@@ -9,6 +9,7 @@ import ReactDOM from 'react-dom/client';
 import { BlockEditor, initBlocks } from 'react-block-builder/editor';
 import FrontendPage from './FrontendPage.jsx';
 import { savePage, loadPage } from './api.js';
+import { demoMediaHandlers } from './mediaHandlers.js';
 
 initBlocks();
 
@@ -21,6 +22,7 @@ function Root() {
 
   return (
     <BlockEditor
+      media={demoMediaHandlers}
       onViewSite={() => setView('site')}
       onSave={({ id, title, html, json }) => savePage(id, title, html, json)}
       onLoad={(id) => loadPage(id)}
