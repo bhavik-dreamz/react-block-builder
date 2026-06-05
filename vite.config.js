@@ -35,7 +35,7 @@ export default defineConfig({
       { find: 'gutenberg-block-kit/editor', replacement: pkgAlias('editor', 'editor.js') },
       { find: 'gutenberg-block-kit/renderer', replacement: pkgAlias('renderer', 'renderer.js') },
       { find: 'gutenberg-block-kit/bootstrap', replacement: pkgAlias('bootstrap', 'bootstrap.js') },
-      { find: 'gutenberg-block-kit/styles', replacement: pkgAlias('styles', 'styles.js') },
+      { find: 'gutenberg-block-kit/styles', replacement: pkgAlias('styles', 'styles.css') },
       { find: 'gutenberg-block-kit', replacement: pkgAlias('index', 'index.js') },
       { find: 'path', replacement: 'path-browserify' },
     ],
