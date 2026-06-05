@@ -4,6 +4,9 @@
 import React, { useState, useEffect } from 'react';
 import { BlockRenderer } from 'gutenberg-block-kit/renderer';
 import { listPages, loadPage, deletePage } from './api.js';
+import { initCarousels } from './carouselInit.js';
+import { initClientStories } from './clientStoriesInit.js';
+import { initProductsScroller } from './productsScrollerInit.js';
 
 import '@wordpress/block-library/build-style/style.css';
 
@@ -16,6 +19,14 @@ export default function FrontendPage({ onBackToEditor }) {
   useEffect(() => {
     fetchPages();
   }, []);
+
+  useEffect(() => {
+    if (activePage?.html) {
+      initCarousels();
+      initClientStories();
+      initProductsScroller();
+    }
+  }, [activePage?.html]);
 
   async function fetchPages() {
     setLoading(true);

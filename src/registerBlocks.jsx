@@ -15,6 +15,11 @@ import './blocks/cta-block/index.jsx';
 import './blocks/hero-banner/index.jsx';
 import './blocks/image-text/index.jsx';
 import './blocks/card-grid/index.jsx';
+import './blocks/carousel/index.jsx';
+import './blocks/free-consultation/index.jsx';
+import './blocks/client-stories/index.jsx';
+import './blocks/editors-picks/index.jsx';
+import './blocks/products-scroller/index.jsx';
 
 // Step 18 + 20 — JSON-driven block definitions
 // In production: swap the static import for a fetch() call to your API/database

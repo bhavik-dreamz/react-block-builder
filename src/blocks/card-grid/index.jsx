@@ -1,3 +1,4 @@
+import { useState } from '@wordpress/element';
 import { registerBlockType } from '@wordpress/blocks';
 import {
   useBlockProps,
@@ -10,15 +11,86 @@ import {
   RangeControl,
   SelectControl,
   Button,
+  TextControl,
 } from '@wordpress/components';
+import { plus, copy, trash } from '@wordpress/icons';
 
-// Default empty card
-const defaultCard = () => ({
-  id: Date.now(),
+const defaultCard = (overrides = {}) => ({
+  id: Date.now() + Math.floor(Math.random() * 1000),
   icon: '⭐',
   title: 'Card Title',
   description: 'Add a short description for this card.',
+  ...overrides,
 });
+
+function cardAccordionTitle(card, index) {
+  const label = card.title?.trim() || 'Untitled';
+  const preview = label.length > 22 ? `${label.slice(0, 22)}…` : label;
+  return `Card ${index + 1} — ${preview}`;
+}
+
+function CardFields({
+  card,
+  index,
+  isOpen,
+  onToggle,
+  onUpdate,
+  onClone,
+  onRemove,
+  canRemove,
+}) {
+  return (
+    <PanelBody
+      title={cardAccordionTitle(card, index)}
+      opened={isOpen}
+      onToggle={onToggle}
+    >
+      <TextControl
+        label="Icon (emoji or text)"
+        value={card.icon}
+        onChange={(val) => onUpdate('icon', val)}
+        help="Use an emoji like 🚀 or any short text"
+      />
+      <TextControl
+        label="Title"
+        value={card.title}
+        onChange={(val) => onUpdate('title', val)}
+      />
+      <TextControl
+        label="Description"
+        value={card.description}
+        onChange={(val) => onUpdate('description', val)}
+      />
+
+      <div style={{
+        display: 'flex',
+        gap: '8px',
+        marginTop: '12px',
+        flexWrap: 'wrap',
+      }}>
+        <Button
+          variant="secondary"
+          icon={copy}
+          onClick={onClone}
+          style={{ flex: 1, justifyContent: 'center' }}
+        >
+          Clone
+        </Button>
+        {canRemove && (
+          <Button
+            variant="secondary"
+            icon={trash}
+            onClick={onRemove}
+            isDestructive
+            style={{ flex: 1, justifyContent: 'center' }}
+          >
+            Delete
+          </Button>
+        )}
+      </div>
+    </PanelBody>
+  );
+}
 
 registerBlockType('myapp/card-grid', {
   title: 'Card Grid',
@@ -71,12 +143,17 @@ registerBlockType('myapp/card-grid', {
 
   edit: ({ attributes, setAttributes }) => {
     const {
-      cards, columns,
+      cards: cardsAttr, columns,
       backgroundColor, cardBackground,
       textColor, accentColor,
       borderRadius, gap, iconSize,
     } = attributes;
 
+    const cards = Array.isArray(cardsAttr) && cardsAttr.length > 0
+      ? cardsAttr
+      : [defaultCard({ id: 1 })];
+
+    const [expandedCardId, setExpandedCardId] = useState(cards[0]?.id ?? null);
     const blockProps = useBlockProps();
 
     function updateCard(id, field, value) {
@@ -88,18 +165,48 @@ registerBlockType('myapp/card-grid', {
     }
 
     function addCard() {
-      setAttributes({ cards: [...cards, defaultCard()] });
+      const newCard = defaultCard();
+      setAttributes({ cards: [...cards, newCard] });
+      setExpandedCardId(newCard.id);
+    }
+
+    function cloneCard(id) {
+      const index = cards.findIndex((c) => c.id === id);
+      const source = cards[index];
+      if (!source) return;
+
+      const clone = defaultCard({
+        icon: source.icon,
+        title: source.title ? `${source.title} (Copy)` : 'Card Title (Copy)',
+        description: source.description,
+      });
+
+      const next = [
+        ...cards.slice(0, index + 1),
+        clone,
+        ...cards.slice(index + 1),
+      ];
+      setAttributes({ cards: next });
+      setExpandedCardId(clone.id);
     }
 
     function removeCard(id) {
-      setAttributes({ cards: cards.filter((c) => c.id !== id) });
+      if (cards.length <= 1) return;
+      const next = cards.filter((c) => c.id !== id);
+      setAttributes({ cards: next });
+      if (expandedCardId === id) {
+        setExpandedCardId(next[0]?.id ?? null);
+      }
+    }
+
+    function expandCard(id) {
+      setExpandedCardId(id);
     }
 
     return (
       <>
         <InspectorControls>
 
-          {/* Layout */}
           <PanelBody title="Layout" initialOpen={true}>
             <SelectControl
               label="Columns"
@@ -135,7 +242,6 @@ registerBlockType('myapp/card-grid', {
             />
           </PanelBody>
 
-          {/* Colors */}
           <PanelColorSettings
             title="Colors"
             colorSettings={[
@@ -162,48 +268,39 @@ registerBlockType('myapp/card-grid', {
             ]}
           />
 
-          {/* Cards manager */}
           <PanelBody title={`Cards (${cards.length})`} initialOpen={true}>
-            {cards.map((card, index) => (
-              <div
-                key={card.id}
-                style={{
-                  padding: '10px',
-                  marginBottom: '8px',
-                  background: '#f5f5f5',
-                  borderRadius: '6px',
-                  fontSize: '13px',
-                }}
-              >
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  marginBottom: '6px',
-                }}>
-                  <strong>Card {index + 1}</strong>
-                  <Button
-                    onClick={() => removeCard(card.id)}
-                    variant="link"
-                    isDestructive
-                    style={{ fontSize: '12px' }}
-                  >
-                    Remove
-                  </Button>
-                </div>
-              </div>
-            ))}
             <Button
+              variant="primary"
+              icon={plus}
               onClick={addCard}
-              variant="secondary"
-              style={{ width: '100%', justifyContent: 'center', marginTop: '8px' }}
+              style={{ width: '100%', justifyContent: 'center', marginBottom: '12px' }}
             >
-              + Add Card
+              Add Card
             </Button>
+
+            {cards.map((card, index) => (
+              <CardFields
+                key={card.id}
+                card={card}
+                index={index}
+                isOpen={expandedCardId === card.id}
+                onToggle={(nextOpen) => {
+                  if (nextOpen) {
+                    expandCard(card.id);
+                  } else {
+                    setExpandedCardId(null);
+                  }
+                }}
+                onUpdate={(field, val) => updateCard(card.id, field, val)}
+                onClone={() => cloneCard(card.id)}
+                onRemove={() => removeCard(card.id)}
+                canRemove={cards.length > 1}
+              />
+            ))}
           </PanelBody>
 
         </InspectorControls>
 
-        {/* Editor View */}
         <div {...blockProps}>
           <div style={{ backgroundColor, padding: '32px' }}>
             <div style={{
@@ -211,53 +308,56 @@ registerBlockType('myapp/card-grid', {
               gridTemplateColumns: `repeat(${columns}, 1fr)`,
               gap: `${gap}px`,
             }}>
-              {cards.map((card) => (
-                <div
-                  key={card.id}
-                  style={{
-                    background: cardBackground,
-                    borderRadius: `${borderRadius}px`,
-                    padding: '28px 24px',
-                    border: `1px solid ${accentColor}22`,
-                  }}
-                >
-                  {/* Icon */}
-                  <RichText
-                    tagName="p"
-                    value={card.icon}
-                    onChange={(val) => updateCard(card.id, 'icon', val)}
-                    style={{ fontSize: `${iconSize}px`, marginBottom: '16px' }}
-                  />
-
-                  {/* Title */}
-                  <RichText
-                    tagName="h3"
-                    value={card.title}
-                    onChange={(val) => updateCard(card.id, 'title', val)}
-                    placeholder="Card title..."
+              {cards.map((card) => {
+                const isActive = expandedCardId === card.id;
+                return (
+                  <div
+                    key={card.id}
+                    onClick={() => expandCard(card.id)}
                     style={{
-                      color: textColor,
-                      fontSize: '18px',
-                      fontWeight: '600',
-                      marginBottom: '10px',
+                      background: cardBackground,
+                      borderRadius: `${borderRadius}px`,
+                      padding: '28px 24px',
+                      border: isActive
+                        ? `2px solid ${accentColor}`
+                        : `1px solid ${accentColor}22`,
+                      boxShadow: isActive ? `0 0 0 2px ${accentColor}33` : 'none',
+                      cursor: 'pointer',
                     }}
-                  />
-
-                  {/* Description */}
-                  <RichText
-                    tagName="p"
-                    value={card.description}
-                    onChange={(val) => updateCard(card.id, 'description', val)}
-                    placeholder="Card description..."
-                    style={{
-                      color: textColor,
-                      fontSize: '14px',
-                      lineHeight: '1.6',
-                      opacity: '0.75',
-                    }}
-                  />
-                </div>
-              ))}
+                  >
+                    <RichText
+                      tagName="p"
+                      value={card.icon}
+                      onChange={(val) => updateCard(card.id, 'icon', val)}
+                      style={{ fontSize: `${iconSize}px`, marginBottom: '16px' }}
+                    />
+                    <RichText
+                      tagName="h3"
+                      value={card.title}
+                      onChange={(val) => updateCard(card.id, 'title', val)}
+                      placeholder="Card title..."
+                      style={{
+                        color: textColor,
+                        fontSize: '18px',
+                        fontWeight: '600',
+                        marginBottom: '10px',
+                      }}
+                    />
+                    <RichText
+                      tagName="p"
+                      value={card.description}
+                      onChange={(val) => updateCard(card.id, 'description', val)}
+                      placeholder="Card description..."
+                      style={{
+                        color: textColor,
+                        fontSize: '14px',
+                        lineHeight: '1.6',
+                        opacity: '0.75',
+                      }}
+                    />
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -267,11 +367,15 @@ registerBlockType('myapp/card-grid', {
 
   save: ({ attributes }) => {
     const {
-      cards, columns,
+      cards: cardsAttr, columns,
       backgroundColor, cardBackground,
       textColor, accentColor,
       borderRadius, gap, iconSize,
     } = attributes;
+
+    const cards = Array.isArray(cardsAttr) && cardsAttr.length > 0
+      ? cardsAttr
+      : [defaultCard({ id: 1 })];
 
     const blockProps = useBlockProps.save();
 
