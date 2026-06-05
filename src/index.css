@@ -6,7 +6,7 @@
   padding: 0;
 }
 
-:root :where(.editor-styles-wrapper) {
+:root :where(.editor-layout) {
   --wp--custom--gap--baseline: 15px;
 }
 
@@ -21,6 +21,20 @@
   --border: #e0e0e0;
   --transition: all 300ms ease-in-out;
   --font-primary: "Montserrat", sans-serif;
+  --wp--custom--gap--baseline: 15px;
+}
+
+:root :where(.editor-layout) {
+  --wp--style--global--content-size: 800px;
+  --wp--style--global--wide-size: 1440px;
+}
+
+:root :where(.editor-layout) {
+  --wp--style--block-gap: calc(2 * var(--wp--custom--gap--baseline));
+}
+
+:root :where(.editor-layout) {
+  --wpadmin-bar--height: 46px;
 }
 
 body {
@@ -613,7 +627,7 @@ h1 {
 
 /* ✅ Show WP native inline inserter between blocks */
 .builder-wrapper .block-list-appender {
-  display: block !important;
+  display: flex !important;
 }
 
 /* ✅ drag handle visible on hover */
