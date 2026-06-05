@@ -496,7 +496,13 @@ h1 {
   z-index: 10;
 }
 
+.builder-wrapper .toolbar-inserter-wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
 .builder-wrapper .toolbar-inserter-btn {
+  position: relative;
   background: var(--primary);
   color: #fff;
   border: none;
@@ -1742,6 +1748,7 @@ span.myapp-underline {
   text-decoration: none;
   text-transform: inherit;
   font-family: var(--font-primary);
+  cursor: pointer;
 }
 
 .builder-wrapper .rich-text [data-rich-text-placeholder]:after {
@@ -1914,11 +1921,6 @@ body :where(.editor-styles-wrapper) .is-layout-flex {
 .components-border-radius-control legend {
   color: var(--black);
   font-weight: 600;
-}
-
-.block-editor-rich-text__editable {
-  outline: none;
-  border: 0px;
 }
 
 .block-editor-rich-text__editable span {
