@@ -44,16 +44,6 @@ export function EditorProvider({
   useEffect(() => { loadBlocks(); }, []);
 
   useEffect(() => {
-    const handleBlockClick = (e) => {
-      if (e.target.closest('.block-editor-block-types-list__list-item')) {
-        document.body.classList.remove('inserter-active');
-      }
-    };
-    document.addEventListener('click', handleBlockClick);
-    return () => document.removeEventListener('click', handleBlockClick);
-  }, []);
-
-  useEffect(() => {
     if (listViewOpen) {
       document.body.classList.add('list-view-active');
     } else {

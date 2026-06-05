@@ -100,81 +100,80 @@ function EditorApp({ settings }) {
                 </BlockEditorKeyboardShortcuts>
 
                 <div
-                  className={`editor-layout ${sidebarOpen ? "sidebar-open" : ""}`}
+                  className={`editor-layout ${sidebarOpen ? "sidebar-open" : ""} ${(sidebarOpen || listViewOpen) ? "split-open" : "split-closed"}`}
                 >
-                  {/* ---- MAIN EDITOR ---- */}
+                  <div className='components-popover__fallback-container'>
+                    <Popover.Slot />
+                  </div>
+
+                  {/* ---- MIDDLE: MAIN EDITOR ---- */}
                   <div className='editor-main'>
-                    {/* ✅ Fixed top toolbar with + inserter, Templates, Undo/Redo */}
-
-                    {/* ── Template Picker Panel ── */}
                     <TemplatePicker />
+                    <div className='editor-content'>
+                      <BlockTools>
+                        <BlockSelectionClearer>
+                          <div className='editor-canvas-wrapper'>
+                            <WritingFlow>
+                              <ObserveTyping>
+                                <div className='editor-canvas'>
+                                  <BlockList />
 
-                    {/* ✅ BlockTools wraps everything for drag and toolbar */}
-                    {/* -d addrd editor-layout and list view */}
+                                  {blocks.length > 0 && (
+                                    <div className='bottom-inserter'>
+                                      <Inserter
+                                        rootClientId={undefined}
+                                        clientId={undefined}
+                                        isAppender
+                                        renderToggle={({ onToggle }) => (
+                                          <button
+                                            className='inline-inserter-btn'
+                                            onClick={onToggle}
+                                            title='Add block below'
+                                          >
+                                            +
+                                          </button>
+                                        )}
+                                      />
+                                    </div>
+                                  )}
+                                </div>
+                              </ObserveTyping>
+                            </WritingFlow>
+                          </div>
+                        </BlockSelectionClearer>
+                      </BlockTools>
+                    </div>
+                  </div>
+
+                  {/* ---- RIGHT: SPLIT PANEL ---- */}
+                  {(listViewOpen || sidebarOpen) && (
                     <div className='editor-split-layout'>
-                      {/* LEFT: List View */}
                       {listViewOpen && (
                         <div className='editor-list-view'>
-                          <ListView />
+                          <div className='sidebar-header'>
+                            <span>Widgets / List</span>
+                          </div>
+                          <div className='sidebar-body'>
+                            <ListView />
+                          </div>
                         </div>
                       )}
 
-                      {/* RIGHT: Editor */}
-                      <div className='editor-content'>
-                        <BlockTools>
-                          <BlockSelectionClearer>
-                            <div className='editor-canvas-wrapper'>
-                              <WritingFlow>
-                                <ObserveTyping>
-                                  <div className='editor-canvas'>
-                                    {/* ✅ Empty state */}
-
-                                    {/* ✅ Main block list — drag and drop built in */}
-                                   <BlockList />
-
-                                    {/* ✅ Bottom inline + inserter */}
-                                    {blocks.length > 0 && (
-                                      <div className='bottom-inserter'>
-                                        <Inserter
-                                          rootClientId={undefined}
-                                          clientId={undefined}
-                                          isAppender
-                                          renderToggle={({ onToggle }) => (
-                                            <button
-                                              className='inline-inserter-btn'
-                                              onClick={onToggle}
-                                              title='Add block below'
-                                            >
-                                              +
-                                            </button>
-                                          )}
-                                        />
-                                      </div>
-                                    )}
-                                  </div>
-                                </ObserveTyping>
-                              </WritingFlow>
-                            </div>
-                          </BlockSelectionClearer>
-                        </BlockTools>
-                      </div>
-                    </div>
-                  </div>
-                  {/* ---- SIDEBAR ---- */}
-                  {sidebarOpen && (
-                    <div className='editor-sidebar'>
-                      <div className='sidebar-header'>
-                        <span>Block Settings</span>
-                      </div>
-                      <div className='sidebar-body'>
-                        <BlockInspector />
-                      </div>
+                      {sidebarOpen && (
+                        <div className='editor-sidebar'>
+                          <div className='sidebar-header'>
+                            <span>Block Settings</span>
+                          </div>
+                          <div className='sidebar-body'>
+                            <BlockInspector />
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
               </BlockEditorProvider>
             </ShortcutProvider>
-            <Popover.Slot />
           </SlotFillProvider>
         )}
 

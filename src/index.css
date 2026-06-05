@@ -465,19 +465,35 @@ body :where(.builder-wrapper) .is-layout-flex {
 
 /* ---- Editor Layout ---- */
 .builder-wrapper .editor-layout {
-  display: flex;
+  display: grid;
   background: #fff;
-  min-height: 600px;
-  overflow: visible;
+  min-height: calc(100vh - 70px);
+  height: calc(100vh - 70px);
+  overflow: hidden;
   position: relative;
+  grid-template-columns: 0 minmax(0, 1fr) 360px;
+}
+
+.builder-wrapper .editor-layout.split-closed {
+  grid-template-columns: 0 minmax(0, 1fr);
+}
+
+.builder-wrapper:has(.toolbar-inserter-btn[data-inserter-open='true']) .editor-layout {
+  grid-template-columns: 340px minmax(0, 1fr) 360px;
+}
+
+.builder-wrapper:has(.toolbar-inserter-btn[data-inserter-open='true']) .editor-layout.split-closed {
+  grid-template-columns: 340px minmax(0, 1fr);
 }
 
 /* ---- Main Editor ---- */
 .builder-wrapper .editor-main {
-  flex: 1;
+  width: 100%;
+  height: 100%;
   min-width: 0;
   display: flex;
   flex-direction: column;
+  overflow: auto;
 }
 
 /* ---- Toolbar ---- */
@@ -543,8 +559,8 @@ body :where(.builder-wrapper) .is-layout-flex {
 }
 
 .inserter-active .builder-wrapper .editor-canvas {
-  width: calc(100% - 366px);
-  margin-left: auto;
+  width: 100%;
+  margin-left: 0;
 }
 
 .block-editor-default-block-appender {
@@ -643,14 +659,14 @@ body :where(.builder-wrapper) .is-layout-flex {
 
 /* ---- Sidebar ---- */
 .builder-wrapper .editor-sidebar {
-  width: 280px;
-  min-width: 280px;
-  border-left: 1px solid #ddd;
+  width: 100%;
+  min-width: 0;
+  border-left: none;
   display: flex;
   flex-direction: column;
-  border-radius: 0 8px 8px 0;
+  border-radius: 0;
   background: #fff;
-  height: calc(100vh - 70px);
+  height: 100%;
 }
 
 .builder-wrapper .sidebar-header {
@@ -665,6 +681,30 @@ body :where(.builder-wrapper) .is-layout-flex {
 .builder-wrapper .sidebar-body {
   flex: 1;
   overflow-y: auto;
+}
+
+.builder-wrapper .editor-layout>.components-popover__fallback-container {
+  width: 100%;
+  height: 100%;
+  border-right: 1px solid #ddd;
+  background: #fff;
+  overflow: auto;
+  position: relative;
+}
+
+.builder-wrapper:not(:has(.toolbar-inserter-btn[data-inserter-open='true'])) .editor-layout>.components-popover__fallback-container {
+  border-right: none;
+  overflow: hidden;
+}
+
+.builder-wrapper .editor-split-layout {
+  width: 100%;
+  height: 100%;
+  border-left: 1px solid #ddd;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .builder-wrapper .block-editor-block-inspector {
@@ -1696,17 +1736,20 @@ span.myapp-underline {
 }
 
 .builder-wrapper .editor-list-view {
-  width: 350px;
-  height: 100vh;
-  border-right: 1px solid #ddd;
-  position: absolute;
-  left: 0px;
+  width: 100%;
+  height: 100%;
+  border-right: none;
+  position: static;
+  left: auto;
   padding: 4px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .list-view-active .editor-canvas {
-  width: calc(100% - 350px);
-  margin-left: auto;
+  width: 100%;
+  margin-left: 0;
 }
 
 .builder-wrapper .dashicons,
@@ -2276,4 +2319,36 @@ ul.block-editor-block-list__block .block-editor-rich-text__editable {
   display: flex;
   gap: 8px;
   align-items: center;
+}
+
+.builder-wrapper .editor-main {
+  overflow: auto !important;
+}
+
+.builder-wrapper .editor-content,
+.builder-wrapper .editor-canvas-wrapper,
+.builder-wrapper .editor-canvas {
+  overflow: visible;
+}
+
+.builder-wrapper .editor-list-view .sidebar-body,
+.builder-wrapper .editor-sidebar .sidebar-body {
+  overflow-y: auto;
+}
+
+@media (max-width: 1180px) {
+  .builder-wrapper .editor-layout,
+  .builder-wrapper .editor-layout.split-closed {
+    grid-template-columns: minmax(0, 1fr);
+    height: auto;
+    min-height: calc(100vh - 70px);
+  }
+
+  .builder-wrapper .editor-layout > .components-popover__fallback-container,
+  .builder-wrapper .editor-split-layout {
+    max-height: 320px;
+    border-left: none;
+    border-right: none;
+    border-top: 1px solid #ddd;
+  }
 }

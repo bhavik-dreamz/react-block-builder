@@ -19,22 +19,16 @@ export default function LeftToolbarButtonSet() {
         rootClientId={undefined}
         clientId={undefined}
         isAppender
-        renderToggle={({ onToggle }) => {
-          const handleClick = () => {
-            onToggle();
-            document.body.classList.toggle("inserter-active");
-          };
-
-          return (
-            <button
-              className='toolbar-inserter-btn'
-              onClick={handleClick}
-              title='Add block'
-            >
-              <FaPlus />
-            </button>
-          );
-        }}
+        renderToggle={({ onToggle, isOpen }) => (
+          <button
+            className='toolbar-inserter-btn'
+            data-inserter-open={isOpen ? 'true' : 'false'}
+            onClick={onToggle}
+            title='Add block'
+          >
+            <FaPlus />
+          </button>
+        )}
       />
 
       {/* Templates button */}
