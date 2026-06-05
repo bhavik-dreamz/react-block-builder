@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   BlockEditorProvider,
   BlockList,
@@ -14,14 +14,15 @@ import { serialize, parse } from "@wordpress/blocks";
 import { SlotFillProvider, Popover } from "@wordpress/components";
 import { ShortcutProvider } from "@wordpress/keyboard-shortcuts";
 import { BlockSelectionClearer } from "@wordpress/block-editor";
-import { EDITOR_SETTINGS } from "./config/editorSettings";
+import { EDITOR_SETTINGS, mergeEditorSettings } from "./config/editorSettings";
 import { EditorProvider, useEditor } from "./context/EditorContext";
 import { initBlocks } from "./registerBlocks";
+import { MediaLibrarySetup, applyMediaToSettings } from "./media";
 import LeftToolbarButtonSet from "./components/LeftToolbarButtonSet";
 import Header from "./components/Header";
 import TemplatePicker from "./components/TemplatePicker";
 
-function EditorApp() {
+function EditorApp({ settings }) {
   const {
     blocks,
     setBlocks,
@@ -85,7 +86,7 @@ function EditorApp() {
                   }
                   setBlocks(newBlocks);
                 }}
-                settings={EDITOR_SETTINGS}
+                settings={settings}
                 useSubRegistry={true}
               >
                 <BlockEditorKeyboardShortcuts>
@@ -218,22 +219,31 @@ function App({
   initialTitle,
   initialPageId,
   blockRegistry = [],
+  customBlocksConfig = [],
+  editorSettings,
+  media,
 }) {
-  // Register dynamic blocks
-  initBlocks(blockRegistry);
+  initBlocks(blockRegistry, { customBlocksConfig });
+
+  const settings = useMemo(() => {
+    const merged = mergeEditorSettings(EDITOR_SETTINGS, editorSettings);
+    return applyMediaToSettings(merged, media);
+  }, [editorSettings, media]);
 
   return (
-    <EditorProvider
-      onViewSite={onViewSite}
-      onSave={onSave}
-      onLoad={onLoad}
-      onClear={onClear}
-      initialContent={initialContent}
-      initialTitle={initialTitle}
-      initialPageId={initialPageId}
-    >
-      <EditorApp />
-    </EditorProvider>
+    <MediaLibrarySetup media={media}>
+      <EditorProvider
+        onViewSite={onViewSite}
+        onSave={onSave}
+        onLoad={onLoad}
+        onClear={onClear}
+        initialContent={initialContent}
+        initialTitle={initialTitle}
+        initialPageId={initialPageId}
+      >
+        <EditorApp settings={settings} />
+      </EditorProvider>
+    </MediaLibrarySetup>
   );
 }
 
