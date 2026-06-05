@@ -50,6 +50,8 @@
   },
   "sideEffects": [
     "*.css",
+    "./src/registerBlocks.jsx",
+    "./src/blocks/**/*.jsx",
     "./dist/styles.css",
     "./dist/bootstrap.mjs",
     "./dist/bootstrap.cjs"
