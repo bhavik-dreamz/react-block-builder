@@ -6,7 +6,7 @@
   padding: 0;
 }
 
-:root :where(.editor-styles-wrapper) {
+:root :where(.editor-layout) {
   --wp--custom--gap--baseline: 15px;
 }
 
@@ -21,6 +21,19 @@
   --border: #e0e0e0;
   --transition: all 300ms ease-in-out;
   --font-primary: "Montserrat", sans-serif;
+}
+
+:root :where(.editor-layout) {
+  --wp--style--global--content-size: 800px;
+  --wp--style--global--wide-size: 1440px;
+}
+
+:root :where(.editor-layout) {
+  --wp--style--block-gap: calc(2 * var(--wp--custom--gap--baseline));
+}
+
+:root :where(.editor-layout) {
+  --wpadmin-bar--height: 46px;
 }
 
 body {
@@ -613,7 +626,7 @@ h1 {
 
 /* ✅ Show WP native inline inserter between blocks */
 .builder-wrapper .block-list-appender {
-  display: block !important;
+  display: flex !important;
 }
 
 /* ✅ drag handle visible on hover */
@@ -2172,3 +2185,105 @@ ul.block-editor-block-list__block .block-editor-rich-text__editable {
   opacity: 1;
   pointer-events: auto;
 }
+
+/* ------------------ Group Css ---------------- */
+.block-list-appender>.block-editor-inserter {
+  display: block;
+  width: 100%;
+}
+
+
+.builder-wrapper .block-list-appender:only-child {
+  align-self: center;
+  line-height: inherit;
+  list-style: none;
+  position: relative;
+  right: auto;
+}
+
+.builder-wrapper .block-list-appender {
+  max-width: var(--wp--style--global--content-size) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.builder-wrapper .block-editor-block-list__layout.is-content-justification-left .block-list-appender.wp-block {
+  margin-left: 0 !important;
+}
+
+.builder-wrapper .block-editor-block-list__layout.is-content-justification-right .block-list-appender.wp-block {
+  margin-right: 0 !important;
+}
+
+.builder-wrapper .block-list-appender .components-button.is-next-40px-default-size {
+  height: 40px;
+}
+
+.block-editor-block-list__layout [class^=components-] {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.block-editor-button-block-appender:hover {
+  box-shadow: inset 0 0 0 1px var(--wp-admin-theme-color);
+  color: var(--wp-admin-theme-color);
+}
+
+.wp-block-group.is-layout-flex.block-editor-block-list__block>.block-list-appender:only-child {
+  gap: var(--wp--style--block-gap);
+}
+
+.wp-block-group.is-layout-flex.block-editor-block-list__block>.block-list-appender:only-child,
+.wp-block-group.is-layout-flex.block-editor-block-list__block>.block-list-appender:only-child .block-editor-default-block-appender__content,
+.wp-block-group.is-layout-flex.block-editor-block-list__block>.block-list-appender:only-child .block-editor-inserter {
+  display: inherit;
+  flex: 1;
+  flex-direction: inherit;
+  width: 100%;
+}
+
+.builder-wrapper .wp-block-group.is-layout-flex.block-editor-block-list__block>.block-list-appender:only-child:after {
+  border: 1px dashed;
+  content: "";
+  display: flex;
+  flex: 1 0 40px;
+  min-height: 38px;
+  pointer-events: none;
+}
+
+.builder-wrapper .block-editor-block-list__layout.wp-block-group-is-layout-flex.is-vertical {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.builder-wrapper .wp-container-core-group-is-layout-0> :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
+  max-width: 1200px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+:where(.builder-wrapper) .is-layout-grid {
+  display: grid;
+  gap: calc(2 * var(--wp--custom--gap--baseline));
+}
+
+:where(.builder-wrapper) .is-layout-grid.wp-block-group-is-layout-grid .block-list-appender {
+  width: 100%;
+}
+
+:where(.builder-wrapper) .is-layout-grid.wp-block-group-is-layout-grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(12rem, 100%), 1fr));
+  container-type: inline-size;
+}
+
+:where(.builder-wrapper) .is-layout-grid.wp-container-core-group-is-layout-0 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+/* 
+:where(.builder-wrapper) .is-layout-grid.wp-container-core-group-is-layout-0 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+:where(.builder-wrapper) .is-layout-grid.wp-container-core-group-is-layout-0 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+} */
