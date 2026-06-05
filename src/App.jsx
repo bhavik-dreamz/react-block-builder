@@ -18,7 +18,7 @@ import { EDITOR_SETTINGS, mergeEditorSettings } from "./config/editorSettings";
 import { EditorProvider, useEditor } from "./context/EditorContext";
 import { initBlocks } from "./registerBlocks";
 import { MediaLibrarySetup, applyMediaToSettings } from "./media";
-import LeftToolbarButtonSet from "./components/LeftToolbarButtonSet";
+
 import Header from "./components/Header";
 import TemplatePicker from "./components/TemplatePicker";
 
@@ -32,7 +32,8 @@ function EditorApp({ settings }) {
     listViewOpen,
     blocksRef,
     pushHistory,
-    editorMode, setEditorMode,
+    editorMode,
+    setEditorMode,
     fullscreen,
     spotlightMode,
     distractionFree,
@@ -40,7 +41,9 @@ function EditorApp({ settings }) {
 
   return (
     <>
-      <div className={`builder-wrapper editor-wrapper${fullscreen ? ' is-fullscreen' : ''}${spotlightMode ? ' is-spotlight' : ''}${distractionFree ? ' is-distraction-free' : ''}`}>
+      <div
+        className={`builder-wrapper editor-wrapper${fullscreen ? " is-fullscreen" : ""}${spotlightMode ? " is-spotlight" : ""}${distractionFree ? " is-distraction-free" : ""}`}
+      >
         {/* ---- HEADER ---- */}
         <Header />
 
@@ -53,12 +56,15 @@ function EditorApp({ settings }) {
               dangerouslySetInnerHTML={{ __html: serialize(blocks) }}
             />
           </div>
-        ) : editorMode === 'code' ? (
+        ) : editorMode === "code" ? (
           /* ---- CODE EDITOR MODE ---- */
           <div className='code-editor-mode'>
             <div className='code-editor-header'>
               <span>Editing code</span>
-              <button className='code-editor-exit-btn' onClick={() => setEditorMode('visual')}>
+              <button
+                className='code-editor-exit-btn'
+                onClick={() => setEditorMode("visual")}
+              >
                 Exit code editor
               </button>
             </div>
@@ -68,7 +74,7 @@ function EditorApp({ settings }) {
               onChange={(e) => {
                 try {
                   setBlocks(parse(e.target.value));
-                } catch (_) { }
+                } catch (_) {}
               }}
               spellCheck={false}
             />
@@ -100,7 +106,6 @@ function EditorApp({ settings }) {
                   <div className='editor-main'>
                     {/* ✅ Fixed top toolbar with + inserter, Templates, Undo/Redo */}
 
-
                     {/* ── Template Picker Panel ── */}
                     <TemplatePicker />
 
@@ -110,7 +115,6 @@ function EditorApp({ settings }) {
                       {/* LEFT: List View */}
                       {listViewOpen && (
                         <div className='editor-list-view'>
-
                           <ListView />
                         </div>
                       )}
@@ -126,7 +130,7 @@ function EditorApp({ settings }) {
                                     {/* ✅ Empty state */}
 
                                     {/* ✅ Main block list — drag and drop built in */}
-                                    <BlockList />
+                                   <BlockList />
 
                                     {/* ✅ Bottom inline + inserter */}
                                     {blocks.length > 0 && (
@@ -205,7 +209,6 @@ function EditorApp({ settings }) {
           </div>
         )}
       </div>
-
     </>
   );
 }

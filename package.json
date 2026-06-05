@@ -96,7 +96,7 @@
     "build:lib": "vite build --config vite.lib.config.js && node scripts/build-styles.mjs",
     "build:demo": "pnpm run build:lib && vite build",
     "preview": "vite preview",
-    "preview:demo": "vite preview --outDir dist-demo",
+    "preview:demo": "pnpm run build:demo && vite preview --config vite.config.js",
     "test:exports": "pnpm run build:lib && node examples/smoke-exports.mjs",
     "test:ssr": "pnpm run build:lib && node examples/smoke-ssr.mjs && node examples/smoke-renderer-ssr.mjs",
     "test:bundle": "pnpm run build:lib && node examples/verify-renderer-bundle.mjs",
