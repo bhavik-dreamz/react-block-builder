@@ -1,9 +1,9 @@
 /**
  * Client-only editor entry — do not import in Server Components or Node SSR.
  * Includes bootstrap side effects. Import styles separately:
- *   import 'react-block-builder/styles'
+ *   import 'gutenberg-block-kit/styles'
  *
- * For SSR HTML use `react-block-builder/renderer`.
+ * For SSR HTML use `gutenberg-block-kit/renderer`.
  *
  * Custom blocks: pass `blockRegistry` or `customBlocksConfig` to BlockEditor,
  * or call `initBlocks(blocks, { customBlocksConfig })` before mount.

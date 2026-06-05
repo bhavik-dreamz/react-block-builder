@@ -1,5 +1,5 @@
 {
-  "name": "react-block-builder",
+  "name": "gutenberg-block-kit",
   "version": "1.0.0",
   "description": "Gutenberg block editor and SSR-safe renderer for React — use in Next.js, Remix, or Vite with onSave/onLoad hooks.",
   "private": false,

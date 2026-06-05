@@ -1,7 +1,7 @@
 import { addFilter, removeFilter } from '@wordpress/hooks';
 import HostMediaUpload from './HostMediaUpload.jsx';
 
-const FILTER_NAME = 'react-block-builder/host-media-upload';
+const FILTER_NAME = 'gutenberg-block-kit/host-media-upload';
 
 let active = false;
 

@@ -6,15 +6,17 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const dist = join(dirname(fileURLToPath(import.meta.url)), '..', 'dist');
+// Demo-specific identifiers (avoid generic names like loadPage used inside the library)
 const forbidden = [
   'supabase',
   'savePage',
-  'loadPage',
   'listPages',
   'deletePage',
   'FrontendPage',
   'rbb_pages',
   'supabaseClient',
+  'examples/demo/api',
+  'demoMediaHandlers',
 ];
 
 function walk(dir, files = []) {

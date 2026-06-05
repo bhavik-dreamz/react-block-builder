@@ -2,7 +2,7 @@
  * Demo public site viewer — not part of the published package.
  */
 import React, { useState, useEffect } from 'react';
-import { BlockRenderer } from 'react-block-builder/renderer';
+import { BlockRenderer } from 'gutenberg-block-kit/renderer';
 import { listPages, loadPage, deletePage } from './api.js';
 
 import '@wordpress/block-library/build-style/style.css';

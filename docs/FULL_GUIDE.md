@@ -1,8 +1,8 @@
-# react-block-builder — Complete Guide
+# gutenberg-block-kit — Complete Guide
 
 **Audience:** Developers integrating the package, and **AI coding agents** maintaining this repo.
 
-**Repository:** [github.com/bhavik-dreamz/react-block-builder](https://github.com/bhavik-dreamz/react-block-builder)
+**Repository:** [github.com/bhavik-dreamz/gutenberg-block-kit](https://github.com/bhavik-dreamz/gutenberg-block-kit)
 
 ---
 
@@ -31,7 +31,7 @@
 
 ## 1. What this project is
 
-`react-block-builder` is a **publishable npm library** (JavaScript, not TypeScript) that wraps WordPress Gutenberg (`@wordpress/block-editor`) for use in any React app.
+`gutenberg-block-kit` is a **publishable npm library** (JavaScript, not TypeScript) that wraps WordPress Gutenberg (`@wordpress/block-editor`) for use in any React app.
 
 | Piece | Role | Runs on server? |
 |-------|------|-----------------|
@@ -65,7 +65,7 @@ NOT PUBLISHED
 ### Do not
 
 - Put `localStorage`, Supabase, or `savePage` in `src/` library code.
-- Import `react-block-builder/editor` in Server Components or Node SSR.
+- Import `gutenberg-block-kit/editor` in Server Components or Node SSR.
 - Bundle `react` / `react-dom` inside the library (they are **peerDependencies**).
 - Add `next/*`, `@remix-run/*`, or framework-specific imports to `src/`.
 - Export `api.js` or demo files from `package.json` `exports`.
@@ -94,7 +94,7 @@ pnpm run build:demo
 ## 3. Repository layout
 
 ```
-react-block-builder/
+gutenberg-block-kit/
 ├── src/                      # Library source (published via dist/)
 │   ├── App.jsx               # BlockEditor component
 │   ├── editor.js             # Package entry: editor
@@ -134,13 +134,13 @@ react-block-builder/
 
 | Subpath | File | Purpose |
 |---------|------|---------|
-| `react-block-builder` | `dist/editor.mjs` | Default = editor |
-| `react-block-builder/editor` | `dist/editor.mjs` | BlockEditor, initBlocks, EditorProvider |
-| `react-block-builder/renderer` | `dist/renderer.mjs` | BlockRenderer only |
-| `react-block-builder/styles` | `dist/styles.css` | Editor styles |
-| `react-block-builder/bootstrap` | `dist/bootstrap.mjs` | Optional (editor already imports it) |
+| `gutenberg-block-kit` | `dist/editor.mjs` | Default = editor |
+| `gutenberg-block-kit/editor` | `dist/editor.mjs` | BlockEditor, initBlocks, EditorProvider |
+| `gutenberg-block-kit/renderer` | `dist/renderer.mjs` | BlockRenderer only |
+| `gutenberg-block-kit/styles` | `dist/styles.css` | Editor styles |
+| `gutenberg-block-kit/bootstrap` | `dist/bootstrap.mjs` | Optional (editor already imports it) |
 
-**Important:** `BlockRenderer` is **not** on the root export. Use `react-block-builder/renderer`.
+**Important:** `BlockRenderer` is **not** on the root export. Use `gutenberg-block-kit/renderer`.
 
 ---
 
@@ -154,7 +154,7 @@ react-block-builder/
 ### Commands
 
 ```bash
-cd react-block-builder
+cd gutenberg-block-kit
 pnpm install
 
 # Build library → dist/
@@ -189,9 +189,9 @@ Only `dist/` is published (`package.json` → `"files": ["dist"]`).
    ```
 3. Check package name is free:
    ```bash
-   npm view react-block-builder
+   npm view gutenberg-block-kit
    ```
-   If taken, change `"name"` in `package.json` (e.g. `@your-scope/react-block-builder`).
+   If taken, change `"name"` in `package.json` (e.g. `@your-scope/gutenberg-block-kit`).
 
 ### Pre-publish checklist
 
@@ -219,24 +219,24 @@ npm pack --dry-run
 # Publish (first time for scoped packages: --access public)
 npm publish
 # or
-npm publish --access public   # if name is @scope/react-block-builder
+npm publish --access public   # if name is @scope/gutenberg-block-kit
 ```
 
 ### After publish — install in any app
 
 ```bash
-npm install react-block-builder react react-dom
+npm install gutenberg-block-kit react react-dom
 ```
 
 ### Link locally without publishing (development)
 
 ```bash
-# In react-block-builder repo
+# In gutenberg-block-kit repo
 pnpm run build:lib
 npm link
 
 # In your Next.js / Vite app
-npm link react-block-builder
+npm link gutenberg-block-kit
 ```
 
 ---
@@ -248,7 +248,7 @@ The demo lives in **`examples/demo/`**. It uses the library via Vite aliases (de
 ### Start dev server
 
 ```bash
-cd react-block-builder
+cd gutenberg-block-kit
 pnpm install
 pnpm run dev
 ```
@@ -257,8 +257,8 @@ Open **http://localhost:5173**
 
 ### What the demo does
 
-- Imports `BlockEditor` from `react-block-builder/editor`
-- Imports `react-block-builder/styles`
+- Imports `BlockEditor` from `gutenberg-block-kit/editor`
+- Imports `gutenberg-block-kit/styles`
 - Saves pages via `examples/demo/api.js` (localStorage + optional Supabase)
 - “View site” uses `FrontendPage` + `BlockRenderer`
 
@@ -334,8 +334,8 @@ vercel --prod
 ### Minimal editor page
 
 ```jsx
-import 'react-block-builder/styles';
-import { BlockEditor } from 'react-block-builder/editor';
+import 'gutenberg-block-kit/styles';
+import { BlockEditor } from 'gutenberg-block-kit/editor';
 
 export default function AdminEditor() {
   return (
@@ -360,7 +360,7 @@ export default function AdminEditor() {
 ### Minimal public page
 
 ```jsx
-import { BlockRenderer } from 'react-block-builder/renderer';
+import { BlockRenderer } from 'gutenberg-block-kit/renderer';
 import '@wordpress/block-library/build-style/style.css';
 
 export function PublicPage({ html }) {
@@ -392,7 +392,7 @@ export function PublicPage({ html }) {
 ```bash
 npx create-next-app@latest my-site
 cd my-site
-npm install react-block-builder
+npm install gutenberg-block-kit
 ```
 
 `next.config.js`:
@@ -400,7 +400,7 @@ npm install react-block-builder
 ```js
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ['react-block-builder'],
+  transpilePackages: ['gutenberg-block-kit'],
 };
 
 module.exports = nextConfig;
@@ -413,8 +413,8 @@ module.exports = nextConfig;
 ```jsx
 'use client';
 
-import 'react-block-builder/styles';
-import { BlockEditor } from 'react-block-builder/editor';
+import 'gutenberg-block-kit/styles';
+import { BlockEditor } from 'gutenberg-block-kit/editor';
 
 export default function BlockEditorClient({ pageId, initial }) {
   return (
@@ -458,7 +458,7 @@ export default function EditorPage() {
 `app/(site)/[slug]/page.jsx`:
 
 ```jsx
-import { BlockRenderer } from 'react-block-builder/renderer';
+import { BlockRenderer } from 'gutenberg-block-kit/renderer';
 import '@wordpress/block-library/build-style/style.css';
 
 async function getPage(slug) {
@@ -509,8 +509,8 @@ export async function POST(request) {
 
 ```tsx
 import type { MetaFunction } from '@remix-run/node';
-import 'react-block-builder/styles';
-import { BlockEditor } from 'react-block-builder/editor';
+import 'gutenberg-block-kit/styles';
+import { BlockEditor } from 'gutenberg-block-kit/editor';
 import { useFetcher } from '@remix-run/react';
 
 export const meta: MetaFunction = () => [{ title: 'Editor' }];
@@ -604,7 +604,7 @@ CRA is harder with modern `@wordpress/*` ESM packages. **Prefer Vite or Next.js.
 ### Imperative
 
 ```js
-import { initBlocks, BlockEditor } from 'react-block-builder/editor';
+import { initBlocks, BlockEditor } from 'gutenberg-block-kit/editor';
 
 initBlocks(myBlocks, { customBlocksConfig: moreBlocks });
 ```
@@ -631,7 +631,7 @@ Reference implementation: `examples/demo/api.js` (copy patterns, do not import f
 
 | Surface | Import |
 |---------|--------|
-| Editor routes | `import 'react-block-builder/styles'` |
+| Editor routes | `import 'gutenberg-block-kit/styles'` |
 | Public / SSR pages | `import '@wordpress/block-library/build-style/style.css'` |
 
 Never import editor styles on public-only routes (large bundle).
@@ -672,9 +672,9 @@ When editing this repository:
 |---------|--------|-----|
 | Invalid hook call / two Reacts | Duplicate React | `react`/`react-dom` as peers; dedupe in Vite; one React version in app |
 | `window is not defined` | Editor imported on server | `dynamic(..., { ssr: false })` or `'use client'` |
-| `document is not defined` | Editor chunk loaded in Node | Import only `react-block-builder/renderer` on server |
+| `document is not defined` | Editor chunk loaded in Node | Import only `gutenberg-block-kit/renderer` on server |
 | Blocks unstyled on frontend | Missing block library CSS | Import `@wordpress/block-library/build-style/style.css` |
-| Editor UI broken / unstyled | Missing editor CSS | `import 'react-block-builder/styles'` |
+| Editor UI broken / unstyled | Missing editor CSS | `import 'gutenberg-block-kit/styles'` |
 | Huge bundle on public page | Editor CSS/JS on wrong route | Split routes; use `/renderer` only |
 | `npm publish` missing files | Forgot build | Run `pnpm run build:lib` first |
 | Vercel 404 on demo | Wrong output dir | Output must be `dist-demo`, build `pnpm run build:demo` |

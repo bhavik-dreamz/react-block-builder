@@ -1,4 +1,4 @@
-# react-block-builder demo
+# gutenberg-block-kit demo
 
 Playground app — **not** published to npm.
 

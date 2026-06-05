@@ -1,8 +1,8 @@
-# react-block-builder
+# gutenberg-block-kit
 
 Gutenberg-powered **block editor** and **SSR-safe renderer** for React. Use in **Next.js (App Router)**, **Remix**, or **Vite** — no WordPress install required.
 
-**[Live demo](https://react-block-builder.vercel.app/)** · Demo source: [`examples/demo/`](examples/demo/)
+**[Live demo](https://gutenberg-block-kit.vercel.app/)** · Demo source: [`examples/demo/`](examples/demo/)
 
 > **Full documentation** (npm publish, Vercel deploy, Next.js/Remix/Vite, AI agent rules):  
 > **[docs/FULL_GUIDE.md](docs/FULL_GUIDE.md)** · Quick reference for Cursor/agents: **[AGENTS.md](AGENTS.md)**
@@ -12,7 +12,7 @@ Gutenberg-powered **block editor** and **SSR-safe renderer** for React. Use in *
 ## Install
 
 ```bash
-npm install react-block-builder react react-dom
+npm install gutenberg-block-kit react react-dom
 ```
 
 **Peer dependencies:** `react` and `react-dom` (`^18` or `^19`). Your app must provide a single React instance ([dedupe](#vite--cra) in Vite).
@@ -23,15 +23,15 @@ npm install react-block-builder react react-dom
 
 | Import path | Use |
 |-------------|-----|
-| `react-block-builder` / `react-block-builder/editor` | `BlockEditor` (client only) |
-| `react-block-builder/renderer` | `BlockRenderer` (SSR / RSC safe) |
-| `react-block-builder/styles` | Editor CSS (required for the editor UI) |
-| `react-block-builder/bootstrap` | Optional; editor entry already runs bootstrap |
+| `gutenberg-block-kit` / `gutenberg-block-kit/editor` | `BlockEditor` (client only) |
+| `gutenberg-block-kit/renderer` | `BlockRenderer` (SSR / RSC safe) |
+| `gutenberg-block-kit/styles` | Editor CSS (required for the editor UI) |
+| `gutenberg-block-kit/bootstrap` | Optional; editor entry already runs bootstrap |
 
 ```js
-import { BlockEditor, initBlocks } from 'react-block-builder/editor';
-import { BlockRenderer, BLOCK_LIBRARY_STYLES } from 'react-block-builder/renderer';
-import 'react-block-builder/styles';
+import { BlockEditor, initBlocks } from 'gutenberg-block-kit/editor';
+import { BlockRenderer, BLOCK_LIBRARY_STYLES } from 'gutenberg-block-kit/renderer';
+import 'gutenberg-block-kit/styles';
 ```
 
 ---
@@ -41,8 +41,8 @@ import 'react-block-builder/styles';
 **1. Editor (client only)**
 
 ```jsx
-import 'react-block-builder/styles';
-import { BlockEditor } from 'react-block-builder/editor';
+import 'gutenberg-block-kit/styles';
+import { BlockEditor } from 'gutenberg-block-kit/editor';
 
 export default function CMSPage() {
   return (
@@ -68,7 +68,7 @@ export default function CMSPage() {
 **2. Public page (server or client)**
 
 ```jsx
-import { BlockRenderer } from 'react-block-builder/renderer';
+import { BlockRenderer } from 'gutenberg-block-kit/renderer';
 import '@wordpress/block-library/build-style/style.css';
 
 export function PublicPage({ html }) {
@@ -85,7 +85,7 @@ export function PublicPage({ html }) {
 
 | Surface | Import |
 |---------|--------|
-| **Editor** | `import 'react-block-builder/styles'` |
+| **Editor** | `import 'gutenberg-block-kit/styles'` |
 | **Rendered HTML** | `import '@wordpress/block-library/build-style/style.css'` (or `BLOCK_LIBRARY_STYLES` constant from the renderer entry) |
 
 Do **not** import editor styles on public-only routes — they are large (~500KB).
@@ -100,8 +100,8 @@ Do **not** import editor styles on public-only routes — they are large (~500KB
 // app/admin/editor/BlockEditorClient.jsx
 'use client';
 
-import 'react-block-builder/styles';
-import { BlockEditor } from 'react-block-builder/editor';
+import 'gutenberg-block-kit/styles';
+import { BlockEditor } from 'gutenberg-block-kit/editor';
 
 export default function BlockEditorClient(props) {
   return <BlockEditor {...props} />;
@@ -131,7 +131,7 @@ export default function EditorPage() {
 
 ```jsx
 // app/pages/[slug]/page.jsx
-import { BlockRenderer } from 'react-block-builder/renderer';
+import { BlockRenderer } from 'gutenberg-block-kit/renderer';
 import '@wordpress/block-library/build-style/style.css';
 
 export default async function Page({ params }) {
@@ -144,7 +144,7 @@ export default async function Page({ params }) {
 
 ```js
 const nextConfig = {
-  transpilePackages: ['react-block-builder'],
+  transpilePackages: ['gutenberg-block-kit'],
 };
 export default nextConfig;
 ```
@@ -157,8 +157,8 @@ export default nextConfig;
 
 ```jsx
 // app/routes/admin.editor.tsx
-import 'react-block-builder/styles';
-import { BlockEditor } from 'react-block-builder/editor';
+import 'gutenberg-block-kit/styles';
+import { BlockEditor } from 'gutenberg-block-kit/editor';
 import { ClientOnly } from 'remix-utils/client-only'; // or your own guard
 
 export default function AdminEditor() {
@@ -179,7 +179,7 @@ export default function AdminEditor() {
 
 ```jsx
 // app/routes/pages.$slug.tsx
-import { BlockRenderer } from 'react-block-builder/renderer';
+import { BlockRenderer } from 'gutenberg-block-kit/renderer';
 import blockLibraryStyles from '@wordpress/block-library/build-style/style.css?url';
 
 export const links = () => [{ rel: 'stylesheet', href: blockLibraryStyles }];
@@ -253,7 +253,7 @@ Same shape as [`src/data/customBlocksConfig.json`](src/data/customBlocksConfig.j
 ### Option C — `initBlocks()` before mount
 
 ```jsx
-import { initBlocks, BlockEditor } from 'react-block-builder/editor';
+import { initBlocks, BlockEditor } from 'gutenberg-block-kit/editor';
 
 initBlocks(myBlocks, { customBlocksConfig: moreBlocks });
 
@@ -319,12 +319,12 @@ See `examples/demo/mediaHandlers.js` for a localStorage demo.
 ### Override editor settings
 
 ```jsx
-import 'react-block-builder/styles';
+import 'gutenberg-block-kit/styles';
 import {
   BlockEditor,
   EDITOR_SETTINGS,
   mergeEditorSettings,
-} from 'react-block-builder/editor';
+} from 'gutenberg-block-kit/editor';
 
 const mySettings = mergeEditorSettings(EDITOR_SETTINGS, {
   bodyPlaceholder: 'Start writing…',
@@ -373,8 +373,8 @@ const mySettings = mergeEditorSettings(EDITOR_SETTINGS, {
 ## Develop this repo
 
 ```bash
-git clone https://github.com/bhavik-dreamz/react-block-builder.git
-cd react-block-builder
+git clone https://github.com/bhavik-dreamz/gutenberg-block-kit.git
+cd gutenberg-block-kit
 pnpm install
 pnpm run dev          # examples/demo → http://localhost:5173
 pnpm run build:lib    # npm package → dist/

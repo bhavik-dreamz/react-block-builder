@@ -36,7 +36,7 @@ export default function MediaLibraryModal({
   const [error, setError] = useState(null);
   const [selected, setSelected] = useState([]);
 
-  const loadPage = useCallback(
+  const fetchImagesPage = useCallback(
     async (nextPage, nextSearch) => {
       if (!media?.listImages) {
         return;
@@ -67,7 +67,7 @@ export default function MediaLibraryModal({
   );
 
   useEffect(() => {
-    loadPage(1, search);
+    fetchImagesPage(1, search);
   }, []);
 
   function toggleSelect(item) {
@@ -98,7 +98,7 @@ export default function MediaLibraryModal({
     setError(null);
     try {
       const uploaded = await media.uploadImage(file);
-      await loadPage(page, search);
+      await fetchImagesPage(page, search);
       if (uploaded) {
         setSelected(multiple ? (prev) => [...prev, uploaded] : [uploaded]);
       }
@@ -134,11 +134,11 @@ export default function MediaLibraryModal({
           onChange={setSearch}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
-              loadPage(1, search);
+              fetchImagesPage(1, search);
             }
           }}
         />
-        <Button variant="secondary" onClick={() => loadPage(1, search)} disabled={loading}>
+        <Button variant="secondary" onClick={() => fetchImagesPage(1, search)} disabled={loading}>
           Search
         </Button>
         {media?.uploadImage && (
@@ -183,14 +183,14 @@ export default function MediaLibraryModal({
           <Button
             variant="secondary"
             disabled={loading || page <= 1}
-            onClick={() => loadPage(page - 1, search)}
+            onClick={() => fetchImagesPage(page - 1, search)}
           >
             Previous
           </Button>
           <Button
             variant="secondary"
             disabled={loading || page >= totalPages}
-            onClick={() => loadPage(page + 1, search)}
+            onClick={() => fetchImagesPage(page + 1, search)}
           >
             Next
           </Button>
