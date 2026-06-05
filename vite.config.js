@@ -3,8 +3,8 @@ import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 
 const repoRoot = __dirname;
-// `pnpm run build:demo` uses dist/; `pnpm run dev` uses src/
-const useDist = process.env.npm_lifecycle_event === 'build:demo';
+// Default to src aliases for browser safety. Opt in to dist aliases explicitly.
+const useDist = process.env.GBK_DEMO_USE_DIST === '1';
 
 function pkgAlias(subpath, srcFile) {
   if (useDist) {
