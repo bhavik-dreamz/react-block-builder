@@ -51,11 +51,6 @@ p {
   color: var(--black);
 }
 
-h1 {
-  font-size: 50px;
-  line-height: 60px;
-}
-
 .builder button {
   transition: var(--transition);
   font-family: var(--font-primary);
@@ -1802,13 +1797,6 @@ span.myapp-underline {
   justify-content: center;
   width: 100%;
 }
-
-/* .builder-wrapper .components-dropdown.block-editor-inserter{
-  width: auto;
-}
-.builder-wrapper .block-list-appender .components-dropdown{
-  width: 100%;
-} */
 .block-editor-block-variation-transforms {
   box-sizing: border-box;
   padding: 0 16px 16px;
@@ -1860,10 +1848,6 @@ body :where(.editor-styles-wrapper) .is-layout-flex {
   display: flex;
   flex-direction: column;
   gap: 20px;
-}
-
-.block-editor-block-list__block {
-  font-size: inherit;
 }
 
 .components-unit-control__select {
