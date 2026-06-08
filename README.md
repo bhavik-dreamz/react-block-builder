@@ -207,6 +207,8 @@ export default defineConfig({
 });
 ```
 
+Do **not** add `gutenberg-block-kit/editor` to `optimizeDeps.include` manually — Vite will pre-bundle it into `node_modules/.vite/deps/` with a second React copy and you get `Cannot read properties of undefined (reading 'cloneElement')`. After upgrading, run `rm -rf node_modules/.vite` and restart dev.
+
 **Editor route (SSR)** — never top-level `import { BlockEditor } from 'gutenberg-block-kit/editor'` in a route file (React Router evaluates all routes on the server → `document is not defined`). Use `ClientBlockEditor` instead:
 
 ```jsx

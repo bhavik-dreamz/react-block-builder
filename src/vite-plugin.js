@@ -40,7 +40,12 @@ export function gutenbergBlockKitVite() {
           dedupe: ['react', 'react-dom', '@wordpress/element'],
         },
         optimizeDeps: {
-          include: ['gutenberg-block-kit/editor'],
+          // Pre-bundling the editor duplicates React → cloneElement / hook errors.
+          exclude: [
+            'gutenberg-block-kit',
+            'gutenberg-block-kit/editor',
+            'gutenberg-block-kit/editor-client',
+          ],
         },
         ssr: {
           external: ['gutenberg-block-kit', 'gutenberg-block-kit/editor'],

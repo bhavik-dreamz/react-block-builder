@@ -62,7 +62,9 @@
     "./src/blocks/**/*.jsx",
     "./dist/styles.css",
     "./dist/bootstrap.mjs",
-    "./dist/bootstrap.cjs"
+    "./dist/bootstrap.cjs",
+    "./dist/editor.mjs",
+    "./dist/editor.cjs"
   ],
   "dependencies": {
     "@wordpress/block-editor": "^15.17.0",

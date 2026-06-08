@@ -19,8 +19,30 @@ function isNodeBuiltin(id) {
   return id.startsWith('node:');
 }
 
+/** Rolldown may drop `import './bootstrap.js'` from the editor entry stub. */
+function preserveEditorBootstrap() {
+  return {
+    name: 'preserve-editor-bootstrap',
+    renderChunk(code, chunk, outputOptions) {
+      const isEditor =
+        chunk.name === 'editor' ||
+        chunk.fileName === 'editor.mjs' ||
+        chunk.fileName === 'editor.cjs';
+      if (!isEditor || code.includes('bootstrap')) {
+        return null;
+      }
+      const format = outputOptions.format;
+      const prefix =
+        format === 'es' || format === 'esm'
+          ? 'import "./bootstrap.mjs";\n'
+          : 'require("./bootstrap.cjs");\n';
+      return { code: prefix + code, map: null };
+    },
+  };
+}
+
 export default defineConfig({
-  plugins: [react(), patchEsmReactRequire()],
+  plugins: [react(), patchEsmReactRequire(), preserveEditorBootstrap()],
   define: {
     'process.env': {},
     'process.env.NODE_ENV': '"production"',
