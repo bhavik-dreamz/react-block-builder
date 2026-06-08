@@ -103,7 +103,7 @@ function EditorApp({ settings }) {
                   className={`editor-layout ${sidebarOpen ? "sidebar-open" : ""} ${(sidebarOpen || listViewOpen) ? "split-open" : "split-closed"}`}
                 >
                   <div className='components-popover__fallback-container'>
-                    <Popover.Slot />
+                    
                   </div>
 
                   {/* ---- MIDDLE: MAIN EDITOR ---- */}
@@ -171,6 +171,7 @@ function EditorApp({ settings }) {
                       )}
                     </div>
                   )}
+                  <Popover.Slot />
                 </div>
               </BlockEditorProvider>
             </ShortcutProvider>
