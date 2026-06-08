@@ -43,6 +43,7 @@ export default defineConfig({
         renderer: resolve(__dirname, 'src/renderer.js'),
         bootstrap: resolve(__dirname, 'src/bootstrap.js'),
         vite: resolve(__dirname, 'src/vite-plugin.js'),
+        'editor-client': resolve(__dirname, 'src/editor-client.js'),
       },
       formats: ['es', 'cjs'],
       fileName: (format, entryName) => {

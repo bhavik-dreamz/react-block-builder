@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { BlockRenderer } from '../dist/renderer.mjs';
 import { gutenbergBlockKitVite } from '../dist/vite.mjs';
+import { ClientBlockEditor } from '../dist/editor-client.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -51,6 +52,12 @@ if (typeof gutenbergBlockKitVite !== 'function') {
 
 assertExportsInFile('dist/vite.mjs', ['gutenbergBlockKitVite', 'default']);
 assertExportsInFile('dist/vite.cjs', ['gutenbergBlockKitVite', 'exports.default']);
+assertExportsInFile('dist/editor-client.mjs', ['ClientBlockEditor', 'default']);
+assertExportsInFile('dist/editor-client.cjs', ['ClientBlockEditor', 'exports.default']);
+
+if (typeof ClientBlockEditor !== 'function') {
+  throw new Error('ClientBlockEditor should be a function');
+}
 
 console.log('OK: public exports present');
 console.log('  BlockRenderer:', typeof BlockRenderer);

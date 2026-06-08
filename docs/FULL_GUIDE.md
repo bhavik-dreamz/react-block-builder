@@ -540,7 +540,7 @@ Public route — `BlockRenderer` in loader + component (SSR safe).
 
 ## 12. Vite / Create React App
 
-### Vite / React Router
+### Vite / React Router (SSR)
 
 `vite.config.js` — use **`gutenberg-block-kit/vite`** (required for npm consumers):
 
@@ -555,6 +555,11 @@ export default defineConfig({
 ```
 
 **Do not** list `@wordpress/block-editor`, `@wordpress/components`, etc. in `optimizeDeps.include`. Those packages are dependencies of `gutenberg-block-kit`, not your app; Vite will fail with *Failed to resolve entry for package "@wordpress/components"* unless you use the plugin above or install every `@wordpress/*` package at your project root manually.
+
+**SSR / `document is not defined`** — React Router evaluates every route module on the server. Do **not** top-level import `gutenberg-block-kit` or `gutenberg-block-kit/editor` in route files. Use:
+
+- **Editor admin routes:** `ClientBlockEditor` from `gutenberg-block-kit/editor-client` + `clientLoader` / `HydrateFallback` (see README React Router section).
+- **Public pages:** `BlockRenderer` from `gutenberg-block-kit/renderer` only.
 
 Use the same imports as in [section 9](#9-use-in-a-consumer-app).
 

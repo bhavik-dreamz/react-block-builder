@@ -23,6 +23,7 @@ Demo app: `examples/demo/` only.
 | Import | Use |
 |--------|-----|
 | `gutenberg-block-kit/editor` | `BlockEditor`, `initBlocks`, `EditorProvider`, `useEditor` |
+| `gutenberg-block-kit/editor-client` | `ClientBlockEditor` (SSR-safe loader for editor) |
 | `gutenberg-block-kit/renderer` | `BlockRenderer` (server-safe) |
 | `gutenberg-block-kit/styles` | Editor CSS |
 | `gutenberg-block-kit/bootstrap` | Optional (editor entry already loads it) |

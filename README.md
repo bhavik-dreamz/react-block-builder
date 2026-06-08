@@ -207,7 +207,50 @@ export default defineConfig({
 });
 ```
 
-Use the same imports as [Quick start](#quick-start-any-react-app). The plugin resolves `@wordpress/block-library/build-style/style.css` and other `@wordpress/*` imports from the kit's dependencies.
+**Editor route (SSR)** — never top-level `import { BlockEditor } from 'gutenberg-block-kit/editor'` in a route file (React Router evaluates all routes on the server → `document is not defined`). Use `ClientBlockEditor` instead:
+
+```jsx
+// app/routes/admin.editor.tsx
+import { useEffect } from 'react';
+import { ClientBlockEditor } from 'gutenberg-block-kit/editor-client';
+
+export function HydrateFallback() {
+  return <p>Loading editor…</p>;
+}
+
+export async function clientLoader() {
+  return { pageId: 'home' };
+}
+clientLoader.hydrate = true;
+
+export default function AdminEditor({ loaderData }) {
+  useEffect(() => {
+    import('gutenberg-block-kit/styles');
+  }, []);
+
+  return (
+    <ClientBlockEditor
+      fallback={<p>Loading editor…</p>}
+      initialTitle="Home"
+      onSave={async (payload) => { /* … */ }}
+      onLoad={async (id) => { /* … */ }}
+    />
+  );
+}
+```
+
+**Public route (SSR)** — only the renderer:
+
+```jsx
+import { BlockRenderer } from 'gutenberg-block-kit/renderer';
+import '@wordpress/block-library/build-style/style.css';
+
+export default function PublicPage({ loaderData }) {
+  return <BlockRenderer html={loaderData.page.html} />;
+}
+```
+
+The plugin resolves `@wordpress/block-library/build-style/style.css` and other `@wordpress/*` imports from the kit's dependencies.
 
 ---
 

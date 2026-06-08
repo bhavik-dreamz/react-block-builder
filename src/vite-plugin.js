@@ -42,6 +42,9 @@ export function gutenbergBlockKitVite() {
         optimizeDeps: {
           include: ['gutenberg-block-kit/editor'],
         },
+        ssr: {
+          external: ['gutenberg-block-kit', 'gutenberg-block-kit/editor'],
+        },
       };
     },
     resolveId(source) {
