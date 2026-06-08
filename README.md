@@ -192,28 +192,22 @@ export default function Page() {
 
 ---
 
-## Vite / CRA
+## Vite / React Router / Remix
+
+Use the included Vite plugin — **do not** add `@wordpress/*` to `optimizeDeps.include` yourself (those packages live under `gutenberg-block-kit` and Vite cannot resolve them at your app root).
 
 ```js
 // vite.config.js
 import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { gutenbergBlockKitVite } from 'gutenberg-block-kit/vite';
 
 export default defineConfig({
-  resolve: {
-    dedupe: ['react', 'react-dom', '@wordpress/element'],
-  },
-  optimizeDeps: {
-    include: [
-      '@wordpress/block-editor',
-      '@wordpress/blocks',
-      '@wordpress/components',
-      '@wordpress/block-library',
-    ],
-  },
+  plugins: [react(), gutenbergBlockKitVite()],
 });
 ```
 
-Use the same imports as [Quick start](#quick-start-any-react-app). For Create React App, you may need `react-app-rewired` or migrate to Vite for WordPress package resolution.
+Use the same imports as [Quick start](#quick-start-any-react-app). The plugin resolves `@wordpress/block-library/build-style/style.css` and other `@wordpress/*` imports from the kit's dependencies.
 
 ---
 

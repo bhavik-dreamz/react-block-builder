@@ -15,6 +15,10 @@ function isReactExternal(id) {
   return reactExternals.includes(id) || id.startsWith('react/') || id.startsWith('react-dom/');
 }
 
+function isNodeBuiltin(id) {
+  return id.startsWith('node:');
+}
+
 export default defineConfig({
   plugins: [react(), patchEsmReactRequire()],
   define: {
@@ -38,6 +42,7 @@ export default defineConfig({
         // Isolated from editor — no @wordpress/block-editor
         renderer: resolve(__dirname, 'src/renderer.js'),
         bootstrap: resolve(__dirname, 'src/bootstrap.js'),
+        vite: resolve(__dirname, 'src/vite-plugin.js'),
       },
       formats: ['es', 'cjs'],
       fileName: (format, entryName) => {
@@ -46,7 +51,7 @@ export default defineConfig({
       },
     },
     rollupOptions: {
-      external: isReactExternal,
+      external: (id) => isReactExternal(id) || isNodeBuiltin(id),
       output: {
         exports: 'named',
         globals: {

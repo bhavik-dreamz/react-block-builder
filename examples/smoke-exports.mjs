@@ -6,6 +6,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { BlockRenderer } from '../dist/renderer.mjs';
+import { gutenbergBlockKitVite } from '../dist/vite.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -43,6 +44,13 @@ readFileSync(join(root, 'dist/styles.css'), 'utf8');
 if (typeof BlockRenderer !== 'function') {
   throw new Error('BlockRenderer should be a function');
 }
+
+if (typeof gutenbergBlockKitVite !== 'function') {
+  throw new Error('gutenbergBlockKitVite should be a function');
+}
+
+assertExportsInFile('dist/vite.mjs', ['gutenbergBlockKitVite', 'default']);
+assertExportsInFile('dist/vite.cjs', ['gutenbergBlockKitVite', 'exports.default']);
 
 console.log('OK: public exports present');
 console.log('  BlockRenderer:', typeof BlockRenderer);

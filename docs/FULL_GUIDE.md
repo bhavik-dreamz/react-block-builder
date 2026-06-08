@@ -540,31 +540,21 @@ Public route — `BlockRenderer` in loader + component (SSR safe).
 
 ## 12. Vite / Create React App
 
-### Vite
+### Vite / React Router
 
-`vite.config.js`:
+`vite.config.js` — use **`gutenberg-block-kit/vite`** (required for npm consumers):
 
 ```js
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { gutenbergBlockKitVite } from 'gutenberg-block-kit/vite';
 
 export default defineConfig({
-  plugins: [react()],
-  resolve: {
-    dedupe: ['react', 'react-dom', '@wordpress/element'],
-  },
-  optimizeDeps: {
-    include: [
-      '@wordpress/block-editor',
-      '@wordpress/blocks',
-      '@wordpress/components',
-      '@wordpress/block-library',
-      '@wordpress/data',
-      '@wordpress/element',
-    ],
-  },
+  plugins: [react(), gutenbergBlockKitVite()],
 });
 ```
+
+**Do not** list `@wordpress/block-editor`, `@wordpress/components`, etc. in `optimizeDeps.include`. Those packages are dependencies of `gutenberg-block-kit`, not your app; Vite will fail with *Failed to resolve entry for package "@wordpress/components"* unless you use the plugin above or install every `@wordpress/*` package at your project root manually.
 
 Use the same imports as in [section 9](#9-use-in-a-consumer-app).
 

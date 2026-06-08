@@ -46,6 +46,10 @@
     },
     "./styles": "./dist/styles.css",
     "./styles.css": "./dist/styles.css",
+    "./vite": {
+      "import": "./dist/vite.mjs",
+      "require": "./dist/vite.cjs"
+    },
     "./package.json": "./package.json"
   },
   "sideEffects": [
