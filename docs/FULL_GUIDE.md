@@ -667,6 +667,7 @@ When editing this repository:
 |---------|--------|-----|
 | Invalid hook call / two Reacts | Duplicate React | `react`/`react-dom` as peers; dedupe in Vite; one React version in app |
 | `cloneElement` of undefined | Vite `optimizeDeps` re-bundled `gutenberg-block-kit/editor` | Use `gutenbergBlockKitVite()` (excludes editor from pre-bundle); `rm -rf node_modules/.vite` |
+| 404 on `/node_modules/gutenberg-block-kit/dist/*.map` | Browser requested a source map; React Router has no route for it | Harmless dev noise on older package versions; upgrade `gutenberg-block-kit` (maps disabled in dist) or ignore |
 | `window is not defined` | Editor imported on server | `dynamic(..., { ssr: false })` or `'use client'` |
 | `document is not defined` | Editor chunk loaded in Node | Import only `gutenberg-block-kit/renderer` on server |
 | Blocks unstyled on frontend | Missing block library CSS | Import `@wordpress/block-library/build-style/style.css` |

@@ -14,6 +14,7 @@ import {
   TextControl,
 } from '@wordpress/components';
 import { plus, copy, trash } from '@wordpress/icons';
+import { resolveBlockIcon } from '../../utils/blockIcons.js';
 
 const defaultCard = (overrides = {}) => ({
   id: Date.now() + Math.floor(Math.random() * 1000),
@@ -96,7 +97,7 @@ registerBlockType('myapp/card-grid', {
   title: 'Card Grid',
   description: 'Repeatable cards with icon, title and description',
   category: 'myapp-blocks',
-  icon: 'grid-view',
+  icon: resolveBlockIcon('grid-view'),
 
   attributes: {
     cards: {

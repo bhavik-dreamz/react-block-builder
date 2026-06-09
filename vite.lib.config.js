@@ -86,7 +86,9 @@ export default defineConfig({
         },
       },
     },
-    sourcemap: true,
+    // No source maps in published dist — React Router / Vite dev servers treat
+    // /node_modules/.../*.map document requests as app routes → 404 noise.
+    sourcemap: false,
     minify: false,
   },
 });

@@ -14,12 +14,13 @@ import {
   ToggleControl,
   Button,
 } from '@wordpress/components';
+import { resolveBlockIcon } from '../../utils/blockIcons.js';
 
 registerBlockType('myapp/image-text', {
   title: 'Image + Text',
   description: 'Side by side image and text layout',
   category: 'myapp-blocks',
-  icon: 'align-pull-left',
+  icon: resolveBlockIcon('align-pull-left'),
 
   attributes: {
     title: {

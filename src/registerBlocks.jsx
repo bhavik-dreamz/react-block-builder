@@ -4,7 +4,11 @@ if (typeof window !== 'undefined' && !window.React) {
   window.React = React;
 }
 
-import { registerBlockType, getCategories, setCategories } from '@wordpress/blocks';
+// Category must exist before block modules call registerBlockType.
+import './registerCategories.jsx';
+import { ensureCustomCategoryFirst } from './registerCategories.jsx';
+
+import { registerBlockType } from '@wordpress/blocks';
 import { useBlockProps, RichText } from '@wordpress/block-editor';
 //import './blocks/extendBlocks';
 import './blocks/paragraphFormats.jsx';
@@ -24,6 +28,7 @@ import './blocks/products-scroller/index.jsx';
 // Step 18 + 20 — JSON-driven block definitions
 // In production: swap the static import for a fetch() call to your API/database
 import customBlocksConfig from './data/customBlocksConfig.json';
+import { resolveBlockIcon } from './utils/blockIcons.js';
 
 // ── JSON Block Factory ──────────────────────────────────────────────────────────
 // Loops over customBlocksConfig and registers each entry as a fully functional
@@ -113,7 +118,7 @@ function registerJSONBlock(blockDef) {
     title: blockDef.title,
     description: blockDef.description,
     category: blockDef.category,
-    icon: blockDef.icon,
+    icon: resolveBlockIcon(blockDef.icon),
     keywords: blockDef.keywords || [],
     attributes: blockDef.attributes,
     edit: Edit,
@@ -138,25 +143,14 @@ export function initBlocks(externalBlocks = [], options = {}) {
   if (!registered) {
     registered = true;
 
-    // Step 18 — Custom category with SVG icon shown in the + inserter
-    setCategories([
-      {
-        slug: 'myapp-blocks',
-        title: 'My Custom Blocks',
-        icon: () => (
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z" />
-          </svg>
-        ),
-      },
-      ...getCategories(),
-    ]);
-
     // Bundled JSON blocks + host-provided JSON blocks (simulates DB import)
     [...customBlocksConfig, ...consumerJsonBlocks].forEach(registerJSONBlock);
 
     // Core Gutenberg blocks + hand-crafted blocks (imported at the top)
     registerCoreBlocks();
+
+    // Keep custom category at the top after core blocks register.
+    ensureCustomCategoryFirst();
   }
 
   // Register dynamically injected external block definitions

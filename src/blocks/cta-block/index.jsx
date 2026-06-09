@@ -13,12 +13,13 @@ import {
   SelectControl,
   ToggleControl,
 } from '@wordpress/components';
+import { resolveBlockIcon } from '../../utils/blockIcons.js';
 
 registerBlockType('myapp/cta-block', {
   title: 'Call to Action',
   description: 'A customizable call to action block',
   category: 'text',
-  icon: 'megaphone',
+  icon: resolveBlockIcon('megaphone'),
 
   attributes: {
     // ---- Content ----

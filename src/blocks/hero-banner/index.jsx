@@ -18,6 +18,7 @@ import {
   ButtonGroup,
   TextControl,
 } from '@wordpress/components';
+import { resolveBlockIcon } from '../../utils/blockIcons.js';
 
 const buttonBaseStyle = {
   display: 'inline-block',
@@ -58,6 +59,21 @@ function HeroBackground({ backgroundType, backgroundVideo, overlayStyle }) {
   );
 }
 
+function buttonsRowStyle(textAlign) {
+  return {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '12px',
+    marginTop: '4px',
+    justifyContent:
+      textAlign === 'center'
+        ? 'center'
+        : textAlign === 'right'
+          ? 'flex-end'
+          : 'flex-start',
+  };
+}
+
 function HeroButtons({
   showButton,
   showButton2,
@@ -66,6 +82,7 @@ function HeroButtons({
   buttonColor,
   button2Color,
   button2Style,
+  textAlign,
   onChangeButtonText,
   onChangeButton2Text,
   isEditor,
@@ -92,7 +109,7 @@ function HeroButtons({
       };
 
   return (
-    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginTop: '4px' }}>
+    <div style={buttonsRowStyle(textAlign)}>
       {showButton && (
         isEditor ? (
           <RichText
@@ -131,7 +148,7 @@ registerBlockType('myapp/hero-banner', {
   title: 'Hero Banner',
   description: 'Full width hero section with background, title and subtitle',
   category: 'myapp-blocks',
-  icon: 'cover-image',
+  icon: resolveBlockIcon('cover-image'),
 
   attributes: {
     title: {
@@ -379,6 +396,7 @@ registerBlockType('myapp/hero-banner', {
           buttonColor={buttonColor}
           button2Color={button2Color}
           button2Style={button2Style}
+          textAlign={textAlign}
           onChangeButtonText={(val) => setAttributes({ buttonText: val })}
           onChangeButton2Text={(val) => setAttributes({ button2Text: val })}
           isEditor
@@ -775,7 +793,7 @@ registerBlockType('myapp/hero-banner', {
     const renderSavedButtons = () => {
       if (!showButton && !showButton2) return null;
       return (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginTop: '4px' }}>
+        <div style={buttonsRowStyle(textAlign)}>
           {showButton && (
             <a href={buttonUrl} style={primaryBtnStyle}>
               <RichText.Content value={buttonText} />
