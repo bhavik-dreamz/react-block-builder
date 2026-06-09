@@ -28,3 +28,10 @@ Thumbs.db
 # Optional local caches
 *.tsbuildinfo
 .eslintcache
+node_modules
+dist
+dist-demo
+.DS_Store
+.env
+.env.local
+*.log
