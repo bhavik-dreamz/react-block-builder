@@ -25,6 +25,7 @@
   "module": "./dist/editor.mjs",
   "files": [
     "dist",
+    "!dist/**/*.map",
     "README.md"
   ],
   "exports": {
@@ -104,7 +105,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build --config vite.lib.config.js",
+    "build": "vite build --config vite.lib.config.js && node scripts/build-styles.mjs",
     "build:lib": "vite build --config vite.lib.config.js && node scripts/build-styles.mjs",
     "build:demo": "pnpm run build:lib && vite build",
     "preview": "vite preview",
@@ -113,7 +114,8 @@
     "test:ssr": "pnpm run build:lib && node examples/smoke-ssr.mjs && node examples/smoke-renderer-ssr.mjs",
     "test:bundle": "pnpm run build:lib && node examples/verify-renderer-bundle.mjs",
     "test:boundary": "pnpm run build:lib && node examples/verify-package-boundary.mjs",
-    "prepublishOnly": "pnpm run test:exports && pnpm run test:bundle && pnpm run test:boundary"
+    "test:react-binding": "pnpm run build:lib && node examples/verify-react-binding.mjs",
+    "prepublishOnly": "pnpm run test:exports && pnpm run test:bundle && pnpm run test:boundary && node examples/verify-react-binding.mjs"
   },
   "engines": {
     "node": ">=22.0.0"
