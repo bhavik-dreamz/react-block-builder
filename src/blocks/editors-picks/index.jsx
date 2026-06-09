@@ -17,6 +17,12 @@ import {
   TextareaControl,
 } from '@wordpress/components';
 import { plus, trash, copy } from '@wordpress/icons';
+import {
+  ActionBuilder,
+  ActionLink,
+  DEFAULT_BUTTON_ACTION,
+  resolveItemButtonAction,
+} from '../../actions/index.js';
 
 function EditorsPicksIcon() {
   return (
@@ -42,7 +48,7 @@ const defaultBanner = (overrides = {}) => ({
   title: 'Banner Title',
   description: 'Add a short description for this pick.',
   buttonText: 'SHOP NOW',
-  buttonUrl: '#',
+  buttonAction: { ...DEFAULT_BUTTON_ACTION },
   showButton: true,
   imageUrl: '',
   ...overrides,
@@ -175,11 +181,10 @@ function BannerFields({
               onChange={(val) => onUpdate('buttonText', val)}
               placeholder="SHOP NOW"
             />
-            <TextControl
-              label="Button URL"
-              value={banner.buttonUrl}
-              onChange={(val) => onUpdate('buttonUrl', val)}
-              placeholder="https://"
+            <ActionBuilder
+              label="Button Action"
+              value={resolveItemButtonAction(banner)}
+              onChange={(action) => onUpdate('buttonAction', action)}
             />
           </>
         )}
@@ -325,9 +330,9 @@ function PickBanner({
             <RichText.Content tagName="h3" value={banner.title} style={titleStyle} />
             <RichText.Content tagName="p" value={banner.description} style={descriptionStyle} />
             {banner.showButton && (
-              <a href={banner.buttonUrl} style={buttonStyle}>
+              <ActionLink action={resolveItemButtonAction(banner)} style={buttonStyle}>
                 <RichText.Content value={banner.buttonText} />
-              </a>
+              </ActionLink>
             )}
           </>
         )}
@@ -493,7 +498,7 @@ registerBlockType('myapp/editors-picks', {
         title: source.title ? `${source.title} (Copy)` : 'Banner (Copy)',
         description: source.description,
         buttonText: source.buttonText,
-        buttonUrl: source.buttonUrl,
+        buttonAction: source.buttonAction || resolveItemButtonAction(source),
         showButton: source.showButton,
         imageUrl: source.imageUrl,
       });

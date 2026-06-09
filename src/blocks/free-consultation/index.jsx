@@ -18,6 +18,12 @@ import {
   ButtonGroup,
   TextControl,
 } from '@wordpress/components';
+import {
+  ActionBuilder,
+  ActionLink,
+  buttonActionAttribute,
+  resolveButtonAction,
+} from '../../actions/index.js';
 
 function FreeConsultationIcon() {
   return (
@@ -146,10 +152,7 @@ registerBlockType('myapp/free-consultation', {
       type: 'string',
       default: 'BOOK FREE CONSULTATION',
     },
-    buttonUrl: {
-      type: 'string',
-      default: '#',
-    },
+    buttonAction: buttonActionAttribute,
     showButton: {
       type: 'boolean',
       default: true,
@@ -227,7 +230,7 @@ registerBlockType('myapp/free-consultation', {
   edit: ({ attributes, setAttributes }) => {
     const {
       title, subtitle, description,
-      buttonText, buttonUrl, showButton,
+      buttonText, buttonAction, showButton,
       mediaType, imageUrl, videoUrl,
       backgroundColor, textColor, subtitleColor, buttonColor, buttonTextColor,
       textAlign, buttonAlign,
@@ -438,10 +441,10 @@ registerBlockType('myapp/free-consultation', {
               onChange={(val) => setAttributes({ showButton: val })}
             />
             {showButton && (
-              <TextControl
-                label="Button URL"
-                value={buttonUrl}
-                onChange={(val) => setAttributes({ buttonUrl: val })}
+              <ActionBuilder
+                label="Button Action"
+                value={resolveButtonAction(attributes)}
+                onChange={(action) => setAttributes({ buttonAction: action })}
               />
             )}
           </PanelBody>
@@ -600,7 +603,7 @@ registerBlockType('myapp/free-consultation', {
   save: ({ attributes }) => {
     const {
       title, subtitle, description,
-      buttonText, buttonUrl, showButton,
+      buttonText, buttonAction, showButton,
       mediaType, imageUrl, videoUrl,
       backgroundColor, textColor, subtitleColor, buttonColor, buttonTextColor,
       textAlign, buttonAlign,
@@ -681,9 +684,9 @@ registerBlockType('myapp/free-consultation', {
               display: 'flex',
               justifyContent: alignToFlex(buttonAlign),
             }}>
-              <a href={buttonUrl} style={buttonStyle}>
+              <ActionLink action={resolveButtonAction(attributes)} style={buttonStyle}>
                 <RichText.Content value={buttonText} />
-              </a>
+              </ActionLink>
             </div>
           )}
         </div>

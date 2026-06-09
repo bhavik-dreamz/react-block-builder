@@ -16,6 +16,12 @@ import {
   TextControl,
 } from '@wordpress/components';
 import { plus, trash, copy } from '@wordpress/icons';
+import {
+  ActionBuilder,
+  ActionLink,
+  buttonActionAttribute,
+  resolveButtonAction,
+} from '../../actions/index.js';
 
 function ProductsScrollerIcon() {
   return (
@@ -382,10 +388,7 @@ registerBlockType('myapp/products-scroller', {
       type: 'string',
       default: 'VIEW ALL BEST SELLERS',
     },
-    footerButtonUrl: {
-      type: 'string',
-      default: '#',
-    },
+    footerButtonAction: buttonActionAttribute,
     cardWidth: {
       type: 'number',
       default: 28,
@@ -443,7 +446,7 @@ registerBlockType('myapp/products-scroller', {
   edit: ({ attributes, setAttributes }) => {
     const {
       sectionSubtitle, sectionTitle, products: productsAttr,
-      showArrows, showFooterButton, footerButtonText, footerButtonUrl,
+      showArrows, showFooterButton, footerButtonText, footerButtonAction,
       cardWidth, gap, sectionPadding,
       backgroundColor, sectionSubtitleColor, sectionTitleColor,
       titleColor, priceColor, footerButtonColor,
@@ -593,10 +596,13 @@ registerBlockType('myapp/products-scroller', {
                   value={footerButtonText}
                   onChange={(val) => setAttributes({ footerButtonText: val })}
                 />
-                <TextControl
-                  label="Button URL"
-                  value={footerButtonUrl}
-                  onChange={(val) => setAttributes({ footerButtonUrl: val })}
+                <ActionBuilder
+                  label="Footer Button Action"
+                  value={resolveButtonAction(attributes, {
+                    actionKey: 'footerButtonAction',
+                    urlKey: 'footerButtonUrl',
+                  })}
+                  onChange={(action) => setAttributes({ footerButtonAction: action })}
                 />
               </>
             )}
@@ -785,7 +791,7 @@ registerBlockType('myapp/products-scroller', {
   save: ({ attributes }) => {
     const {
       sectionSubtitle, sectionTitle, products: productsAttr,
-      showArrows, showFooterButton, footerButtonText, footerButtonUrl,
+      showArrows, showFooterButton, footerButtonText, footerButtonAction,
       cardWidth, gap, sectionPadding,
       backgroundColor, sectionSubtitleColor, sectionTitleColor,
       titleColor, priceColor, footerButtonColor,
@@ -886,9 +892,15 @@ registerBlockType('myapp/products-scroller', {
 
         {showFooterButton && (
           <div style={{ textAlign: 'center' }}>
-            <a href={footerButtonUrl} style={footerButtonStyle}>
+            <ActionLink
+              action={resolveButtonAction(attributes, {
+                actionKey: 'footerButtonAction',
+                urlKey: 'footerButtonUrl',
+              })}
+              style={footerButtonStyle}
+            >
               <RichText.Content value={footerButtonText} />
-            </a>
+            </ActionLink>
           </div>
         )}
       </div>

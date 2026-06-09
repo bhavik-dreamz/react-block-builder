@@ -19,6 +19,12 @@ import {
   TextControl,
 } from '@wordpress/components';
 import { resolveBlockIcon } from '../../utils/blockIcons.js';
+import {
+  ActionBuilder,
+  ActionLink,
+  buttonActionAttribute,
+  resolveButtonAction,
+} from '../../actions/index.js';
 
 const buttonBaseStyle = {
   display: 'inline-block',
@@ -163,18 +169,12 @@ registerBlockType('myapp/hero-banner', {
       type: 'string',
       default: 'Get Started',
     },
-    buttonUrl: {
-      type: 'string',
-      default: '#',
-    },
+    buttonAction: buttonActionAttribute,
     button2Text: {
       type: 'string',
       default: 'Learn More',
     },
-    button2Url: {
-      type: 'string',
-      default: '#',
-    },
+    button2Action: buttonActionAttribute,
     backgroundImage: {
       type: 'string',
       default: '',
@@ -255,8 +255,8 @@ registerBlockType('myapp/hero-banner', {
 
   edit: ({ attributes, setAttributes }) => {
     const {
-      title, subtitle, buttonText, buttonUrl,
-      button2Text, button2Url,
+      title, subtitle, buttonText, buttonAction,
+      button2Text, button2Action,
       backgroundImage, backgroundVideo, backgroundType, backgroundColor,
       overlayColor, overlayOpacity,
       textColor, buttonColor, button2Color, button2Style,
@@ -619,10 +619,10 @@ registerBlockType('myapp/hero-banner', {
               onChange={(val) => setAttributes({ showButton: val })}
             />
             {showButton && (
-              <TextControl
-                label="Primary Button URL"
-                value={buttonUrl}
-                onChange={(val) => setAttributes({ buttonUrl: val })}
+              <ActionBuilder
+                label="Primary Button Action"
+                value={resolveButtonAction(attributes, { actionKey: 'buttonAction', urlKey: 'buttonUrl' })}
+                onChange={(action) => setAttributes({ buttonAction: action })}
               />
             )}
             <ToggleControl
@@ -632,10 +632,10 @@ registerBlockType('myapp/hero-banner', {
             />
             {showButton2 && (
               <>
-                <TextControl
-                  label="Secondary Button URL"
-                  value={button2Url}
-                  onChange={(val) => setAttributes({ button2Url: val })}
+                <ActionBuilder
+                  label="Secondary Button Action"
+                  value={resolveButtonAction(attributes, { actionKey: 'button2Action', urlKey: 'button2Url' })}
+                  onChange={(action) => setAttributes({ button2Action: action })}
                 />
                 <SelectControl
                   label="Secondary Button Style"
@@ -719,8 +719,8 @@ registerBlockType('myapp/hero-banner', {
 
   save: ({ attributes }) => {
     const {
-      title, subtitle, buttonText, buttonUrl,
-      button2Text, button2Url,
+      title, subtitle, buttonText, buttonAction,
+      button2Text, button2Action,
       backgroundImage, backgroundVideo, backgroundType, backgroundColor,
       overlayColor, overlayOpacity,
       textColor, buttonColor, button2Color, button2Style,
@@ -795,14 +795,20 @@ registerBlockType('myapp/hero-banner', {
       return (
         <div style={buttonsRowStyle(textAlign)}>
           {showButton && (
-            <a href={buttonUrl} style={primaryBtnStyle}>
+            <ActionLink
+              action={resolveButtonAction(attributes, { actionKey: 'buttonAction', urlKey: 'buttonUrl' })}
+              style={primaryBtnStyle}
+            >
               <RichText.Content value={buttonText} />
-            </a>
+            </ActionLink>
           )}
           {showButton2 && (
-            <a href={button2Url} style={secondaryBtnStyle}>
+            <ActionLink
+              action={resolveButtonAction(attributes, { actionKey: 'button2Action', urlKey: 'button2Url' })}
+              style={secondaryBtnStyle}
+            >
               <RichText.Content value={button2Text} />
-            </a>
+            </ActionLink>
           )}
         </div>
       );

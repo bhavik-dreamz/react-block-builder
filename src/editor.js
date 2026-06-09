@@ -23,3 +23,18 @@ export {
   applyMediaToSettings,
   normalizeMediaItem,
 } from './media/index.js';
+export {
+  ActionBuilder,
+  ActionLink,
+  ActionBuilderSetup,
+  ActionBuilderProvider,
+  useActionBuilderHost,
+  ACTION_NAMES,
+  ACTION_OPTIONS,
+  ACTION_SCHEMAS,
+  normalizeAction,
+  migrateUrlToAction,
+  resolveButtonAction,
+  validateAction,
+  buttonActionAttribute,
+} from './actions/index.js';

@@ -18,6 +18,7 @@ import { EDITOR_SETTINGS, mergeEditorSettings } from "./config/editorSettings";
 import { EditorProvider, useEditor } from "./context/EditorContext";
 import { initBlocks } from "./registerBlocks";
 import { MediaLibrarySetup, applyMediaToSettings } from "./media";
+import { ActionBuilderSetup } from "./actions";
 
 import Header from "./components/Header";
 import TemplatePicker from "./components/TemplatePicker";
@@ -225,6 +226,7 @@ function App({
   customBlocksConfig = [],
   editorSettings,
   media,
+  actions,
 }) {
   initBlocks(blockRegistry, { customBlocksConfig });
 
@@ -234,6 +236,7 @@ function App({
   }, [editorSettings, media]);
 
   return (
+    <ActionBuilderSetup actions={actions}>
     <MediaLibrarySetup media={media}>
       <EditorProvider
         onViewSite={onViewSite}
@@ -247,6 +250,7 @@ function App({
         <EditorApp settings={settings} />
       </EditorProvider>
     </MediaLibrarySetup>
+    </ActionBuilderSetup>
   );
 }
 

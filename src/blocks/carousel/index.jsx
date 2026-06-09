@@ -16,6 +16,12 @@ import {
   TextControl,
 } from '@wordpress/components';
 import { plus, trash } from '@wordpress/icons';
+import {
+  ActionBuilder,
+  ActionLink,
+  DEFAULT_BUTTON_ACTION,
+  resolveItemButtonAction,
+} from '../../actions/index.js';
 
 function CarouselBlockIcon() {
   return (
@@ -49,7 +55,7 @@ const defaultSlide = (overrides = {}) => ({
   title: 'Slide Title',
   subtitle: 'Add a short description for this slide.',
   buttonText: 'Learn More',
-  buttonUrl: '#',
+  buttonAction: { ...DEFAULT_BUTTON_ACTION },
   showButton: true,
   ...overrides,
 });
@@ -169,9 +175,12 @@ function CarouselSlideContent({
             <RichText.Content tagName="h2" value={slide.title} style={titleStyle} />
             <RichText.Content tagName="p" value={slide.subtitle} style={subtitleStyle} />
             {slide.showButton && (
-              <a href={slide.buttonUrl} style={buttonStyle}>
+              <ActionLink
+                action={resolveItemButtonAction(slide)}
+                style={buttonStyle}
+              >
                 <RichText.Content value={slide.buttonText} />
-              </a>
+              </ActionLink>
             )}
           </>
         )}
@@ -274,10 +283,10 @@ function SlideFields({ slide, index, isOpen, onToggle, onUpdate, onRemove, canRe
             value={slide.buttonText}
             onChange={(val) => onUpdate('buttonText', val)}
           />
-          <TextControl
-            label="Button URL"
-            value={slide.buttonUrl}
-            onChange={(val) => onUpdate('buttonUrl', val)}
+          <ActionBuilder
+            label="Button Action"
+            value={resolveItemButtonAction(slide)}
+            onChange={(action) => onUpdate('buttonAction', action)}
           />
         </>
       )}

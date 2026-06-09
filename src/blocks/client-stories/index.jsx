@@ -17,6 +17,12 @@ import {
   TextareaControl,
 } from '@wordpress/components';
 import { plus, trash, copy } from '@wordpress/icons';
+import {
+  ActionBuilder,
+  ActionLink,
+  DEFAULT_BUTTON_ACTION,
+  resolveItemButtonAction,
+} from '../../actions/index.js';
 
 function ClientStoriesIcon() {
   return (
@@ -45,7 +51,7 @@ const defaultStory = (overrides = {}) => ({
   location: 'Mumbai',
   rating: 5,
   buttonText: 'VIEW PRODUCT',
-  buttonUrl: '#',
+  buttonAction: { ...DEFAULT_BUTTON_ACTION },
   showButton: true,
   ...overrides,
 });
@@ -206,11 +212,10 @@ function StoryFields({
               onChange={(val) => onUpdate('buttonText', val)}
               placeholder="VIEW PRODUCT"
             />
-            <TextControl
-              label="Button URL"
-              value={story.buttonUrl}
-              onChange={(val) => onUpdate('buttonUrl', val)}
-              placeholder="https://"
+            <ActionBuilder
+              label="Button Action"
+              value={resolveItemButtonAction(story)}
+              onChange={(action) => onUpdate('buttonAction', action)}
             />
           </>
         )}
@@ -390,9 +395,9 @@ function StoryCard({
             style={buttonStyle}
           />
         ) : (
-          <a href={story.buttonUrl} style={buttonStyle}>
+          <ActionLink action={resolveItemButtonAction(story)} style={buttonStyle}>
             <RichText.Content value={story.buttonText} />
-          </a>
+          </ActionLink>
         )
       )}
     </div>
@@ -587,7 +592,7 @@ registerBlockType('myapp/client-stories', {
         location: source.location,
         rating: source.rating,
         buttonText: source.buttonText,
-        buttonUrl: source.buttonUrl,
+        buttonAction: source.buttonAction || resolveItemButtonAction(source),
         showButton: source.showButton,
       });
       const next = [...stories.slice(0, index + 1), clone, ...stories.slice(index + 1)];
