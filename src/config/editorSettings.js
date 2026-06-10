@@ -5,7 +5,7 @@ export const EDITOR_SETTINGS = {
   focusMode: false,
   isRTL: false,
   keepCaretInsideBlock: false,
-  bodyPlaceholder: 'Click + to add your first block...',
+  bodyPlaceholder: 'Drag & drop block here',
   supportsLayout: true,
   disableCustomColors: false,
   disableCustomFontSizes: false,

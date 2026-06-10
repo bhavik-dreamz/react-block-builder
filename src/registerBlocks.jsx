@@ -4,39 +4,22 @@ if (typeof window !== 'undefined' && !window.React) {
   window.React = React;
 }
 
-// Category must exist before block modules call registerBlockType.
 import './registerCategories.jsx';
 import { ensureCustomCategoryFirst } from './registerCategories.jsx';
 
-import { registerBlockType } from '@wordpress/blocks';
+import { registerBlockType, unregisterBlockType } from '@wordpress/blocks';
 import { useBlockProps, RichText } from '@wordpress/block-editor';
-//import './blocks/extendBlocks';
-import './blocks/paragraphFormats.jsx';
 import { registerCoreBlocks } from '@wordpress/block-library';
+import './blocks/paragraphFormats.jsx';
 
-// Hand-crafted blocks
-import './blocks/cta-block/index.jsx';
-import './blocks/hero-banner/index.jsx';
-import './blocks/image-text/index.jsx';
-import './blocks/card-grid/index.jsx';
-import './blocks/carousel/index.jsx';
-import './blocks/free-consultation/index.jsx';
-import './blocks/client-stories/index.jsx';
-import './blocks/editors-picks/index.jsx';
-import './blocks/products-scroller/index.jsx';
-
-// Step 18 + 20 — JSON-driven block definitions
-// In production: swap the static import for a fetch() call to your API/database
 import customBlocksConfig from './data/customBlocksConfig.json';
 import { resolveBlockIcon } from './utils/blockIcons.js';
+import { getWpRuntime, exposeWpOnWindow } from './wp/runtime.js';
 
 // ── JSON Block Factory ──────────────────────────────────────────────────────────
-// Loops over customBlocksConfig and registers each entry as a fully functional
-// Gutenberg block, simulating blocks loaded from a database.
 function registerJSONBlock(blockDef) {
   const slug = blockDef.name.replace('myapp/', '');
 
-  // Separate text attrs from color attrs so we can render them differently
   const textKeys = Object.keys(blockDef.attributes).filter(
     k => blockDef.attributes[k].type === 'string' && !k.toLowerCase().includes('color'),
   );
@@ -126,47 +109,116 @@ function registerJSONBlock(blockDef) {
   });
 }
 
-// ── Init ───────────────────────────────────────────────────────────────────────
+// ── Host block registration queue ───────────────────────────────────────────────
+const pendingRegistrars = [];
 let registered = false;
+let initPromise = null;
 const registeredExternalBlocks = new Set();
+
+/**
+ * Queue a host block registrar. Runs after core/bundled init, before first editor render.
+ * @param {(wp: ReturnType<typeof getWpRuntime>) => void} registrar
+ */
+export function registerBlocks(registrar) {
+  if (typeof registrar !== 'function') return;
+  if (registered) {
+    registrar(getWpRuntime());
+    return;
+  }
+  pendingRegistrars.push(registrar);
+}
+
+function runPendingRegistrars() {
+  const wp = getWpRuntime();
+  while (pendingRegistrars.length) {
+    const fn = pendingRegistrars.shift();
+    try {
+      fn(wp);
+    } catch (err) {
+      console.error('registerBlocks callback failed:', err);
+    }
+  }
+}
+
+function applyUnregisterList(names = []) {
+  if (!Array.isArray(names)) return;
+  names.forEach((name) => {
+    if (typeof name !== 'string' || !name) return;
+    try {
+      unregisterBlockType(name);
+    } catch (err) {
+      console.warn(`unregisterBlockType("${name}") failed:`, err);
+    }
+  });
+}
 
 /**
  * Register core + bundled blocks once, then merge consumer block definitions.
  * @param {object[]} externalBlocks - JSON block defs (same shape as customBlocksConfig.json)
- * @param {{ customBlocksConfig?: object[] }} [options] - Extra JSON blocks from the host app
+ * @param {object} [options]
+ * @param {object[]} [options.customBlocksConfig] - Extra JSON blocks from the host app
+ * @param {boolean} [options.disableBundledBlocks] - Skip kit myapp/* demo blocks
+ * @param {string[]} [options.unregisterBlocks] - Block names to remove after init
+ * @returns {Promise<void>}
  */
-export function initBlocks(externalBlocks = [], options = {}) {
-  const consumerJsonBlocks = Array.isArray(options.customBlocksConfig)
-    ? options.customBlocksConfig
-    : [];
+export async function initBlocks(externalBlocks = [], options = {}) {
+  if (initPromise) {
+    await initPromise;
+    if (Array.isArray(externalBlocks)) {
+      externalBlocks.forEach(blockDef => {
+        if (blockDef?.name && !registeredExternalBlocks.has(blockDef.name)) {
+          try {
+            registerJSONBlock(blockDef);
+            registeredExternalBlocks.add(blockDef.name);
+          } catch (err) {
+            console.error(`Failed to register dynamic block: ${blockDef.name}`, err);
+          }
+        }
+      });
+    }
+    return;
+  }
 
-  if (!registered) {
+  initPromise = (async () => {
+    const consumerJsonBlocks = Array.isArray(options.customBlocksConfig)
+      ? options.customBlocksConfig
+      : [];
+    const disableBundledBlocks = options.disableBundledBlocks === true;
+    const unregisterBlocks = Array.isArray(options.unregisterBlocks)
+      ? options.unregisterBlocks
+      : [];
+
     registered = true;
 
-    // Bundled JSON blocks + host-provided JSON blocks (simulates DB import)
     [...customBlocksConfig, ...consumerJsonBlocks].forEach(registerJSONBlock);
 
-    // Core Gutenberg blocks + hand-crafted blocks (imported at the top)
+    if (!disableBundledBlocks) {
+      await import('./blocks/bundled.jsx');
+    }
+
     registerCoreBlocks();
-
-    // Keep custom category at the top after core blocks register.
     ensureCustomCategoryFirst();
-  }
 
-  // Register dynamically injected external block definitions
-  if (Array.isArray(externalBlocks)) {
-    externalBlocks.forEach(blockDef => {
-      if (blockDef && blockDef.name && !registeredExternalBlocks.has(blockDef.name)) {
-        try {
-          registerJSONBlock(blockDef);
-          registeredExternalBlocks.add(blockDef.name);
-        } catch (err) {
-          console.error(`Failed to register dynamic block: ${blockDef.name}`, err);
+    runPendingRegistrars();
+    exposeWpOnWindow();
+
+    applyUnregisterList(unregisterBlocks);
+
+    if (Array.isArray(externalBlocks)) {
+      externalBlocks.forEach(blockDef => {
+        if (blockDef?.name && !registeredExternalBlocks.has(blockDef.name)) {
+          try {
+            registerJSONBlock(blockDef);
+            registeredExternalBlocks.add(blockDef.name);
+          } catch (err) {
+            console.error(`Failed to register dynamic block: ${blockDef.name}`, err);
+          }
         }
-      }
-    });
-  }
+      });
+    }
+  })();
 
-  // Import formats AFTER core blocks are registered to avoid store conflicts
-  // import('@wordpress/format-library').catch(err => console.error('Failed to load format-library:', err));
+  await initPromise;
 }
+
+export { getWpRuntime, exposeWpOnWindow, unregisterBlockType };

@@ -5,8 +5,9 @@
  *
  * For SSR HTML use `gutenberg-block-kit/renderer`.
  *
- * Custom blocks: pass `blockRegistry` or `customBlocksConfig` to BlockEditor,
- * or call `initBlocks(blocks, { customBlocksConfig })` before mount.
+ * Host blocks: import `gutenberg-block-kit/wp/*` in your `.jsx` files, or use
+ * `registerBlocks((wp) => …)`. Pass `disableBundledBlocks` / `unregisterBlocks`
+ * to control bundled demos. `initBlocks()` is async.
  */
 import './bootstrap.js';
 
@@ -15,7 +16,14 @@ export { default as BlockEditor } from './App.jsx';
 export { default as App } from './App.jsx';
 export { default } from './App.jsx';
 
-export { initBlocks } from './registerBlocks.jsx';
+export {
+  initBlocks,
+  registerBlocks,
+  getWpRuntime,
+  exposeWpOnWindow,
+  unregisterBlockType,
+} from './registerBlocks.jsx';
+export { resolveBlockIcon } from './utils/blockIcons.js';
 export { EditorProvider, useEditor } from './context/EditorContext.jsx';
 export { EDITOR_SETTINGS, mergeEditorSettings } from './config/editorSettings.js';
 export {

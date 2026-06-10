@@ -7,8 +7,12 @@ export {
   BlockEditor,
   App,
   initBlocks,
+  registerBlocks,
+  getWpRuntime,
+  unregisterBlockType,
   EditorProvider,
   useEditor,
+  resolveBlockIcon,
 } from './editor.js';
 
 export { default } from './editor.js';

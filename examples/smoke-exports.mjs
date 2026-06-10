@@ -20,7 +20,17 @@ function assertExportsInFile(relPath, names) {
   }
 }
 
-const editorExports = ['BlockEditor', 'App', 'initBlocks', 'EditorProvider', 'useEditor', 'default'];
+const editorExports = [
+  'BlockEditor',
+  'App',
+  'initBlocks',
+  'registerBlocks',
+  'getWpRuntime',
+  'unregisterBlockType',
+  'EditorProvider',
+  'useEditor',
+  'default',
+];
 const bootstrapExports = ['ensureReactOnWindow'];
 const rendererExports = [
   'BlockRenderer',
@@ -59,7 +69,12 @@ if (typeof ClientBlockEditor !== 'function') {
   throw new Error('ClientBlockEditor should be a function');
 }
 
+assertExportsInFile('dist/wp/blocks.mjs', ['registerBlockType', 'unregisterBlockType', 'getBlockType']);
+assertExportsInFile('dist/wp.mjs', ['blocks', 'blockEditor', 'getWpRuntime']);
+assertExportsInFile('dist/actions.mjs', ['ActionBuilder', 'ActionLink', 'DEFAULT_BUTTON_ACTION']);
+
 console.log('OK: public exports present');
 console.log('  BlockRenderer:', typeof BlockRenderer);
 console.log('  editor/index re-exports:', editorExports.join(', '));
+console.log('  wp/blocks, wp, actions: ok');
 console.log('  styles.css: ok');

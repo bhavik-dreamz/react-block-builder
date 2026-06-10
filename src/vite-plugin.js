@@ -45,6 +45,14 @@ export function gutenbergBlockKitVite() {
             'gutenberg-block-kit',
             'gutenberg-block-kit/editor',
             'gutenberg-block-kit/editor-client',
+            'gutenberg-block-kit/wp',
+            'gutenberg-block-kit/wp/blocks',
+            'gutenberg-block-kit/wp/block-editor',
+            'gutenberg-block-kit/wp/components',
+            'gutenberg-block-kit/wp/element',
+            'gutenberg-block-kit/wp/data',
+            'gutenberg-block-kit/wp/icons',
+            'gutenberg-block-kit/actions',
           ],
         },
         ssr: {
@@ -53,6 +61,13 @@ export function gutenbergBlockKitVite() {
       };
     },
     resolveId(source) {
+      if (source.startsWith('gutenberg-block-kit/wp')) {
+        const sub = source.replace('gutenberg-block-kit/', '');
+        return resolveFromKit(`gutenberg-block-kit/${sub}`) || resolveFromKit(source);
+      }
+      if (source === 'gutenberg-block-kit/actions') {
+        return resolveFromKit('gutenberg-block-kit/actions');
+      }
       if (!source.startsWith('@wordpress/')) {
         return null;
       }

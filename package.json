@@ -1,6 +1,6 @@
 {
   "name": "gutenberg-block-kit",
-  "version": "1.0.8",
+  "version": "1.1.0",
   "description": "Gutenberg block editor and SSR-safe renderer for React — use in Next.js, Remix, or Vite with onSave/onLoad hooks.",
   "private": false,
   "repository": {
@@ -54,6 +54,38 @@
     "./vite": {
       "import": "./dist/vite.mjs",
       "require": "./dist/vite.cjs"
+    },
+    "./actions": {
+      "import": "./dist/actions.mjs",
+      "require": "./dist/actions.cjs"
+    },
+    "./wp": {
+      "import": "./dist/wp.mjs",
+      "require": "./dist/wp.cjs"
+    },
+    "./wp/blocks": {
+      "import": "./dist/wp/blocks.mjs",
+      "require": "./dist/wp/blocks.cjs"
+    },
+    "./wp/block-editor": {
+      "import": "./dist/wp/block-editor.mjs",
+      "require": "./dist/wp/block-editor.cjs"
+    },
+    "./wp/components": {
+      "import": "./dist/wp/components.mjs",
+      "require": "./dist/wp/components.cjs"
+    },
+    "./wp/element": {
+      "import": "./dist/wp/element.mjs",
+      "require": "./dist/wp/element.cjs"
+    },
+    "./wp/data": {
+      "import": "./dist/wp/data.mjs",
+      "require": "./dist/wp/data.cjs"
+    },
+    "./wp/icons": {
+      "import": "./dist/wp/icons.mjs",
+      "require": "./dist/wp/icons.cjs"
     },
     "./package.json": "./package.json"
   },
@@ -115,7 +147,8 @@
     "test:bundle": "pnpm run build:lib && node examples/verify-renderer-bundle.mjs",
     "test:boundary": "pnpm run build:lib && node examples/verify-package-boundary.mjs",
     "test:react-binding": "pnpm run build:lib && node examples/verify-react-binding.mjs",
-    "prepublishOnly": "pnpm run test:exports && pnpm run test:bundle && pnpm run test:boundary && node examples/verify-react-binding.mjs"
+    "test:wp-singleton": "pnpm run build:lib && node examples/verify-wp-singleton.mjs",
+    "prepublishOnly": "pnpm run test:exports && pnpm run test:bundle && pnpm run test:boundary && pnpm run test:wp-singleton && node examples/verify-react-binding.mjs"
   },
   "engines": {
     "node": ">=22.0.0"

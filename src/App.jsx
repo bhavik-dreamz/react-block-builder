@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   BlockEditorProvider,
   BlockList,
@@ -22,6 +22,8 @@ import { ActionBuilderSetup } from "./actions";
 
 import Header from "./components/Header";
 import TemplatePicker from "./components/TemplatePicker";
+import InserterPanelHost from "./components/InserterPanelHost";
+import { EditorSkeleton } from "./EditorSkeleton.jsx";
 
 function EditorApp({ settings }) {
   const {
@@ -103,9 +105,7 @@ function EditorApp({ settings }) {
                 <div
                   className={`editor-layout ${sidebarOpen ? "sidebar-open" : ""} ${(sidebarOpen || listViewOpen) ? "split-open" : "split-closed"}`}
                 >
-                  <div className='components-popover__fallback-container'>
-                    
-                  </div>
+                  <InserterPanelHost />
 
                   {/* ---- MIDDLE: MAIN EDITOR ---- */}
                   <div className='editor-main'>
@@ -224,16 +224,36 @@ function App({
   initialPageId,
   blockRegistry = [],
   customBlocksConfig = [],
+  disableBundledBlocks = false,
+  unregisterBlocks = [],
   editorSettings,
   media,
   actions,
 }) {
-  initBlocks(blockRegistry, { customBlocksConfig });
+  const [blocksReady, setBlocksReady] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    initBlocks(blockRegistry, {
+      customBlocksConfig,
+      disableBundledBlocks,
+      unregisterBlocks,
+    }).then(() => {
+      if (!cancelled) setBlocksReady(true);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [blockRegistry, customBlocksConfig, disableBundledBlocks, unregisterBlocks]);
 
   const settings = useMemo(() => {
     const merged = mergeEditorSettings(EDITOR_SETTINGS, editorSettings);
     return applyMediaToSettings(merged, media);
   }, [editorSettings, media]);
+
+  if (!blocksReady) {
+    return <EditorSkeleton />;
+  }
 
   return (
     <ActionBuilderSetup actions={actions}>

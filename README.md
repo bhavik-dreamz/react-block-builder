@@ -260,7 +260,68 @@ The plugin resolves `@wordpress/block-library/build-style/style.css` and other `
 
 Register **your** blocks without editing the package.
 
-### Option A — `blockRegistry` prop (JSON-shaped blocks)
+### Option A — Host `.jsx` blocks (recommended for real blocks)
+
+Author blocks like the kit's own `src/blocks/*`, but import the **shared WordPress runtime** from the package so `registerBlockType` hits the editor's registry:
+
+```jsx
+// your-app/blocks/carousel/index.jsx
+import { registerBlockType } from 'gutenberg-block-kit/wp/blocks';
+import {
+  useBlockProps, RichText, InspectorControls, MediaUpload, MediaUploadCheck,
+} from 'gutenberg-block-kit/wp/block-editor';
+import { PanelBody, Button } from 'gutenberg-block-kit/wp/components';
+import { useState } from 'gutenberg-block-kit/wp/element';
+import { plus, trash } from 'gutenberg-block-kit/wp/icons';
+import {
+  ActionBuilder, ActionLink, DEFAULT_BUTTON_ACTION, resolveItemButtonAction,
+} from 'gutenberg-block-kit/actions';
+
+registerBlockType('myapp/carousel', { /* edit, save, attributes… */ });
+```
+
+```js
+// your-app/blocks/index.js — side-effect registration
+import './carousel/index.jsx';
+```
+
+```jsx
+// your-app editor route
+import 'gutenberg-block-kit/styles';
+import { ClientBlockEditor } from 'gutenberg-block-kit/editor-client';
+import './blocks';
+
+<ClientBlockEditor
+  disableBundledBlocks
+  unregisterBlocks={['myapp/cta-block']}
+  onSave={onSave}
+  onLoad={onLoad}
+/>;
+```
+
+**Load-order safe alternative** — register in a callback instead of a side-effect import:
+
+```js
+import { registerBlocks } from 'gutenberg-block-kit/editor';
+
+registerBlocks(({ blocks, blockEditor, element }) => {
+  const { registerBlockType } = blocks;
+  const { useBlockProps } = blockEditor;
+  // …
+});
+```
+
+| Prop / export | Purpose |
+|---------------|---------|
+| `gutenberg-block-kit/wp/*` | Same `@wordpress/*` instance the editor uses |
+| `gutenberg-block-kit/actions` | ActionBuilder, ActionLink, button-action helpers |
+| `disableBundledBlocks` | Omit all bundled `myapp/*` demo blocks |
+| `unregisterBlocks` | Remove specific blocks after init |
+| `registerBlocks(fn)` | Register host blocks after core init |
+
+Use `editorSettings.allowedBlockTypes` to limit which blocks appear in the inserter.
+
+### Option B — `blockRegistry` prop (JSON-shaped blocks)
 
 Same shape as [`src/data/customBlocksConfig.json`](src/data/customBlocksConfig.json):
 
@@ -283,18 +344,22 @@ Same shape as [`src/data/customBlocksConfig.json`](src/data/customBlocksConfig.j
 />
 ```
 
-### Option B — `customBlocksConfig` prop (merged at init)
+### Option C — `customBlocksConfig` prop (merged at init)
 
 ```jsx
 <BlockEditor customBlocksConfig={blocksFromApi} onSave={onSave} onLoad={onLoad} />
 ```
 
-### Option C — `initBlocks()` before mount
+### Option D — `initBlocks()` before mount
 
 ```jsx
 import { initBlocks, BlockEditor } from 'gutenberg-block-kit/editor';
 
-initBlocks(myBlocks, { customBlocksConfig: moreBlocks });
+await initBlocks(myBlocks, {
+  customBlocksConfig: moreBlocks,
+  disableBundledBlocks: true,
+  unregisterBlocks: ['myapp/carousel'],
+});
 
 export default function Editor() {
   return <BlockEditor onSave={onSave} onLoad={onLoad} />;
@@ -319,6 +384,8 @@ export default function Editor() {
 | `initialPageId` | Slug/id (default `"home"`) |
 | `blockRegistry` | Array of JSON block definitions |
 | `customBlocksConfig` | Extra JSON blocks merged at first `initBlocks` |
+| `disableBundledBlocks` | When `true`, skip bundled `myapp/*` demo blocks |
+| `unregisterBlocks` | Block names to `unregisterBlockType` after init |
 | `editorSettings` | Partial override of Gutenberg `BlockEditorProvider` settings (merged with defaults) |
 | `onViewSite` | Optional callback (demo uses for preview route) |
 

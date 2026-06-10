@@ -66,6 +66,14 @@ export default defineConfig({
         bootstrap: resolve(__dirname, 'src/bootstrap.js'),
         vite: resolve(__dirname, 'src/vite-plugin.js'),
         'editor-client': resolve(__dirname, 'src/editor-client.js'),
+        actions: resolve(__dirname, 'src/actions-public.js'),
+        wp: resolve(__dirname, 'src/wp/index.js'),
+        'wp/blocks': resolve(__dirname, 'src/wp/blocks.js'),
+        'wp/block-editor': resolve(__dirname, 'src/wp/block-editor.js'),
+        'wp/components': resolve(__dirname, 'src/wp/components.js'),
+        'wp/element': resolve(__dirname, 'src/wp/element.js'),
+        'wp/data': resolve(__dirname, 'src/wp/data.js'),
+        'wp/icons': resolve(__dirname, 'src/wp/icons.js'),
       },
       formats: ['es', 'cjs'],
       fileName: (format, entryName) => {
@@ -83,6 +91,11 @@ export default defineConfig({
           'react/jsx-runtime': 'jsxRuntime',
           'react/jsx-dev-runtime': 'jsxDevRuntime',
           'react-dom/client': 'ReactDOMClient',
+        },
+        manualChunks(id) {
+          if (id.includes('node_modules/@wordpress/')) {
+            return 'wp-runtime';
+          }
         },
       },
     },
