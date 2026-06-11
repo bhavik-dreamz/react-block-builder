@@ -2438,6 +2438,98 @@ ul.block-editor-block-list__block .block-editor-rich-text__editable {
 }
 
 /* ── Host media library modal (rbb) ───────────────── */
+.rbb-media-modal .components-modal__content {
+  min-height: 70vh;
+}
+
+.rbb-media-modal .components-modal__frame {
+  max-width: 1040px;
+  width: 90vw;
+}
+
+.rbb-media-modal__tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 16px;
+}
+
+.rbb-media-modal__tab {
+  appearance: none;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 10px 14px;
+  margin-bottom: -1px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #646970;
+  cursor: pointer;
+}
+
+.rbb-media-modal__tab:hover {
+  color: #1e1e1e;
+}
+
+.rbb-media-modal__tab.is-active {
+  color: #3858e9;
+  border-bottom-color: #3858e9;
+}
+
+.rbb-media-modal__upload-pane {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46vh;
+  border: 2px dashed #c3c4c7;
+  border-radius: 8px;
+  background: #f6f7f7;
+  margin-bottom: 16px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.rbb-media-modal__upload-pane:hover {
+  border-color: #3858e9;
+}
+
+.rbb-media-modal__upload-pane.is-drag-active {
+  border-color: #3858e9;
+  background: rgba(56, 88, 233, 0.08);
+}
+
+.rbb-media-modal__upload-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  pointer-events: none;
+}
+
+.rbb-media-modal__upload-inner .components-button {
+  pointer-events: auto;
+}
+
+.rbb-media-modal__upload-icon {
+  font-size: 40px;
+  line-height: 1;
+  color: #3858e9;
+}
+
+.rbb-media-modal__upload-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1e1e1e;
+}
+
+.rbb-media-modal__upload-hint {
+  margin: 0 0 8px;
+  font-size: 13px;
+  color: #646970;
+}
+
 .rbb-media-modal__toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -2452,18 +2544,48 @@ ul.block-editor-block-list__block .block-editor-rich-text__editable {
   margin-bottom: 0;
 }
 
-.rbb-media-modal__upload input[type='file'] {
+.rbb-media-modal__file-input {
   display: none;
 }
 
 .rbb-media-modal__grid-wrap {
-  min-height: 240px;
-  max-height: 50vh;
+  position: relative;
+  min-height: 46vh;
+  max-height: 58vh;
   overflow: auto;
   border: 1px solid #e0e0e0;
   border-radius: 6px;
   padding: 12px;
   margin-bottom: 16px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.rbb-media-modal__grid-wrap.is-drag-active {
+  border-color: #3858e9;
+  border-style: dashed;
+  box-shadow: inset 0 0 0 1px #3858e9;
+}
+
+.rbb-media-modal__dropzone {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: rgba(56, 88, 233, 0.08);
+  pointer-events: none;
+}
+
+.rbb-media-modal__dropzone span {
+  font-size: 14px;
+  font-weight: 600;
+  color: #3858e9;
+  padding: 10px 18px;
+  border: 2px dashed #3858e9;
+  border-radius: 8px;
+  background: #fff;
 }
 
 .rbb-media-modal__grid {
@@ -2487,6 +2609,10 @@ ul.block-editor-block-list__block .block-editor-rich-text__editable {
   cursor: pointer;
 }
 
+.rbb-media-modal__thumb {
+  position: relative;
+}
+
 .rbb-media-modal__thumb.is-selected {
   border-color: #3858e9;
   box-shadow: 0 0 0 1px #3858e9;
@@ -2497,6 +2623,23 @@ ul.block-editor-block-list__block .block-editor-rich-text__editable {
   aspect-ratio: 1;
   object-fit: cover;
   display: block;
+}
+
+.rbb-media-modal__check {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  background: #3858e9;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px #fff;
 }
 
 .rbb-media-modal__caption {
@@ -2511,10 +2654,16 @@ ul.block-editor-block-list__block .block-editor-rich-text__editable {
 .rbb-media-modal__loading,
 .rbb-media-modal__empty {
   display: flex;
+  flex-direction: column;
+  gap: 12px;
   align-items: center;
   justify-content: center;
   min-height: 200px;
   color: #646970;
+}
+
+.rbb-media-modal__empty p {
+  margin: 0;
 }
 
 .rbb-media-modal__error {
