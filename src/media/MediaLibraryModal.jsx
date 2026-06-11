@@ -390,7 +390,7 @@ export default function MediaLibraryModal({
             {selected.length ? `${selected.length} selected` : ''}
           </span>
         )}
-         {!showUploadTab && (
+       
         <div className="rbb-media-modal__confirm">
           {/* <Button variant="tertiary" onClick={onClose}>
             Cancel
@@ -401,7 +401,7 @@ export default function MediaLibraryModal({
             </Button>
           
         </div>
-        )}
+       
       </div>
     </Modal>
   );
