@@ -396,6 +396,14 @@ export default function Editor() {
 | `customButtons` | Array of consumer buttons rendered in the header (see below) |
 | `templates` | Array of consumer block templates added to the "Choose a Template" picker |
 | `disableBundledTemplates` | When `true`, hide the bundled demo templates (show only your `templates`) |
+| `actions` | Configure button actions: `{ customActions, removeActions, fetchPages, pickProduct, pickCollection }`. See [docs/ACTIONS.md](docs/ACTIONS.md) |
+
+### Button actions
+
+Buttons store a structured **action** (`{ actionName, params }`), serialized to `data-action`
+for your native/Shopify app. The package ships only `OPEN_URL`; add your own (products,
+collections, in-app pages, …) via the `actions` prop. Full guide + Shopify example:
+**[docs/ACTIONS.md](docs/ACTIONS.md)**.
 
 ### Header buttons & device toolbar
 

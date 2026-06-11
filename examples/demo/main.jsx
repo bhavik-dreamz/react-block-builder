@@ -10,6 +10,7 @@ import { BlockEditor, initBlocks } from 'gutenberg-block-kit/editor';
 import FrontendPage from './FrontendPage.jsx';
 import { savePage, loadPage } from './api.js';
 import { demoMediaHandlers } from './mediaHandlers.js';
+import { demoActions } from './actionsConfig.js';
 
 initBlocks();
 
@@ -23,6 +24,7 @@ function Root() {
   return (
     <BlockEditor
       media={demoMediaHandlers}
+      actions={demoActions}
       onViewSite={() => setView('site')}
       onSave={({ id, title, html, json }) => savePage(id, title, html, json)}
       onLoad={(id) => loadPage(id)}

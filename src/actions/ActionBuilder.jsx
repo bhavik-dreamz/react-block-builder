@@ -1,20 +1,20 @@
 import { useEffect, useState } from '@wordpress/element';
 import {
   SelectControl,
+  ComboboxControl,
   TextControl,
   TextareaControl,
   Button,
   Notice,
 } from '@wordpress/components';
-import { ACTION_NAMES, ACTION_OPTIONS } from './constants.js';
-import { ACTION_SCHEMAS } from './schemas.js';
 import {
   denormalizeAction,
   getDefaultActionForType,
   normalizeAction,
   validateAction,
 } from './utils.js';
-import { useActionBuilderHost } from './ActionBuilderContext.jsx';
+import { useActionBuilderHost, useActionRegistry } from './ActionBuilderContext.jsx';
+import { ACTION_NAMES } from './constants.js';
 
 function FieldLabel({ children }) {
   return (
@@ -28,13 +28,18 @@ export function ActionBuilder({
   onChange,
 }) {
   const host = useActionBuilderHost();
+  const registry = useActionRegistry();
   const [pages, setPages] = useState(host?.pages || []);
   const [loadingPages, setLoadingPages] = useState(false);
 
-  const editorAction = denormalizeAction(value || getDefaultActionForType(ACTION_NAMES.OPEN_URL));
+  const fallbackName = registry.list[0]?.name || ACTION_NAMES.OPEN_URL;
+  const editorAction = denormalizeAction(
+    value || getDefaultActionForType(fallbackName, registry),
+    registry,
+  );
   const { actionName, params = {} } = editorAction;
-  const schema = ACTION_SCHEMAS[actionName] || { fields: [] };
-  const validation = validateAction(editorAction);
+  const schema = registry.getSchema(actionName);
+  const validation = validateAction(editorAction, registry);
 
   useEffect(() => {
     let cancelled = false;
@@ -60,11 +65,11 @@ export function ActionBuilder({
   }, [host]);
 
   const emit = (next) => {
-    onChange(normalizeAction(denormalizeAction(next)));
+    onChange(normalizeAction(denormalizeAction(next, registry), registry));
   };
 
   const handleActionTypeChange = (nextName) => {
-    emit(getDefaultActionForType(nextName));
+    emit(getDefaultActionForType(nextName, registry));
   };
 
   const handleParamChange = (key, val) => {
@@ -146,20 +151,31 @@ export function ActionBuilder({
     }
 
     if (field.type === 'page-select') {
-      const pageOptions = [
-        { label: loadingPages ? 'Loading pages…' : 'Select a page', value: '' },
-        ...pages.map((page) => ({
-          label: page.title || page.id,
-          value: page.id,
-        })),
-      ];
+      const pageOptions = pages.map((page) => ({
+        label: page.title || page.id,
+        value: page.id,
+      }));
+      // Show a manually-entered pageId (not in the CMS list) as its own option.
+      if (params[field.key] && !pageOptions.some((o) => o.value === params[field.key])) {
+        pageOptions.unshift({ label: params[field.key], value: params[field.key] });
+      }
       return (
-        <SelectControl
+        <ComboboxControl
           key={field.key}
           label={field.label}
-          value={params.pageId || ''}
+          help={field.help || 'Pick a CMS page, or type a page ID if it is not listed.'}
+          placeholder={loadingPages ? 'Loading pages…' : 'Search pages…'}
+          value={params[field.key] || ''}
           options={pageOptions}
-          onChange={(val) => handleParamChange('pageId', val)}
+          onChange={(val) => handleParamChange(field.key, val || '')}
+          onFilterValueChange={(input) => {
+            // No CMS match: treat the typed text as the pageId.
+            const matched = pages.some(
+              (p) => (p.id === input) || (p.title === input),
+            );
+            if (!matched) handleParamChange(field.key, input);
+          }}
+          allowReset
         />
       );
     }
@@ -170,8 +186,8 @@ export function ActionBuilder({
           key={field.key}
           label={field.label}
           help={field.help}
-          value={params.pageParamsRaw || ''}
-          onChange={(val) => handleParamChange('pageParamsRaw', val)}
+          value={params[field.key] || ''}
+          onChange={(val) => handleParamChange(field.key, val)}
         />
       );
     }
@@ -207,20 +223,11 @@ export function ActionBuilder({
       <SelectControl
         label="Action Type"
         value={actionName}
-        options={ACTION_OPTIONS}
+        options={registry.options}
         onChange={handleActionTypeChange}
       />
 
       {schema.fields.map(renderField)}
-
-      {actionName === ACTION_NAMES.OPEN_INAPP_PAGE && (
-        <TextControl
-          label="Manual Page ID"
-          value={params.manualPageId || ''}
-          onChange={(val) => handleParamChange('manualPageId', val)}
-          help="Overrides the page dropdown when filled"
-        />
-      )}
 
       {!validation.valid && validation.errors.length > 0 && (
         <Notice status="warning" isDismissible={false}>

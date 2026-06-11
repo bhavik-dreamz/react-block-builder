@@ -1,5 +1,6 @@
 export { ACTION_NAMES, ACTION_OPTIONS, DEFAULT_BUTTON_ACTION } from './constants.js';
 export { ACTION_SCHEMAS, DEFAULT_PARAMS_BY_ACTION } from './schemas.js';
+export { BUILTIN_ACTIONS, DEFAULT_REGISTRY, createActionRegistry } from './registry.js';
 export {
   buttonActionAttribute,
   parsePageParams,
@@ -20,5 +21,6 @@ export {
   ActionBuilderProvider,
   ActionBuilderContext,
   useActionBuilderHost,
+  useActionRegistry,
 } from './ActionBuilderContext.jsx';
 export { ActionBuilderSetup } from './ActionBuilderSetup.jsx';

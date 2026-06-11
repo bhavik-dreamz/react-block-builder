@@ -22,6 +22,7 @@
 12. [Vite / Create React App](#12-vite--create-react-app)
 13. [Custom blocks registry](#13-custom-blocks-registry)
 14. [Persistence API (onSave / onLoad)](#14-persistence-api-onsave--onload)
+14b. [Button actions](#14b-button-actions)
 15. [CSS requirements](#15-css-requirements)
 16. [Testing before release](#16-testing-before-release)
 17. [Rules for AI agents](#17-rules-for-ai-agents)
@@ -679,6 +680,30 @@ The device switcher auto-hides when only one device is allowed.
 ### Media Library modal
 
 When `media.uploadImage` is provided the modal exposes a tabbed UI — **Media library** (grid + search + pagination) and **Upload files** (drag-and-drop or click-to-browse, multi-file with progress). `uploadImage` is called once per file and returns the stored item.
+
+---
+
+## 14b. Button actions
+
+Block buttons store a structured action (`{ actionName, params }`) serialized to `data-action`
+for your native / Shopify app. The package ships only the generic `OPEN_URL`; you add your own
+actions (products, collections, in-app pages, cart, …) via the `actions` prop on `BlockEditor`:
+
+```jsx
+<BlockEditor
+  actions={{
+    customActions: shopifyActions,   // add / override by name
+    removeActions: [],               // drop built-ins by name
+    fetchPages,                      // for page-select fields
+    pickProduct,                     // for product-picker fields
+    pickCollection,                  // for collection-picker fields
+  }}
+/>
+```
+
+Definition shape, field types, normalize/denormalize hooks, the full Shopify example, and the
+runtime `data-action` reader are documented in **[ACTIONS.md](ACTIONS.md)**.
+Reference implementation: `examples/demo/actionsConfig.js`.
 
 ---
 
