@@ -620,6 +620,40 @@ The library **does not** ship storage. You implement:
 
 Reference implementation: `examples/demo/api.js` (copy patterns, do not import from demo in apps).
 
+### Clear confirmation
+
+`onClear` (or the `onSave` empty-state fallback) runs only after the Clear button's confirm dialog is accepted. Control it with `confirmClear` (default `true`) and `confirmClearMessage`. Set `confirmClear={false}` to skip the prompt.
+
+---
+
+## 14a. Editor chrome customization
+
+Host the editor inside your own UI by hiding header buttons and constraining the device toolbar — all via `BlockEditor` props (no fork).
+
+| Prop | Type | Default | Purpose |
+|------|------|---------|---------|
+| `headerButtons` | object | all `true` | Per-button visibility: `deviceSwitcher`, `sidebar`, `preview`, `clear`, `save`, `viewSite`, `options`. Any key `false` hides it |
+| `confirmClear` | boolean | `true` | Confirm dialog before Clear wipes content |
+| `confirmClearMessage` | string | `"Clear all content? This cannot be undone."` | Dialog text |
+| `devices` | string[] | `['desktop','tablet','mobile']` | Which preview-width buttons appear |
+| `defaultDevice` | string | first in `devices` | Initial selected device (validated against `devices`) |
+
+```jsx
+// Minimal mobile-only editor with no Clear/View Site buttons
+<BlockEditor
+  devices={['mobile']}
+  headerButtons={{ clear: false, viewSite: false }}
+  onSave={onSave}
+  onLoad={onLoad}
+/>
+```
+
+The device switcher auto-hides when only one device is allowed.
+
+### Media Library modal
+
+When `media.uploadImage` is provided the modal exposes a tabbed UI — **Media library** (grid + search + pagination) and **Upload files** (drag-and-drop or click-to-browse, multi-file with progress). `uploadImage` is called once per file and returns the stored item.
+
 ---
 
 ## 15. CSS requirements

@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- **`headerButtons`** prop — show/hide individual header buttons (`deviceSwitcher`, `sidebar`, `preview`, `clear`, `save`, `viewSite`, `options`). All shown by default.
+- **`confirmClear`** / **`confirmClearMessage`** props — Clear button now asks for confirmation before wiping content (`confirmClear` defaults `true`).
+- **`devices`** prop — restrict which preview-width buttons appear (e.g. `['mobile']`); switcher auto-hides when only one device is allowed.
+- **`defaultDevice`** prop — initial selected device; validated against `devices`, falls back to the first allowed device.
+- Media Library modal: **tabbed UI** (Media library / Upload files), **drag-and-drop** upload, click-to-browse dropzone, **multi-file** upload with progress, and a selected-item check badge.
+
+### Fixed
+
+- Media Library **Upload button did nothing** — the upload control nested a `<button>` inside a `<label>`, which swallowed the click and never opened the file picker. Now triggers the hidden file input directly.
+
 ## 1.1.0
 
 ### Added

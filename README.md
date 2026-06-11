@@ -437,7 +437,7 @@ The switcher auto-hides when only one device is allowed. `defaultDevice` is vali
 
 ### Custom media library (images)
 
-Frontend-only apps pass **`media`** callbacks — the editor shows a **Media Library** popup (grid + pagination + upload). Your backend handles storage.
+Frontend-only apps pass **`media`** callbacks — the editor shows a **Media Library** popup with two tabs: **Media library** (grid + search + pagination) and **Upload files** (drag-and-drop or click-to-browse). Multiple files upload at once when the block allows it. Your backend handles storage.
 
 ```jsx
 <BlockEditor
@@ -463,7 +463,7 @@ Frontend-only apps pass **`media`** callbacks — the editor shows a **Media Lib
 ```
 
 - **`listImages`** — required for the library button; powers search + pagination.
-- **`uploadImage`** — optional; enables Upload in the modal and drag-and-drop file upload in blocks.
+- **`uploadImage`** — optional; enables the **Upload files** tab (drag-and-drop + multi-file) in the modal and drag-and-drop file upload in blocks. Called once per file; returns the stored item.
 - Without `media`, image blocks fall back to **URL-only** (link) input.
 
 See `https://react-block-builder.vercel.app/demo/mediaHandlers.js` for a localStorage demo.

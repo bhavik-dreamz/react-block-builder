@@ -168,7 +168,7 @@ function EditorApp({ settings }) {
         )}
 
         {/* ---- OUTPUT PANEL ---- */}
-        {output && !preview && (
+        {/* {output && !preview && (
           <div className='output-panel'>
             <div className='output-section'>
               <div className='output-header'>
@@ -196,7 +196,7 @@ function EditorApp({ settings }) {
               <pre className='output-code'>{output.json}</pre>
             </div>
           </div>
-        )}
+        )} */}
       </div>
     </>
   );
