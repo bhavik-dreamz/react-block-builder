@@ -563,6 +563,54 @@ body :where(.builder-wrapper) .is-layout-flex {
   margin-left: 0;
 }
 
+/* ---- Device preview (resizes the live editor canvas) ---- */
+.builder-wrapper .editor-canvas-wrapper .block-editor-block-list__layout {
+  width: 100%;
+  margin-inline: auto;
+  transition: max-width 0.2s ease;
+}
+
+.builder-wrapper .editor-canvas-wrapper.device-tablet,
+.builder-wrapper .editor-canvas-wrapper.device-mobile {
+  background: #f0f0f1;
+}
+
+.builder-wrapper .editor-canvas-wrapper.device-tablet .block-editor-block-list__layout {
+  max-width: 768px;
+  background: #fff;
+  box-shadow: 0 0 0 1px #ddd, 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.builder-wrapper .editor-canvas-wrapper.device-mobile .block-editor-block-list__layout {
+  max-width: 390px;
+  background: #fff;
+  box-shadow: 0 0 0 1px #ddd, 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* ---- Header device switcher ---- */
+.builder-wrapper .device-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-right: 6px;
+  padding: 2px;
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 8px;
+}
+
+.builder-wrapper .device-btn {
+  border-radius: 6px;
+}
+
+.builder-wrapper .device-btn.active {
+  background: var(--primary);
+  color: #fff;
+}
+
+.builder-wrapper .device-btn.active svg {
+  fill: #fff;
+}
+
 /* Default canvas appender — drop-zone style */
 .builder-wrapper .block-editor-default-block-appender {
   display: flex;

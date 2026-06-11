@@ -29,6 +29,7 @@ export function EditorProvider({
   const [templateReplaceMode, setTemplateReplaceMode] = useState(false);
   const [listViewOpen, setListViewOpen] = useState(false);
   const [inserterOpen, setInserterOpen] = useState(true);
+  const [deviceType, setDeviceType] = useState('desktop'); // 'desktop' | 'tablet' | 'mobile'
   // Options menu state
   const [editorMode, setEditorMode] = useState('visual'); // 'visual' | 'code'
   const [fullscreen, setFullscreen] = useState(false);
@@ -163,6 +164,7 @@ export function EditorProvider({
     templateReplaceMode, setTemplateReplaceMode,
     listViewOpen, setListViewOpen,
     inserterOpen, setInserterOpen,
+    deviceType, setDeviceType,
     // options menu
     editorMode, setEditorMode,
     fullscreen, setFullscreen,

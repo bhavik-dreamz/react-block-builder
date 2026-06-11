@@ -33,6 +33,7 @@ function EditorApp({ settings }) {
     sidebarOpen,
     listViewOpen,
     inserterOpen,
+    deviceType,
     blocksRef,
     pushHistory,
     editorMode,
@@ -113,7 +114,7 @@ function EditorApp({ settings }) {
                     <div className='editor-content'>
                       <BlockTools>
                         <BlockSelectionClearer>
-                          <div className='editor-canvas-wrapper'>
+                          <div className={`editor-canvas-wrapper device-${deviceType}`}>
                             <WritingFlow>
                               <ObserveTyping>
                                 <div className='editor-canvas'>

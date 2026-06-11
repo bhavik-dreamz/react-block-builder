@@ -1,7 +1,13 @@
 import React from 'react';
 import { useEditor } from '../context/EditorContext';
 import logoimage from '../images/editor-icon.png';
-import { FaColumns, FaEye, FaEdit, FaTrash, FaSave, FaGlobe } from 'react-icons/fa';
+import { FaColumns, FaEye, FaEdit, FaTrash, FaSave, FaGlobe, FaDesktop, FaTabletAlt, FaMobileAlt } from 'react-icons/fa';
+
+const DEVICES = [
+  { id: 'desktop', Icon: FaDesktop, label: 'Desktop' },
+  { id: 'tablet', Icon: FaTabletAlt, label: 'Tablet' },
+  { id: 'mobile', Icon: FaMobileAlt, label: 'Mobile' },
+];
 import OptionsMenu from './OptionsMenu';
 import LeftToolbarButtonSet from './LeftToolbarButtonSet';
 
@@ -14,6 +20,7 @@ export default function Header() {
     handleSave,
     handleClear,
     onViewSite,
+    deviceType, setDeviceType,
   } = useEditor();
 
   return (
@@ -35,6 +42,22 @@ export default function Header() {
         />
       </div>
       <div className="header-actions">
+        {!preview && (
+          <div className="device-switcher" role="group" aria-label="Preview device">
+            {DEVICES.map(({ id, Icon, label }) => (
+              <button
+                key={id}
+                className={`device-btn header-btn-wrap${deviceType === id ? ' active' : ''}`}
+                onClick={() => setDeviceType(id)}
+                title={label}
+                aria-pressed={deviceType === id}
+              >
+                <Icon />
+              </button>
+            ))}
+          </div>
+        )}
+
         <button className="sidebar-toggle-btn header-btn-wrap" onClick={() => setSidebarOpen(!sidebarOpen)}>
           <FaColumns />
         </button>
