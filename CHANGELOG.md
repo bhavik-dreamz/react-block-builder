@@ -8,6 +8,9 @@
 - **`confirmClear`** / **`confirmClearMessage`** props — Clear button now asks for confirmation before wiping content (`confirmClear` defaults `true`).
 - **`devices`** prop — restrict which preview-width buttons appear (e.g. `['mobile']`); switcher auto-hides when only one device is allowed.
 - **`defaultDevice`** prop — initial selected device; validated against `devices`, falls back to the first allowed device.
+- **`customButtons`** prop — add consumer buttons to the header (`id`, `label`, `icon`, `title`, `position`, `className`, `disabled`, `onClick`); each `onClick` receives an editor API (`blocks`, `setBlocks`, `pageId`, `pageTitle`, `handleSave`, `handleClear`, …).
+- **`templates`** prop — register/import consumer block templates into the "Choose a Template" picker (descriptor: `{ slug, label, category, icon, description, blocks[] }`).
+- **`disableBundledTemplates`** prop — hide the bundled demo templates and show only consumer `templates`.
 - Media Library modal: **tabbed UI** (Media library / Upload files), **drag-and-drop** upload, click-to-browse dropzone, **multi-file** upload with progress, and a selected-item check badge.
 
 ### Fixed

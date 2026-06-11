@@ -637,6 +637,32 @@ Host the editor inside your own UI by hiding header buttons and constraining the
 | `confirmClearMessage` | string | `"Clear all content? This cannot be undone."` | Dialog text |
 | `devices` | string[] | `['desktop','tablet','mobile']` | Which preview-width buttons appear |
 | `defaultDevice` | string | first in `devices` | Initial selected device (validated against `devices`) |
+| `customButtons` | object[] | `[]` | Consumer buttons in the header; each `onClick(api)` gets the editor API |
+
+```jsx
+// Custom header button — onClick receives an editor API object
+<BlockEditor
+  customButtons={[{
+    id: 'publish',
+    label: 'Publish',
+    icon: <FaUpload />,
+    position: 'end',          // 'start' | 'end'
+    onClick: (api) => { api.handleSave(); myPublish(api.pageId, api.blocks); },
+  }]}
+  onSave={onSave}
+/>
+```
+
+Button fields: `id`, `label?`, `icon?`, `title?`, `position?`, `className?`, `disabled?`, `onClick(api)`. The `api` exposes `blocks`, `setBlocks`, `pageId`, `pageTitle`, `setPageTitle`, `preview`, `setPreview`, `deviceType`, `setDeviceType`, `sidebarOpen`, `setSidebarOpen`, `handleSave`, `handleClear`, `onViewSite`.
+
+### Templates (register / import)
+
+| Prop | Type | Default | Purpose |
+|------|------|---------|---------|
+| `templates` | object[] | `[]` | Consumer templates added to the "Choose a Template" picker |
+| `disableBundledTemplates` | boolean | `false` | Hide bundled demo templates (show only `templates`) |
+
+Template descriptor: `{ slug, label, category, icon, description, blocks: [{ name, attributes?, innerBlocks? }] }`. Final list = `disableBundledTemplates ? templates : [...bundled, ...templates]`; entries without a `blocks` array are dropped. Importing = `JSON.parse` saved layouts and pass them via `templates`. Block `name`s must be registered (bundled, `blockRegistry`, or `customBlocksConfig`).
 
 ```jsx
 // Minimal mobile-only editor with no Clear/View Site buttons

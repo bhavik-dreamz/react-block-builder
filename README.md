@@ -393,6 +393,9 @@ export default function Editor() {
 | `confirmClearMessage` | Confirm dialog text. Default `"Clear all content? This cannot be undone."` |
 | `devices` | Array of device ids to show in the preview toolbar. Default `['desktop','tablet','mobile']` |
 | `defaultDevice` | Initial selected device. Default: first item in `devices` |
+| `customButtons` | Array of consumer buttons rendered in the header (see below) |
+| `templates` | Array of consumer block templates added to the "Choose a Template" picker |
+| `disableBundledTemplates` | When `true`, hide the bundled demo templates (show only your `templates`) |
 
 ### Header buttons & device toolbar
 
@@ -434,6 +437,89 @@ Any key set to `false` hides that button; omitted keys default to shown.
 ```
 
 The switcher auto-hides when only one device is allowed. `defaultDevice` is validated against `devices`; if invalid it falls back to the first allowed device.
+
+### Custom header buttons
+
+Add your own buttons to the header. Each `onClick` receives an **editor API** object so the button can act on editor state.
+
+```jsx
+import { FaUpload, FaCog } from 'react-icons/fa';
+
+<BlockEditor
+  customButtons={[
+    {
+      id: 'publish',
+      label: 'Publish',
+      icon: <FaUpload />,
+      title: 'Publish this page',
+      position: 'end',                 // 'start' | 'end' (default 'end')
+      onClick: (api) => {
+        api.handleSave();
+        myPublish(api.pageId, api.blocks);
+      },
+    },
+    {
+      id: 'settings',
+      icon: <FaCog />,                 // icon-only button (no label)
+      onClick: (api) => openSettings(api.pageTitle),
+    },
+  ]}
+  onSave={onSave}
+  onLoad={onLoad}
+/>
+```
+
+| Field | Type | Notes |
+|-------|------|-------|
+| `id` | string | Key + fallback for `title` |
+| `label` | string | Optional button text |
+| `icon` | ReactNode | Optional icon element |
+| `title` | string | Tooltip (defaults to `label`) |
+| `position` | `'start'` \| `'end'` | Where in the header actions row. Default `'end'` |
+| `className` | string | Extra CSS class |
+| `disabled` | boolean | Disable the button |
+| `onClick` | `(api) => void` | Receives the editor API |
+
+**Editor API** passed to `onClick`: `blocks`, `setBlocks`, `pageId`, `pageTitle`, `setPageTitle`, `preview`, `setPreview`, `deviceType`, `setDeviceType`, `sidebarOpen`, `setSidebarOpen`, `handleSave`, `handleClear`, `onViewSite`.
+
+### Register / import templates
+
+The "Choose a Template" picker ships demo templates. Add your own with `templates`, and/or hide the bundled ones with `disableBundledTemplates`.
+
+```jsx
+const myTemplates = [
+  {
+    slug: 'landing',
+    label: 'Landing Page',
+    category: 'Marketing',
+    icon: '🚀',
+    description: 'Hero + CTA',
+    blocks: [
+      { name: 'core/heading',   attributes: { content: 'Welcome', level: 1 } },
+      { name: 'core/paragraph', attributes: { content: 'Build faster.' } },
+      // innerBlocks supported: { name, attributes?, innerBlocks? }
+    ],
+  },
+];
+
+<BlockEditor
+  templates={myTemplates}
+  disableBundledTemplates          // optional — show ONLY your templates
+  onSave={onSave}
+  onLoad={onLoad}
+/>
+```
+
+| Field | Type | Notes |
+|-------|------|-------|
+| `slug` | string | Unique key |
+| `label` | string | Card title |
+| `category` | string | Shown under the label |
+| `icon` | string/ReactNode | Card icon (emoji or element) |
+| `description` | string | Tooltip |
+| `blocks` | array | `{ name, attributes?, innerBlocks? }` — **required** |
+
+**Importing** templates is just passing parsed JSON — fetch/`JSON.parse` your saved layouts and hand them to `templates`. Every block `name` used must be a **registered** block (bundled, or added via `blockRegistry` / `customBlocksConfig`); templates with an unknown blocks array are skipped.
 
 ### Custom media library (images)
 

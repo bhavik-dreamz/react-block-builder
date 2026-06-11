@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { serialize, parse, createBlock } from '@wordpress/blocks';
-import { blockTemplates } from '../data/blockTemplates';
+import { blockTemplates as bundledTemplates } from '../data/blockTemplates';
 
 const EditorContext = createContext(null);
 
@@ -30,8 +30,18 @@ export function EditorProvider({
   confirmClearMessage = 'Clear all content? This cannot be undone.',
   devices,
   defaultDevice,
+  customButtons,
+  templates,
+  disableBundledTemplates = false,
 }) {
   const headerButtonsConfig = { ...DEFAULT_HEADER_BUTTONS, ...(headerButtons || {}) };
+
+  const customTemplates = (Array.isArray(templates) ? templates : []).filter(
+    (tpl) => tpl && Array.isArray(tpl.blocks),
+  );
+  const blockTemplates = disableBundledTemplates
+    ? customTemplates
+    : [...bundledTemplates, ...customTemplates];
   const deviceList = devices?.length ? devices : ['desktop', 'tablet', 'mobile'];
   const initialDevice = deviceList.includes(defaultDevice) ? defaultDevice : deviceList[0];
   const [blocks, setBlocks] = useState([]);
@@ -200,6 +210,7 @@ export function EditorProvider({
     blockTemplates,
     // header button visibility config
     headerButtons: headerButtonsConfig,
+    customButtons: Array.isArray(customButtons) ? customButtons : [],
     // actions
     onViewSite,
     handleSave,

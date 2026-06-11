@@ -222,6 +222,9 @@ function App({
   confirmClearMessage,
   devices,
   defaultDevice,
+  customButtons,
+  templates,
+  disableBundledTemplates,
 }) {
   const [blocksReady, setBlocksReady] = useState(false);
 
@@ -264,6 +267,9 @@ function App({
         confirmClearMessage={confirmClearMessage}
         devices={devices}
         defaultDevice={defaultDevice}
+        customButtons={customButtons}
+        templates={templates}
+        disableBundledTemplates={disableBundledTemplates}
       >
         <EditorApp settings={settings} />
       </EditorProvider>

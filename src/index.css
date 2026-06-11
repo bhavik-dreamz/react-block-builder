@@ -1163,6 +1163,13 @@ body.is-dragging-components-draggable .builder-wrapper .block-editor-default-blo
   padding: 16px;
 }
 
+.builder-wrapper .template-picker-empty {
+  padding: 32px 16px;
+  text-align: center;
+  color: #646970;
+  font-size: 14px;
+}
+
 .builder-wrapper .template-card {
   display: flex;
   flex-direction: column;
@@ -1347,6 +1354,31 @@ span.myapp-underline {
 
 .builder-wrapper .view-site-btn:hover {
   background: var(--primary-hover);
+}
+
+/* -- Consumer custom header buttons -- */
+.builder-wrapper .header-custom-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: auto;
+  min-width: 34px;
+  padding: 3px 10px;
+}
+
+.builder-wrapper .header-custom-btn:hover svg,
+.builder-wrapper .header-custom-btn:hover .header-custom-btn__label {
+  color: #fff;
+}
+
+.builder-wrapper .header-custom-btn__label {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.builder-wrapper .header-custom-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* -- Frontend page shell -- */

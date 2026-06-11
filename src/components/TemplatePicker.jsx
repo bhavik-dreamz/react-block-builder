@@ -31,20 +31,24 @@ export default function TemplatePicker() {
           ✕
         </button>
       </div>
-      <div className="template-picker-grid">
-        {blockTemplates.map(tpl => (
-          <button
-            key={tpl.slug}
-            className="template-card"
-            onClick={() => applyTemplate(tpl)}
-            title={tpl.description}
-          >
-            <span className="template-card-icon">{tpl.icon}</span>
-            <span className="template-card-label">{tpl.label}</span>
-            <span className="template-card-meta">{tpl.category}</span>
-          </button>
-        ))}
-      </div>
+      {blockTemplates.length === 0 ? (
+        <div className="template-picker-empty">No templates available.</div>
+      ) : (
+        <div className="template-picker-grid">
+          {blockTemplates.map((tpl, i) => (
+            <button
+              key={tpl.slug || i}
+              className="template-card"
+              onClick={() => applyTemplate(tpl)}
+              title={tpl.description}
+            >
+              <span className="template-card-icon">{tpl.icon}</span>
+              <span className="template-card-label">{tpl.label}</span>
+              <span className="template-card-meta">{tpl.category}</span>
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

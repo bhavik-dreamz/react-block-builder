@@ -12,6 +12,7 @@ import OptionsMenu from './OptionsMenu';
 import LeftToolbarButtonSet from './LeftToolbarButtonSet';
 
 export default function Header() {
+  const editor = useEditor();
   const {
     preview, setPreview,
     saved,
@@ -23,11 +24,44 @@ export default function Header() {
     deviceType, setDeviceType,
     devices,
     headerButtons = {},
-  } = useEditor();
+    customButtons = [],
+  } = editor;
 
   const allowedDevices = devices?.length
     ? DEVICES.filter((d) => devices.includes(d.id))
     : DEVICES;
+
+  // Stable API handed to custom-button callbacks.
+  const buttonApi = {
+    blocks: editor.blocks,
+    setBlocks: editor.setBlocks,
+    pageId: editor.pageId,
+    pageTitle, setPageTitle,
+    preview, setPreview,
+    deviceType, setDeviceType,
+    sidebarOpen, setSidebarOpen,
+    handleSave,
+    handleClear,
+    onViewSite,
+  };
+
+  function renderCustomButtons(position) {
+    return customButtons
+      .filter((btn) => (btn.position || 'end') === position)
+      .map((btn) => (
+        <button
+          key={btn.id || btn.label}
+          type="button"
+          className={`header-custom-btn header-btn-wrap${btn.className ? ` ${btn.className}` : ''}`}
+          title={btn.title || btn.label}
+          disabled={btn.disabled}
+          onClick={() => btn.onClick?.(buttonApi)}
+        >
+          {btn.icon}
+          {btn.label && <span className="header-custom-btn__label">{btn.label}</span>}
+        </button>
+      ));
+  }
 
   return (
     <div className="editor-header">
@@ -48,6 +82,8 @@ export default function Header() {
         />
       </div>
       <div className="header-actions">
+        {renderCustomButtons('start')}
+
         {headerButtons.deviceSwitcher !== false && !preview && allowedDevices.length > 1 && (
           <div className="device-switcher" role="group" aria-label="Preview device">
             {allowedDevices.map(({ id, Icon, label }) => (
@@ -95,6 +131,8 @@ export default function Header() {
             View Site
           </button>
         )}
+
+        {renderCustomButtons('end')}
 
         {headerButtons.options !== false && <OptionsMenu />}
       </div>
