@@ -9,7 +9,6 @@ import {
   BlockEditorKeyboardShortcuts,
   BlockInspector,
 } from "@wordpress/block-editor";
-import { __experimentalListView as ListView } from "@wordpress/block-editor";
 import { serialize, parse } from "@wordpress/blocks";
 import { SlotFillProvider, Popover } from "@wordpress/components";
 import { ShortcutProvider } from "@wordpress/keyboard-shortcuts";
@@ -104,7 +103,7 @@ function EditorApp({ settings }) {
                 </BlockEditorKeyboardShortcuts>
 
                 <div
-                  className={`editor-layout ${sidebarOpen ? "sidebar-open" : ""} ${inserterOpen ? "inserter-open" : ""} ${(sidebarOpen || listViewOpen) ? "split-open" : "split-closed"}`}
+                  className={`editor-layout ${sidebarOpen ? "sidebar-open" : ""} ${(inserterOpen || listViewOpen) ? "left-open" : ""} ${sidebarOpen ? "split-open" : "split-closed"}`}
                 >
                   <InserterPanelHost />
 
@@ -147,30 +146,17 @@ function EditorApp({ settings }) {
                     </div>
                   </div>
 
-                  {/* ---- RIGHT: SPLIT PANEL ---- */}
-                  {(listViewOpen || sidebarOpen) && (
+                  {/* ---- RIGHT: SPLIT PANEL (Inspector) ---- */}
+                  {sidebarOpen && (
                     <div className='editor-split-layout'>
-                      {listViewOpen && (
-                        <div className='editor-list-view'>
-                          <div className='sidebar-header'>
-                            <span>Widgets / List</span>
-                          </div>
-                          <div className='sidebar-body'>
-                            <ListView />
-                          </div>
+                      <div className='editor-sidebar'>
+                        <div className='sidebar-header'>
+                          <span>Block Settings</span>
                         </div>
-                      )}
-
-                      {sidebarOpen && (
-                        <div className='editor-sidebar'>
-                          <div className='sidebar-header'>
-                            <span>Block Settings</span>
-                          </div>
-                          <div className='sidebar-body'>
-                            <BlockInspector />
-                          </div>
+                        <div className='sidebar-body'>
+                          <BlockInspector />
                         </div>
-                      )}
+                      </div>
                     </div>
                   )}
                   <Popover.Slot />

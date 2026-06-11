@@ -478,11 +478,11 @@ body :where(.builder-wrapper) .is-layout-flex {
   grid-template-columns: 0 minmax(0, 1fr);
 }
 
-.builder-wrapper .editor-layout.inserter-open {
+.builder-wrapper .editor-layout.left-open {
   grid-template-columns: 340px minmax(0, 1fr) 360px;
 }
 
-.builder-wrapper .editor-layout.inserter-open.split-closed {
+.builder-wrapper .editor-layout.left-open.split-closed {
   grid-template-columns: 340px minmax(0, 1fr);
 }
 
@@ -832,23 +832,45 @@ body.is-dragging-components-draggable .builder-wrapper .block-editor-default-blo
   min-width: 0;
 }
 
-.builder-wrapper .editor-layout:not(.inserter-open) > .gbk-inserter-panel {
+.builder-wrapper .editor-layout:not(.left-open) > .gbk-inserter-panel {
   border-right: none;
 }
 
-.builder-wrapper .editor-layout.inserter-open > .gbk-inserter-panel {
+.builder-wrapper .editor-layout.left-open > .gbk-inserter-panel {
+  display: flex;
+  flex-direction: column;
   overflow-x: hidden;
   overflow-y: auto;
+}
+
+/* List View docked in left panel — capped height, scrolls, sits above inserter */
+.gbk-inserter-panel > .editor-list-view {
+  flex: 0 0 auto;
+  max-height: 45%;
+  border-bottom: 1px solid #ddd;
+}
+
+/* List View fills the panel when the inserter is closed */
+.gbk-inserter-panel > .editor-list-view:only-child {
+  flex: 1 1 auto;
+  max-height: none;
+  border-bottom: none;
 }
 
 /* Inline inserter library docked in left panel */
 .gbk-inserter-panel > .block-editor-inserter__menu {
   position: relative;
+  flex: 1 1 auto;
   width: 100%;
   max-width: 100%;
-  height: 100%;
+  min-height: 0;
   margin: 0;
   box-sizing: border-box;
+}
+
+/* Inserter takes full height when it is the only thing in the panel */
+.gbk-inserter-panel > .block-editor-inserter__menu:only-child {
+  height: 100%;
 }
 
 .builder-wrapper .editor-split-layout {
