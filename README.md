@@ -388,6 +388,52 @@ export default function Editor() {
 | `unregisterBlocks` | Block names to `unregisterBlockType` after init |
 | `editorSettings` | Partial override of Gutenberg `BlockEditorProvider` settings (merged with defaults) |
 | `onViewSite` | Optional callback (demo uses for preview route) |
+| `headerButtons` | Object — show/hide each header button (see below). Default: all shown |
+| `confirmClear` | `boolean` — confirm dialog before Clear wipes content. Default `true` |
+| `confirmClearMessage` | Confirm dialog text. Default `"Clear all content? This cannot be undone."` |
+| `devices` | Array of device ids to show in the preview toolbar. Default `['desktop','tablet','mobile']` |
+| `defaultDevice` | Initial selected device. Default: first item in `devices` |
+
+### Header buttons & device toolbar
+
+Hide any header button (consumers embedding the editor in their own chrome):
+
+```jsx
+<BlockEditor
+  headerButtons={{
+    deviceSwitcher: true,  // device preview toggle
+    sidebar: true,         // sidebar toggle
+    preview: true,         // preview/edit toggle
+    clear: false,          // hide Clear (trash) button
+    save: true,            // Save button
+    viewSite: false,       // hide View Site button
+    options: true,         // options (⋮) menu
+  }}
+  onSave={onSave}
+  onLoad={onLoad}
+/>
+```
+
+Any key set to `false` hides that button; omitted keys default to shown.
+
+**Clear confirmation** — the Clear button asks for confirmation before wiping content:
+
+```jsx
+<BlockEditor confirmClear confirmClearMessage="Delete everything?" onSave={onSave} />
+// disable: <BlockEditor confirmClear={false} ... />
+```
+
+**Device toolbar** — restrict which preview widths are offered, and the default:
+
+```jsx
+// Mobile-only editor — only the mobile button, opens in mobile width
+<BlockEditor devices={['mobile']} onSave={onSave} onLoad={onLoad} />
+
+// Desktop + mobile, default to mobile
+<BlockEditor devices={['desktop', 'mobile']} defaultDevice="mobile" onSave={onSave} />
+```
+
+The switcher auto-hides when only one device is allowed. `defaultDevice` is validated against `devices`; if invalid it falls back to the first allowed device.
 
 ### Custom media library (images)
 
