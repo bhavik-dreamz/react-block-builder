@@ -40,7 +40,7 @@
 | **styles** | Editor UI CSS (~500KB) | Import on editor routes only |
 | **bootstrap** | Sets `window.React` for Gutenberg | Browser only (no-op in Node) |
 
-The **demo** (`examples/demo/`) is a separate playground app. It is **not** published to npm.
+The **demo** (`https://react-block-builder.vercel.app/`) is a separate playground app. It is **not** published to npm.
 
 ---
 

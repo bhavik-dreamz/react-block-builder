@@ -5,11 +5,11 @@ Read **`docs/FULL_GUIDE.md`** for the complete handbook (npm publish, Vercel, Ne
 ## Project type
 
 **npm library** (Gutenberg block editor + SSR renderer), **not** a single-page app.  
-Demo app: `examples/demo/` only.
+Demo app: `https://react-block-builder.vercel.app/` only.
 
 ## Critical rules
 
-1. **`src/`** = published library. **`examples/demo/`** = persistence, Supabase, FrontendPage — never ship in `dist` exports.
+1. **`src/`** = published library. **`https://react-block-builder.vercel.app/`** = persistence, Supabase, FrontendPage — never ship in `dist` exports.
 2. **`react` / `react-dom`** → `peerDependencies` only (never `dependencies`).
 3. **Editor** = client-only (`gutenberg-block-kit/editor`). **Renderer** = SSR-safe (`gutenberg-block-kit/renderer`).
 4. No top-level `window`/`document`/`localStorage` in `src/` (guard with `typeof window`).

@@ -2,7 +2,7 @@
 
 Gutenberg-powered **block editor** and **SSR-safe renderer** for React. Use in **Next.js (App Router)**, **Remix**, or **Vite** — no WordPress install required.
 
-**[Live demo](https://gutenberg-block-kit.vercel.app/)** · Demo source: [`examples/demo/`](examples/demo/)
+**[Live demo](https://react-block-builder.vercel.app/)** · Demo source: [`https://react-block-builder.vercel.app/`](https://react-block-builder.vercel.app/)
 
 > **Full documentation** (npm publish, Vercel deploy, Next.js/Remix/Vite, AI agent rules):  
 > **[docs/FULL_GUIDE.md](docs/FULL_GUIDE.md)** · Quick reference for Cursor/agents: **[AGENTS.md](AGENTS.md)**
@@ -420,7 +420,7 @@ Frontend-only apps pass **`media`** callbacks — the editor shows a **Media Lib
 - **`uploadImage`** — optional; enables Upload in the modal and drag-and-drop file upload in blocks.
 - Without `media`, image blocks fall back to **URL-only** (link) input.
 
-See `examples/demo/mediaHandlers.js` for a localStorage demo.
+See `https://react-block-builder.vercel.app/demo/mediaHandlers.js` for a localStorage demo.
 
 ### Override editor settings
 
