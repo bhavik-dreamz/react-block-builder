@@ -6,6 +6,16 @@ const EditorContext = createContext(null);
 
 const DEFAULT_PAGE_ID = 'home';
 
+const DEFAULT_HEADER_BUTTONS = {
+  deviceSwitcher: true,
+  sidebar: true,
+  preview: true,
+  clear: true,
+  save: true,
+  viewSite: true,
+  options: true,
+};
+
 export function EditorProvider({
   children,
   onViewSite,
@@ -15,7 +25,15 @@ export function EditorProvider({
   initialContent,
   initialTitle = 'Home',
   initialPageId = DEFAULT_PAGE_ID,
+  headerButtons,
+  confirmClear = true,
+  confirmClearMessage = 'Clear all content? This cannot be undone.',
+  devices,
+  defaultDevice,
 }) {
+  const headerButtonsConfig = { ...DEFAULT_HEADER_BUTTONS, ...(headerButtons || {}) };
+  const deviceList = devices?.length ? devices : ['desktop', 'tablet', 'mobile'];
+  const initialDevice = deviceList.includes(defaultDevice) ? defaultDevice : deviceList[0];
   const [blocks, setBlocks] = useState([]);
   const [output, setOutput] = useState(null);
   const [preview, setPreview] = useState(false);
@@ -29,7 +47,7 @@ export function EditorProvider({
   const [templateReplaceMode, setTemplateReplaceMode] = useState(false);
   const [listViewOpen, setListViewOpen] = useState(false);
   const [inserterOpen, setInserterOpen] = useState(true);
-  const [deviceType, setDeviceType] = useState('desktop'); // 'desktop' | 'tablet' | 'mobile'
+  const [deviceType, setDeviceType] = useState(initialDevice); // 'desktop' | 'tablet' | 'mobile'
   // Options menu state
   const [editorMode, setEditorMode] = useState('visual'); // 'visual' | 'code'
   const [fullscreen, setFullscreen] = useState(false);
@@ -100,6 +118,12 @@ export function EditorProvider({
   }
 
   async function handleClear() {
+    if (confirmClear && typeof window !== 'undefined') {
+      const ok = window.confirm(confirmClearMessage);
+      if (!ok) {
+        return;
+      }
+    }
     try {
       setBlocks([]);
       setOutput(null);
@@ -165,6 +189,7 @@ export function EditorProvider({
     listViewOpen, setListViewOpen,
     inserterOpen, setInserterOpen,
     deviceType, setDeviceType,
+    devices: deviceList,
     // options menu
     editorMode, setEditorMode,
     fullscreen, setFullscreen,
@@ -173,6 +198,8 @@ export function EditorProvider({
     topToolbar, setTopToolbar,
     historyRef, blocksRef,
     blockTemplates,
+    // header button visibility config
+    headerButtons: headerButtonsConfig,
     // actions
     onViewSite,
     handleSave,

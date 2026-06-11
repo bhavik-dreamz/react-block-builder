@@ -21,7 +21,13 @@ export default function Header() {
     handleClear,
     onViewSite,
     deviceType, setDeviceType,
+    devices,
+    headerButtons = {},
   } = useEditor();
+
+  const allowedDevices = devices?.length
+    ? DEVICES.filter((d) => devices.includes(d.id))
+    : DEVICES;
 
   return (
     <div className="editor-header">
@@ -42,9 +48,9 @@ export default function Header() {
         />
       </div>
       <div className="header-actions">
-        {!preview && (
+        {headerButtons.deviceSwitcher !== false && !preview && allowedDevices.length > 1 && (
           <div className="device-switcher" role="group" aria-label="Preview device">
-            {DEVICES.map(({ id, Icon, label }) => (
+            {allowedDevices.map(({ id, Icon, label }) => (
               <button
                 key={id}
                 className={`device-btn header-btn-wrap${deviceType === id ? ' active' : ''}`}
@@ -58,29 +64,39 @@ export default function Header() {
           </div>
         )}
 
-        <button className="sidebar-toggle-btn header-btn-wrap" onClick={() => setSidebarOpen(!sidebarOpen)}>
-          <FaColumns />
-        </button>
+        {headerButtons.sidebar !== false && (
+          <button className="sidebar-toggle-btn header-btn-wrap" onClick={() => setSidebarOpen(!sidebarOpen)}>
+            <FaColumns />
+          </button>
+        )}
 
-        <button className="preview-btn header-btn-wrap" onClick={() => setPreview(!preview)}>
-          {preview ? <FaEdit /> : <FaEye />}
-        </button>
+        {headerButtons.preview !== false && (
+          <button className="preview-btn header-btn-wrap" onClick={() => setPreview(!preview)}>
+            {preview ? <FaEdit /> : <FaEye />}
+          </button>
+        )}
 
-        <button className="clear-btn header-btn-wrap" onClick={handleClear}>
-          <FaTrash />
-        </button>
+        {headerButtons.clear !== false && (
+          <button className="clear-btn header-btn-wrap" onClick={handleClear}>
+            <FaTrash />
+          </button>
+        )}
 
-        <button className="save-btn header-btn-wrap" onClick={handleSave}>
-          <FaSave />
-          {saved ? '' : ''}
-        </button>
+        {headerButtons.save !== false && (
+          <button className="save-btn header-btn-wrap" onClick={handleSave}>
+            <FaSave />
+            {saved ? '' : ''}
+          </button>
+        )}
 
-        <button className="view-site-btn" onClick={onViewSite} title="View the saved page as a visitor would see it">
-          <FaGlobe />
-          View Site
-        </button>
+        {headerButtons.viewSite !== false && (
+          <button className="view-site-btn" onClick={onViewSite} title="View the saved page as a visitor would see it">
+            <FaGlobe />
+            View Site
+          </button>
+        )}
 
-        <OptionsMenu />
+        {headerButtons.options !== false && <OptionsMenu />}
       </div>
     </div>
   );

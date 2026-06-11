@@ -217,6 +217,11 @@ function App({
   editorSettings,
   media,
   actions,
+  headerButtons,
+  confirmClear,
+  confirmClearMessage,
+  devices,
+  defaultDevice,
 }) {
   const [blocksReady, setBlocksReady] = useState(false);
 
@@ -254,6 +259,11 @@ function App({
         initialContent={initialContent}
         initialTitle={initialTitle}
         initialPageId={initialPageId}
+        headerButtons={headerButtons}
+        confirmClear={confirmClear}
+        confirmClearMessage={confirmClearMessage}
+        devices={devices}
+        defaultDevice={defaultDevice}
       >
         <EditorApp settings={settings} />
       </EditorProvider>
