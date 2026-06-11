@@ -33,6 +33,7 @@ function EditorApp({ settings }) {
     preview,
     sidebarOpen,
     listViewOpen,
+    inserterOpen,
     blocksRef,
     pushHistory,
     editorMode,
@@ -103,7 +104,7 @@ function EditorApp({ settings }) {
                 </BlockEditorKeyboardShortcuts>
 
                 <div
-                  className={`editor-layout ${sidebarOpen ? "sidebar-open" : ""} ${(sidebarOpen || listViewOpen) ? "split-open" : "split-closed"}`}
+                  className={`editor-layout ${sidebarOpen ? "sidebar-open" : ""} ${inserterOpen ? "inserter-open" : ""} ${(sidebarOpen || listViewOpen) ? "split-open" : "split-closed"}`}
                 >
                   <InserterPanelHost />
 

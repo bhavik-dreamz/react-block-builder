@@ -28,6 +28,7 @@ export function EditorProvider({
   const [templatePickerOpen, setTemplatePickerOpen] = useState(false);
   const [templateReplaceMode, setTemplateReplaceMode] = useState(false);
   const [listViewOpen, setListViewOpen] = useState(false);
+  const [inserterOpen, setInserterOpen] = useState(true);
   // Options menu state
   const [editorMode, setEditorMode] = useState('visual'); // 'visual' | 'code'
   const [fullscreen, setFullscreen] = useState(false);
@@ -161,6 +162,7 @@ export function EditorProvider({
     templatePickerOpen, setTemplatePickerOpen,
     templateReplaceMode, setTemplateReplaceMode,
     listViewOpen, setListViewOpen,
+    inserterOpen, setInserterOpen,
     // options menu
     editorMode, setEditorMode,
     fullscreen, setFullscreen,

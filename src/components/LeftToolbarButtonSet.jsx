@@ -1,4 +1,3 @@
-import { Inserter } from "@wordpress/block-editor";
 import React from "react";
 import { LuUndo, LuRedo } from "react-icons/lu";
 import { FaPlus } from "react-icons/fa";
@@ -11,25 +10,19 @@ export default function LeftToolbarButtonSet() {
     handleUndo, handleRedo,
     templatePickerOpen, setTemplatePickerOpen,
     listViewOpen, setListViewOpen,
+    inserterOpen, setInserterOpen,
   } = useEditor();
 
   return (
     <div className='editor-toolbar'>
-      <Inserter
-        rootClientId={undefined}
-        clientId={undefined}
-        isAppender
-        renderToggle={({ onToggle, isOpen }) => (
-          <button
-            className='toolbar-inserter-btn'
-            data-inserter-open={isOpen ? 'true' : 'false'}
-            onClick={onToggle}
-            title='Add block'
-          >
-            <FaPlus />
-          </button>
-        )}
-      />
+      <button
+        className={`toolbar-inserter-btn${inserterOpen ? " active" : ""}`}
+        data-inserter-open={inserterOpen ? 'true' : 'false'}
+        onClick={() => setInserterOpen((o) => !o)}
+        title='Add block'
+      >
+        <FaPlus />
+      </button>
 
       {/* Templates button */}
       <button
