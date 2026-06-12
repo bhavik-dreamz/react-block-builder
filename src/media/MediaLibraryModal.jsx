@@ -162,7 +162,7 @@ export default function MediaLibraryModal({
   );
 
   function handleInputChange(event) {
-    const { files } = event.target;
+    const files = Array.from(event.target.files || []);
     event.target.value = '';
     uploadFiles(files);
   }
@@ -216,7 +216,6 @@ export default function MediaLibraryModal({
       onRequestClose={onClose}
       shouldCloseOnClickOutside
       shouldCloseOnEsc
-      size="large"
     >
       {canUpload && (
         <input

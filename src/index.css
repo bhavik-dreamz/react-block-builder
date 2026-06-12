@@ -2470,13 +2470,23 @@ ul.block-editor-block-list__block .block-editor-rich-text__editable {
 }
 
 /* ── Host media library modal (rbb) ───────────────── */
-.rbb-media-modal .components-modal__content {
-  min-height: 70vh;
+.rbb-media-modal.components-modal__frame {
+  width: 80vw !important;
+  max-width: 80vw !important;
+  height: 80vh !important;
+  max-height: 80vh !important;
 }
 
-.rbb-media-modal .components-modal__frame {
-  max-width: 1040px;
-  width: 90vw;
+.rbb-media-modal .components-modal__content {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.rbb-media-modal__footer {
+  flex-shrink: 0;
 }
 
 .rbb-media-modal__tabs {
@@ -2510,6 +2520,7 @@ ul.block-editor-block-list__block .block-editor-rich-text__editable {
 
 .rbb-media-modal__upload-pane {
   display: flex;
+  flex: 1 1 auto;
   align-items: center;
   justify-content: center;
   min-height: 46vh;
@@ -2582,7 +2593,8 @@ ul.block-editor-block-list__block .block-editor-rich-text__editable {
 
 .rbb-media-modal__grid-wrap {
   position: relative;
-  min-height: 46vh;
+  flex: 0 1 auto;
+  min-height: 0;
   max-height: 58vh;
   overflow: auto;
   border: 1px solid #e0e0e0;
